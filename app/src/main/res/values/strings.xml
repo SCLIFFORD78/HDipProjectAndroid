@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">Hive</string>
+    <string name="button_addHive">Add Hive</string>
+    <string name="hint_hiveTitle">Hive Title</string>
+    <string name="hint_hiveDescription">Description </string>
+    <string name="hint_hiveType">Type </string>
+    <string name="menu_addHive">Add</string>
+    <string name="menu_mapMode">Map Mode</string>
+    <string name="menu_cancelHive">Cancel</string>
+    <string name="enter_hive_title"> Please enter a Hive Title </string>
+    <string name="save_hive"> Save Hive </string>
+    <string name="button_addImage"> Add Image </string>
+    <string name="select_hive_image">Select image</string>
+    <string name="change_hive_image">Change image</string>
+    <string name="button_location">Set Location</string>
+    <string name="title_activity_map">Map</string>
+    <string name="title_activity_hive_maps">Map of all Hives</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_firstname">First Name</string>
+    <string name="prompt_secondname">Second Name</string>
+    <string name="action_register_short">Register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_email">Email</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="nav_header_tag">Hive Tracker</string>
+    <string name="nav_header_subtag">Hive Tracking Application</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="menu_saveHive">Save</string>
+    <string name="menu_deleteHive">Delete</string>
+    <!-- login strings -->
+    <string name="title_activity_login"> Signup/Login to Hive</string>
+    <string name="menu_showMap">Show Map</string>
+    <string name="menu_logout">Logout</string>
+
+    <string name="button_update_search">Update List</string>
+
+    <string name="action_about">About Us</string>
+    <string name="aboutus_tag">Hive Tracker App</string>
+    <string name="aboutus_message">Hi, Welcome\n\nOur app will help track hives.\n\n So we can help the Bee Population</string>
+
+    <!-- Strings related to Spinner -->
+    <string-array name="hiveType">
+        <item>National</item>
+        <item>Super</item>
+        <item>Warree</item>
+        <item>Langstroth</item>
+        <item>Top Bar</item>
+    </string-array>
+    <string-array name="hiveTypeSearch">
+        <item>All Hive Types</item>
+        <item>National</item>
+        <item>Super</item>
+        <item>Warree</item>
+        <item>Langstroth</item>
+        <item>Top Bar</item>
+    </string-array>
+
+</resources>

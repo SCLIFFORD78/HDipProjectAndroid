@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/hiveView">
+    <activity
+        android:id="@+id/hiveView"
+        android:name="ie.wit.hive.views.hive.HiveView"
+        android:label="activity_hive"
+        tools:layout="@layout/activity_hive" />
+    <activity
+        android:id="@+id/hiveListView"
+        android:name="ie.wit.hive.views.hivelist.HiveListView"
+        android:label="activity_hive_list"
+        tools:layout="@layout/activity_hive_list" />
+    <activity
+        android:id="@+id/hiveMapView"
+        android:name="ie.wit.hive.views.map.HiveMapView"
+        android:label="activity_hive_maps"
+        tools:layout="@layout/activity_hive_maps" />
+    <activity
+        android:id="@+id/loginView"
+        android:name="ie.wit.hive.views.login.LoginView"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+</navigation>
