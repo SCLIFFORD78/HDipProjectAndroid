@@ -87,9 +87,11 @@ class SensorView : AppCompatActivity() {
         //binding.toolbarAdd.title = title
         //setSupportActionBar(binding.toolbarAdd)
 
+
+
         presenter = SensorPresenter(this)
-        device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-            ?: error("Missing BluetoothDevice from MainActivity!")
+        device = presenter.getBLEdevice()
+
 
         setContentView(R.layout.activity_sensor_control)
         supportActionBar?.apply {
@@ -131,6 +133,10 @@ class SensorView : AppCompatActivity() {
         }
 
 
+    }
+
+    fun addDevice(result: BluetoothDevice){
+        device = result
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

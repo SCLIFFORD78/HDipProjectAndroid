@@ -35,7 +35,7 @@ class HiveListView : AppCompatActivity(), HiveListener {
         //if (user != null) {
         //    binding.toolbar.title = "${title}: ${user.email}"
         //}
-        setSupportActionBar(binding.toolbar)
+        //setSupportActionBar(binding.toolbar)
         binding.floatingAddButton.setOnClickListener{
             presenter.doAddHive()
         }

@@ -23,7 +23,7 @@ class BleScanPresenter(private val view: BleScanView) {
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
 
     init {
-
+        registerEditCallback()
     }
 
     fun doAddHive() {
@@ -33,6 +33,7 @@ class BleScanPresenter(private val view: BleScanView) {
 
     fun doSensorView(device: BluetoothDevice) {
         val launcherIntent = Intent(view, SensorView::class.java)
+        launcherIntent.putExtra(BluetoothDevice.EXTRA_DEVICE, device)
         editIntentLauncher.launch(launcherIntent)
     }
 
@@ -58,6 +59,13 @@ class BleScanPresenter(private val view: BleScanView) {
         app.users.clear()
         val launcherIntent = Intent(view, LoginView::class.java)
         editIntentLauncher.launch(launcherIntent)
+    }
+
+    private fun registerEditCallback() {
+        editIntentLauncher =
+            view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            {  }
+
     }
 
 }

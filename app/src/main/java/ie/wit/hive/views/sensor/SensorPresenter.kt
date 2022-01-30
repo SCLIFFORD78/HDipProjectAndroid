@@ -1,6 +1,7 @@
 package ie.wit.hive.views.sensor
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,7 +26,7 @@ import timber.log.Timber.i
 
 class SensorPresenter(private val view: SensorView) {
     private val locationRequest = createDefaultLocationRequest()
-
+    private lateinit var device : BluetoothDevice
     var app: MainApp = view.application as MainApp
     var locationManualyChanged = false;
     //location service
@@ -40,6 +41,11 @@ class SensorPresenter(private val view: SensorView) {
 
 
 
+    }
+
+    fun getBLEdevice():BluetoothDevice{
+        device =  view.intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)!!
+        return device
     }
 
 
