@@ -1,5 +1,6 @@
 package ie.wit.hive.views.ble
 
+import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +14,7 @@ import ie.wit.hive.views.aboutus.AboutUsView
 import ie.wit.hive.views.login.LoginView
 import ie.wit.hive.views.hive.HiveView
 import ie.wit.hive.views.map.HiveMapView
+import ie.wit.hive.views.sensor.SensorView
 
 class BleScanPresenter(private val view: BleScanView) {
 
@@ -26,6 +28,11 @@ class BleScanPresenter(private val view: BleScanView) {
 
     fun doAddHive() {
         val launcherIntent = Intent(view, HiveView::class.java)
+        editIntentLauncher.launch(launcherIntent)
+    }
+
+    fun doSensorView(device: BluetoothDevice) {
+        val launcherIntent = Intent(view, SensorView::class.java)
         editIntentLauncher.launch(launcherIntent)
     }
 

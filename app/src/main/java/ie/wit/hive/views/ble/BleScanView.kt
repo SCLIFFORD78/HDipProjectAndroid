@@ -74,7 +74,8 @@ class BleScanView : AppCompatActivity() {
             }
             with(result.device) {
                 Timber.w("Connecting to $address")
-                ConnectionManager.connect(this, this@BleScanView)
+                //ConnectionManager.connect(this, this@BleScanView)
+                presenter.doSensorView(this)
             }
         }
     }

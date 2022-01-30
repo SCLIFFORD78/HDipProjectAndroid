@@ -60,6 +60,8 @@
             android:exported="true">
 
         </activity>
+        <activity android:name=".views.ble.BleScanView"></activity>
+        <activity android:name=".views.sensor.SensorView"></activity>
         <activity android:name=".views.login.GoogleRegisterView"></activity>
         <activity android:name=".views.ble.BleScanView"></activity>
     </application>

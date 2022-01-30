@@ -2,47 +2,43 @@ package ie.wit.hive.adapters
 
 import android.annotation.SuppressLint
 import android.bluetooth.le.ScanResult
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.ViewGroup
+import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import ie.wit.hive.R
 import ie.wit.hive.databinding.CardHiveBinding
 import ie.wit.hive.databinding.RowScanResultBinding
 import ie.wit.hive.models.HiveModel
+import org.jetbrains.anko.layoutInflater
 
-interface ItemListener {
-    fun onItemClick(device: ScanResult)
-}
+class ScanResultAdapter(
+    private val items: List<ScanResult>,
+    private val onClickListener: ((device: ScanResult) -> Unit)
+) : RecyclerView.Adapter<ScanResultAdapter.ViewHolder>() {
 
-class ScanResultAdapter constructor(private val items: List<ScanResult>,
-                                    private val listener: ItemListener) :
-    RecyclerView.Adapter<ScanResultAdapter.MainHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
-        val binding = RowScanResultBinding
-            .inflate(LayoutInflater.from(parent.context), parent, false)
-
-        return MainHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = RowScanResultBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ViewHolder(view, onClickListener)
     }
 
-    override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val item = items[holder.adapterPosition]
-        holder.bind(item, listener)
+    override fun getItemCount() = items.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items[position]
+        holder.bind(item)
     }
 
-    override fun getItemCount(): Int = items.size
-
-    class MainHolder(private val binding : RowScanResultBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(
+        private val binding: RowScanResultBinding,
+        private val onClickListener: ((device: ScanResult) -> Unit)
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("MissingPermission")
-        fun bind(device: ScanResult, listener: ItemListener) {
-            binding.deviceName.text = device.device.name ?: "Unnamed"
-            binding.macAddress.text = device.device.address
-            binding.signalStrength.text = "${device.rssi} dBm"
-            binding.root.setOnClickListener { listener.onItemClick(device) }
+        fun bind(result: ScanResult) {
+            binding.deviceName .text = result.device.name ?: "Unnamed"
+            binding.macAddress.text = result.device.address
+            binding.signalStrength.text = "${result.rssi} dBm"
+            binding.root.setOnClickListener { onClickListener.invoke(result) }
         }
     }
 }
