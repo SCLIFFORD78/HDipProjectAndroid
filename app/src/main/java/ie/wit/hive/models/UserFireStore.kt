@@ -68,7 +68,7 @@ class UserFireStore(val context: Context) : UserStore {
         }
         userId = FirebaseAuth.getInstance().currentUser!!.uid
         st = FirebaseStorage.getInstance().reference
-        db = FirebaseDatabase.getInstance("https://hivetrackerapp3-default-rtdb.firebaseio.com/").reference
+        db = FirebaseDatabase.getInstance("https://hdip-65317-default-rtdb.firebaseio.com/").reference
         users.clear()
         db.child("users")
             .addListenerForSingleValueEvent(valueEventListener)

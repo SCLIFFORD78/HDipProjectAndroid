@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.views.aboutus.AboutUsView
+import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.login.LoginView
 import ie.wit.hive.views.hive.HiveView
 import ie.wit.hive.views.map.HiveMapView
@@ -72,6 +73,11 @@ class HiveListPresenter(private val view: HiveListView) {
 
     fun doShowAboutUs() {
         val launcherIntent = Intent(view, AboutUsView::class.java)
+        editIntentLauncher.launch(launcherIntent)
+    }
+
+    fun doShowBleScanner() {
+        val launcherIntent = Intent(view, BleScanView::class.java)
         editIntentLauncher.launch(launcherIntent)
     }
 

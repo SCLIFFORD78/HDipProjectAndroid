@@ -3,7 +3,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
-    id 'com.google.gms.google-services'
     //id 'androidx.navigation.safeargs.kotlin'
     //id 'com.google.gms.google-services'
 }
@@ -58,6 +57,10 @@ dependencies {
 
     implementation 'org.jetbrains.anko:anko:0.10.8'
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
+    implementation 'com.google.firebase:firebase-database:20.0.3'
+    implementation 'com.google.firebase:firebase-storage:20.0.0'
 
     ktlint "com.pinterest:ktlint:0.36.0"
 
@@ -78,12 +81,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
 
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.google.firebase:firebase-database:20.0.3'
-    implementation 'com.google.firebase:firebase-storage:20.0.0'
-    implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
-    implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
-    implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
 
     testImplementation 'junit:junit:4.13.2'
     implementation "com.google.code.gson:gson:2.8.6"
@@ -98,6 +95,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
 }
 

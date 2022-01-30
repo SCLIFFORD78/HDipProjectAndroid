@@ -12,10 +12,12 @@ import ie.wit.hive.databinding.CardHiveBinding
 import ie.wit.hive.databinding.RowScanResultBinding
 import ie.wit.hive.models.HiveModel
 
-
+interface ItemListener {
+    fun onItemClick(device: ScanResult)
+}
 
 class ScanResultAdapter constructor(private val items: List<ScanResult>,
-                                    private val onClickListener: ((device: ScanResult) -> Unit)) :
+                                    private val listener: ItemListener) :
     RecyclerView.Adapter<ScanResultAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -27,7 +29,7 @@ class ScanResultAdapter constructor(private val items: List<ScanResult>,
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val item = items[holder.adapterPosition]
-        holder.bind(item)
+        holder.bind(item, listener)
     }
 
     override fun getItemCount(): Int = items.size
@@ -36,11 +38,11 @@ class ScanResultAdapter constructor(private val items: List<ScanResult>,
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("MissingPermission")
-        fun bind(result: ScanResult) {
-            binding.deviceName.text = result.device.name ?: "Unnamed"
-            binding.macAddress.text = result.device.address
-            binding.signalStrength.text = "${result.rssi} dBm"
-            binding.root.setOnClickListener { result }
+        fun bind(device: ScanResult, listener: ItemListener) {
+            binding.deviceName.text = device.device.name ?: "Unnamed"
+            binding.macAddress.text = device.device.address
+            binding.signalStrength.text = "${device.rssi} dBm"
+            binding.root.setOnClickListener { listener.onItemClick(device) }
         }
     }
 }

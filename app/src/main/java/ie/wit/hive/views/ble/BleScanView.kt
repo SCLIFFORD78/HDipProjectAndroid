@@ -191,46 +191,20 @@ class BleScanView : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun startBleScan() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isLocationPermissionGranted) {
             requestLocationPermission()
         } else {
             scanResults.clear()
             scanResultAdapter.notifyDataSetChanged()
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BLUETOOTH_SCAN
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
             bleScanner.startScan(null, scanSettings, scanCallback)
             isScanning = true
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun stopBleScan() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
         bleScanner.stopScan(scanCallback)
         isScanning = false
     }
