@@ -24,8 +24,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -70,6 +73,11 @@ class SensorView : AppCompatActivity() {
         }.toMap()
     }
 
+    private val bluetoothAdapter: BluetoothAdapter by lazy {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter
+    }
+
     private var notifyingCharacteristics = mutableListOf<UUID>()
     private var intervilTime: Int = 0
     private var loggerTimeReference: Int = 0
@@ -93,12 +101,12 @@ class SensorView : AppCompatActivity() {
         device = presenter.getBLEdevice()
 
 
-        setContentView(R.layout.activity_sensor_control)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(true)
-            //title = getString(R.string.ble_playground)
-        }
+        //setContentView(R.layout.activity_sensor_control)
+        //supportActionBar?.apply {
+        //    setDisplayHomeAsUpEnabled(true)
+         //   setDisplayShowTitleEnabled(true)
+        //    //title = getString(R.string.ble_playground)
+        //}
         flashUsageReference = 0
 
         //readLoggerIntervalTime()
@@ -135,6 +143,8 @@ class SensorView : AppCompatActivity() {
 
     }
 
+
+
     fun addDevice(result: BluetoothDevice){
         device = result
     }
@@ -142,12 +152,7 @@ class SensorView : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_hive, menu)
         val deleteMenu: MenuItem = menu.findItem(R.id.item_delete)
-        if (presenter.edit){
-            deleteMenu.setVisible(true)
-        }
-        else{
-            deleteMenu.setVisible(false)
-        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -380,5 +385,6 @@ class SensorView : AppCompatActivity() {
         return result
 
     }
+
 
 }

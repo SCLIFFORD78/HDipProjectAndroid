@@ -34,8 +34,6 @@ class SensorPresenter(private val view: SensorView) {
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    var edit = false;
-    private val location = Location(52.0634310, -9.6853542, 15f)
 
     init {
 
