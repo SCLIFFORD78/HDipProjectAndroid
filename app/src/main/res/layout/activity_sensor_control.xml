@@ -14,67 +14,53 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/battery"
+        android:id="@+id/readParams"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Battery"
-        tools:layout_editor_absoluteX="17dp"
-        tools:layout_editor_absoluteY="18dp"
+        android:layout_marginTop="16dp"
+        android:text="Params"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Data"
+        android:layout_marginTop="12dp"
+        android:text="Temp/Hum"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/battery"
-        />
+        app:layout_constraintTop_toBottomOf="@id/readParams" />
 
     <TextView
         android:id="@+id/batteryLevel"
         android:layout_width="254dp"
         android:layout_height="22dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="16dp"
         android:text="Battery"
-        app:layout_constraintStart_toEndOf="@+id/battery"
-        app:layout_constraintTop_toTopOf="@+id/battery"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/temperature"
         android:layout_width="254dp"
         android:layout_height="22dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
         android:text="Temperature"
-        app:layout_constraintStart_toEndOf="@+id/data"
-        app:layout_constraintTop_toBottomOf="@+id/batteryLevel"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/batteryLevel"
+        app:layout_constraintTop_toBottomOf="@+id/batteryLevel" />
 
     <TextView
         android:id="@+id/humidity"
         android:layout_width="254dp"
         android:layout_height="22dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
         android:text="Humidity"
-        app:layout_constraintStart_toEndOf="@+id/data"
-        app:layout_constraintTop_toBottomOf="@+id/temperature"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/temperature"
+        app:layout_constraintTop_toBottomOf="@+id/temperature" />
 
     <ScrollView
         android:id="@+id/log_scroll_view"
@@ -84,112 +70,56 @@
         android:layout_weight="1"
         android:padding="4dp"
         app:layout_constraintTop_toBottomOf="@+id/getLog"
-        tools:layout_editor_absoluteX="0dp"
-        >
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:id="@+id/log_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
-            android:scrollbars="vertical"
-            />
+            android:scrollbars="vertical" />
 
     </ScrollView>
-
-    <Button
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Logger Time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/data"
-        />
 
     <TextView
         android:id="@+id/loggerRefTime"
         android:layout_width="252dp"
         android:layout_height="26dp"
-        android:layout_marginStart="16dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/time"
+        android:text="Logger Time"
         app:layout_constraintEnd_toEndOf="@+id/humidity"
-        app:layout_constraintStart_toEndOf="@+id/time"
-        app:layout_constraintTop_toTopOf="@+id/time"
-        />
-
-    <Button
-        android:id="@+id/interval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Interval time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/humidity" />
 
     <TextView
         android:id="@+id/intervalText"
         android:layout_width="250dp"
         android:layout_height="27dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/interval"
+        android:text="Interval Time"
         app:layout_constraintEnd_toEndOf="@+id/loggerRefTime"
-        app:layout_constraintTop_toTopOf="@+id/interval"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/loggerRefTime" />
 
     <Button
         android:id="@+id/getLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="Get Log"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getFlashUsage"
-        />
-
-    <Button
-        android:id="@+id/getFlashSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Flash Size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/interval"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/data" />
 
     <TextView
         android:id="@+id/flashSize"
         android:layout_width="255dp"
         android:layout_height="24dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/getFlashSize"
+        android:text="Flash Size"
         app:layout_constraintEnd_toEndOf="@+id/intervalText"
-        app:layout_constraintStart_toStartOf="@+id/intervalText"
-        app:layout_constraintTop_toTopOf="@+id/getFlashSize"
-        app:layout_constraintVertical_bias="0.482"
-        />
-
-    <Button
-        android:id="@+id/getFlashUsage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Flash Usage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getFlashSize"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/intervalText" />
 
     <TextView
         android:id="@+id/flashUsage"
         android:layout_width="256dp"
         android:layout_height="24dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/getFlashUsage"
+        android:text="Flash Usage"
         app:layout_constraintEnd_toEndOf="@+id/flashSize"
-        app:layout_constraintStart_toStartOf="@+id/flashSize"
-        app:layout_constraintTop_toTopOf="@+id/getFlashUsage"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/flashSize" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

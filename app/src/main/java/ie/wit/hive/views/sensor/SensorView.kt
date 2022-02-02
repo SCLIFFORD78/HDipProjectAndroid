@@ -113,33 +113,19 @@ class SensorView : AppCompatActivity() {
         //readLoggerTimeReference()
         //readLoggerFlashUsage()
 
-        binding.battery.setOnClickListener {
-            checkBattery()
+        binding.readParams.setOnClickListener {
+            readParams()
         }
+
         binding.data.setOnClickListener{
             readData()
-        }
-
-        binding.time.setOnClickListener {
-            readLoggerTimeReference()
-        }
-
-        binding.interval.setOnClickListener {
-            readLoggerIntervalTime()
         }
 
         binding.getLog.setOnClickListener {
             readLoggerData()
         }
 
-        binding.getFlashSize.setOnClickListener {
-            readLoggerFlashSize()
-        }
-
-        binding.getFlashUsage.setOnClickListener {
-            readLoggerFlashUsage()
-        }
-
+        readParams()
 
     }
 
@@ -187,26 +173,23 @@ class SensorView : AppCompatActivity() {
 
             onCharacteristicRead = { _, characteristic ->
                 if (characteristic.uuid == UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")){
-                    binding.batteryLevel.text = "${Integer.decode(characteristic.value.toHexString())}%"
+                    binding.batteryLevel.text = "Batt. ${Integer.decode(characteristic.value.toHexString())}%"
                 }else if(characteristic.uuid == UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")){
                     val timestamp = toInt32(characteristic.value)
                     loggerTimeReference = timestamp
                     val date = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date(timestamp.toLong()*1000))
-                    binding.loggerRefTime.text = date.toString()
+                    binding.loggerRefTime.text = "Log start: ${date.toString()}"
                 }else if(characteristic.uuid == UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")){
                     val interValSeconds = toInt16(characteristic.value)
-                    binding.intervalText.text = interValSeconds.toString()
+                    binding.intervalText.text = "Interval time ${interValSeconds.toString()} sec."
                     intervilTime = interValSeconds
-                }else if(characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")){
-                    val test = characteristic.value
-                    print(test)
                 }else if(characteristic.uuid == UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashSizeTemp = toInt32(characteristic.value)
-                    binding.flashSize.text = flashSizeTemp.toString()
+                    binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
                 }else if(characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashUsageTemp = toInt32(characteristic.value)
                     loggerFlashUsage = flashUsageTemp
-                    binding.flashUsage.text = flashUsageTemp.toString()
+                    binding.flashUsage.text = "Flash usage: ${flashUsageTemp.toString()}"
                 }
                 log("Read from ${characteristic.uuid}: ${characteristic.value.toHexString()}")
             }
@@ -223,8 +206,9 @@ class SensorView : AppCompatActivity() {
                 if (characteristic.uuid == UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")){
                     val result = characteristic.value
                     val converted = convertTempAndHumidity(result,0)
-                    binding.temperature.text = "${converted.get("Temperature")} C"
-                    binding.humidity.text = "${converted.get("Humidity")}%"
+                    binding.temperature.text = "Temp: ${converted.get("Temperature")} C"
+                    binding.humidity.text = "Hum.: ${converted.get("Humidity")}%"
+                    stopReadData()
                 }else if(characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")){
                     val loggerData = characteristic.value
 
@@ -325,6 +309,15 @@ class SensorView : AppCompatActivity() {
         return result
     }
 
+    private fun readParams(){
+        checkBattery()
+        readLoggerTimeReference()
+        readLoggerIntervalTime()
+        readLoggerFlashSize()
+        readLoggerFlashUsage()
+        readData()
+    }
+
     private fun checkBattery(){
         val batteryLevelCharUuid = UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")
         ConnectionManager.readSensorCharacteristic(device, batteryLevelCharUuid)
@@ -333,6 +326,13 @@ class SensorView : AppCompatActivity() {
     private fun readData(){
         val bluSensorData  = UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")
         ConnectionManager.enableSensorNotifications(device, bluSensorData )
+    }
+
+    private fun stopReadData(){
+        val bluSensorData  = UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")
+        characteristics.forEachByIndex { t -> if(t.uuid == bluSensorData){
+            ConnectionManager.disableNotifications(device, t )
+        } }
     }
 
     private fun readLoggerTimeReference(){
