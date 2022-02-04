@@ -89,6 +89,10 @@ class HiveJSONStore(private val context: Context) : HiveStore {
         return hives.find { p -> p.tag == tag }
     }
 
+    override suspend fun findBySensor(sensorNumber: String): HiveModel? {
+        return hives.find { p -> p.sensorNumber == sensorNumber }
+    }
+
     private fun serialize() {
         val jsonString = gsonBuilder.toJson(hives, listType)
         write(context, JSON_FILE, jsonString)

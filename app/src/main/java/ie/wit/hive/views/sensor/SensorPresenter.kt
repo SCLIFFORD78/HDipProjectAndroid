@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
 import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
@@ -46,22 +47,23 @@ class SensorPresenter(private val view: SensorView) {
         return device
     }
 
+    suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
+
+    suspend fun findHiveBySensorNumber(sensorNumber: String):HiveModel?{
+        var hive = app.hives.findBySensor(sensorNumber)
+        return hive
+    }
 
     suspend fun doAddOrSave(type: String, description: String) {
-
-
         view.finish()
 
     }
-
     fun doCancel() {
         view.finish()
-
     }
 
     suspend fun doDelete() {
         view.finish()
-
     }
 
     fun doSelectImage() {

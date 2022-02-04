@@ -32,6 +32,7 @@ import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import com.google.gson.JsonObject
 import ie.wit.hive.bleandroid.ble.*
 import ie.wit.hive.databinding.ActivitySensorControlBinding
 import org.jetbrains.anko.alert
@@ -83,7 +84,7 @@ class SensorView : AppCompatActivity() {
     private var loggerTimeReference: Int = 0
     private var loggerFlashUsage: Int = 0
     private var flashUsageReference: Int = 0
-    private var sensorLogData = arrayListOf<JSONObject>()
+    private var sensorLogData = arrayListOf<JsonObject>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +100,7 @@ class SensorView : AppCompatActivity() {
 
         presenter = SensorPresenter(this)
         device = presenter.getBLEdevice()
+        hive = presenter.findHiveBySensorNumber(device.address.toString())
 
 
         //setContentView(R.layout.activity_sensor_control)
@@ -372,16 +374,16 @@ class SensorView : AppCompatActivity() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun convertTempAndHumidity (sensorData : ByteArray, timeStamp: Int): JSONObject {
-        val result = JSONObject()
+    private fun convertTempAndHumidity (sensorData : ByteArray, timeStamp: Int): JsonObject {
+        val result = JsonObject()
         val temp =  (sensorData[0].toInt().and(0xff)).or((sensorData.get(1).toInt().rotateLeft(8)).and(0xff00) )
         val tempC = -46.85f + 175.72f * temp.toFloat() / 65536.toFloat()
-        result.put("Temperature",tempC)
+        result.addProperty("Temperature",tempC)
         val hum =  (sensorData[2].toInt().and(0xff)).or((sensorData.get(3).toInt().rotateLeft(8)).and(0xff00) )//.and(0xff.toByte())
         val relHum = -6.0f + 125.0f * hum.toFloat() / 65536.toFloat()
-        result.put("Humidity",relHum)
+        result.addProperty("Humidity",relHum)
         if (timeStamp > 0)
-            result.put("timeStamp", timeStamp)
+            result.addProperty("timeStamp", timeStamp)
         return result
 
     }

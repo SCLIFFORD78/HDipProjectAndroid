@@ -49,6 +49,10 @@ class HiveFireStore(val context: Context) : HiveStore {
         return hives.find { p -> p.tag == tag }
     }
 
+    override suspend fun findBySensor(sensorNumber: String): HiveModel? {
+        return hives.find { p -> p.sensorNumber == sensorNumber }
+    }
+
     override suspend fun create(hive: HiveModel) {
         val key = db.child("hives").push().key
         key?.let {

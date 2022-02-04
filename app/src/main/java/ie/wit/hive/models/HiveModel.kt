@@ -6,6 +6,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
+import org.json.JSONObject
 import java.util.*
 
 @Parcelize
@@ -15,9 +16,11 @@ data class HiveModel(@PrimaryKey(autoGenerate = true) var id: Long = 0,
                      var user: String = "",
                      var tag: Long = 0,
                      var description: String = "",
+                     var recordedData: String = "" ,
                      var image: String = "",
                      var type: String = "",
                      var dateRegistered: String = Date().toString(),
+                     var sensorNumber: String = "84:71:27:69:43:45",
                      @Embedded var location : Location = Location()): Parcelable
 
 
