@@ -85,8 +85,12 @@ class HiveJSONStore(private val context: Context) : HiveStore {
         return foundHive
     }
 
-    override suspend fun findByTag(tag: Long): HiveModel? {
-        return hives.find { p -> p.tag == tag }
+    override suspend fun findByTag(tag: Long): HiveModel {
+        return hives.find { p -> p.tag == tag }!!
+    }
+
+    override suspend fun findBySensor(sensorNumber: String): HiveModel? {
+        return hives.find { p -> p.sensorNumber == sensorNumber }
     }
 
     private fun serialize() {

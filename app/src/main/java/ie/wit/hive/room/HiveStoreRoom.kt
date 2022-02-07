@@ -33,8 +33,12 @@ class HiveStoreRoom(val context: Context) : HiveStore {
         return dao.findById(id)
     }
 
-    override suspend fun findByTag(tag: Long): HiveModel? {
+    override suspend fun findByTag(tag: Long): HiveModel {
         return dao.findByTag(tag)
+    }
+
+    override suspend fun findBySensor(sensorNumber: String): HiveModel? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun create(hive: HiveModel) {
