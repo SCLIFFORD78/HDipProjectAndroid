@@ -1,5 +1,7 @@
 package ie.wit.hive.models
 
+import org.json.JSONObject
+
 interface HiveStore {
     suspend fun findAll(): List<HiveModel>
     suspend fun findByOwner(userID: String): List<HiveModel>
@@ -7,7 +9,7 @@ interface HiveStore {
     suspend fun create(hive: HiveModel)
     suspend fun update(hive: HiveModel)
     suspend fun findById(id:Long) : HiveModel?
-    suspend fun findByTag(tag: Long) :HiveModel?
+    suspend fun findByTag(tag: Long) :HiveModel
     suspend fun findBySensor(sensorNumber: String) :HiveModel?
     suspend fun delete(hive: HiveModel)
     suspend fun clear()

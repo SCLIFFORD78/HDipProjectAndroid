@@ -45,8 +45,8 @@ class HiveFireStore(val context: Context) : HiveStore {
         return foundHive
     }
 
-    override suspend fun findByTag(tag: Long): HiveModel? {
-        return hives.find { p -> p.tag == tag }
+    override suspend fun findByTag(tag: Long): HiveModel {
+        return hives.find { p -> p.tag == tag }!!
     }
 
     override suspend fun findBySensor(sensorNumber: String): HiveModel? {
@@ -66,13 +66,14 @@ class HiveFireStore(val context: Context) : HiveStore {
     }
 
     override suspend fun update(hive: HiveModel) {
-        var foundHive: HiveModel? = hives.find { p -> p.fbId == hive.fbId }
+        var foundHive: HiveModel = hives.find { p -> p.fbId == hive.fbId }!!
         if (foundHive != null) {
             foundHive.tag = hive.tag
             foundHive.description = hive.description
             foundHive.image = hive.image
             foundHive.location = hive.location
             foundHive.type = hive.type
+            foundHive.recordedData = hive.recordedData
         }
 
         db.child("hives").child(hive.fbId).setValue(hive)

@@ -33,7 +33,7 @@ class HiveView : AppCompatActivity() {
         binding = ActivityHiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.toolbarAdd.title = title
-        setSupportActionBar(binding.toolbarAdd)
+        //setSupportActionBar(binding.toolbarAdd)
 
         presenter = HivePresenter(this)
 

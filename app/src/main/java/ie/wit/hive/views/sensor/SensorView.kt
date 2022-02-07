@@ -35,6 +35,7 @@ import android.widget.EditText
 import com.google.gson.JsonObject
 import ie.wit.hive.bleandroid.ble.*
 import ie.wit.hive.databinding.ActivitySensorControlBinding
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.collections.forEachByIndex
 import org.jetbrains.anko.noButton
@@ -100,7 +101,7 @@ class SensorView : AppCompatActivity() {
 
         presenter = SensorPresenter(this)
         device = presenter.getBLEdevice()
-        hive = presenter.findHiveBySensorNumber(device.address.toString())
+        var hive:HiveModel =  runBlocking { presenter.getHive() }
 
 
         //setContentView(R.layout.activity_sensor_control)
@@ -239,6 +240,9 @@ class SensorView : AppCompatActivity() {
                         loggerTimeReference = 0
                         intervilTime - 0
                         loggerFlashUsage = 0
+                        runBlocking { presenter.doUpdateHive(sensorLogData) }
+
+
 
                     }
                     flashUsageReference += loggerData.size

@@ -1,6 +1,8 @@
 package ie.wit.hive.models
 
+import ie.wit.hive.helpers.Converters
 import org.jetbrains.anko.db.NULL
+import org.json.JSONObject
 import timber.log.Timber.i
 
 var lastId = 0L
@@ -68,8 +70,8 @@ class HiveMemStore : HiveStore {
         return foundHive
     }
 
-    override suspend fun findByTag(tag: Long): HiveModel? {
-        return hives.find { p -> p.tag == tag }
+    override suspend fun findByTag(tag: Long): HiveModel {
+        return hives.find { p -> p.tag == tag }!!
     }
 
     override suspend fun findBySensor(sensorNumber: String): HiveModel? {
@@ -87,4 +89,7 @@ class HiveMemStore : HiveStore {
         }
         return num
     }
+
+
+
 }
