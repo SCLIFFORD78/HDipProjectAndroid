@@ -29,6 +29,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.os.SystemClock
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -86,6 +87,7 @@ class SensorView : AppCompatActivity() {
     private var loggerFlashUsage: Int = 0
     private var flashUsageReference: Int = 0
     private var sensorLogData = arrayListOf<JsonObject>()
+    private var loggerActive: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,6 +195,11 @@ class SensorView : AppCompatActivity() {
                     val flashUsageTemp = toInt32(characteristic.value)
                     loggerFlashUsage = flashUsageTemp
                     binding.flashUsage.text = "Flash usage: ${flashUsageTemp.toString()}"
+                }else if(characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
+                    loggerActive =  characteristic.value[0].toInt()
+                    var test = loggerActive
+                    print(test)
+                    //binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
                 }
                 log("Read from ${characteristic.uuid}: ${characteristic.value.toHexString()}")
             }
@@ -241,6 +248,15 @@ class SensorView : AppCompatActivity() {
                         intervilTime - 0
                         loggerFlashUsage = 0
                         runBlocking { presenter.doUpdateHive(sensorLogData) }
+                        resetLogger()
+                        readLoggerActive()
+                        if ( loggerActive == 0){
+                            writeLoggerTimeReference()
+                            writeLoggerActive()
+                        }else{
+                            writeLoggerTimeReference()
+                        }
+                        readParams()
 
 
 
@@ -315,6 +331,9 @@ class SensorView : AppCompatActivity() {
         return result
     }
 
+    fun numberToByteArray (data: Number, size: Int = 4) : ByteArray =
+        ByteArray (size) {i -> (data.toLong() shr (i*8)).toByte()}
+
     private fun readParams(){
         checkBattery()
         readLoggerTimeReference()
@@ -322,6 +341,7 @@ class SensorView : AppCompatActivity() {
         readLoggerFlashSize()
         readLoggerFlashUsage()
         readData()
+        readLoggerActive()
     }
 
     private fun checkBattery(){
@@ -374,6 +394,31 @@ class SensorView : AppCompatActivity() {
 
         characteristics.forEachByIndex { t -> if(t.uuid == loggerControl){
             ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x1))
+        } }
+    }
+    private fun resetLogger(){
+        val loggerControl  = UUID.fromString("a8a82635-10a4-11e3-ab8c-f23c91aec05e")
+        characteristics.forEachByIndex { t -> if(t.uuid == loggerControl){
+            ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x2))
+        } }
+    }
+
+    private fun readLoggerActive(){
+        val loggerOnOff  = UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")
+        ConnectionManager.readSensorCharacteristic(device, loggerOnOff)
+    }
+
+    private fun writeLoggerActive(){
+        val loggerOnOff  = UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")
+        characteristics.forEachByIndex { t -> if(t.uuid == loggerOnOff){
+            ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x1))
+        } }
+    }
+    private fun writeLoggerTimeReference(){
+        val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
+        var timeNow = numberToByteArray( (System.currentTimeMillis()/1000).toInt() , 4)
+        characteristics.forEachByIndex { t -> if(t.uuid == loggerTimeReference){
+            ConnectionManager.writeCharacteristic(device, t, timeNow)
         } }
     }
 
