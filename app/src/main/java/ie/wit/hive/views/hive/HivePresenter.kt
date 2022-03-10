@@ -133,7 +133,8 @@ class HivePresenter(private val view: HiveView) {
     }
 
     fun locationUpdate(lat: Double, lng: Double) {
-        hive.location = location
+        hive.location.lat = lat
+        hive.location.lng = lng
         map?.clear()
         map?.uiSettings?.setZoomControlsEnabled(true)
         val options = MarkerOptions().title(hive.tag.toString()).position(LatLng(hive.location.lat, hive.location.lng))
