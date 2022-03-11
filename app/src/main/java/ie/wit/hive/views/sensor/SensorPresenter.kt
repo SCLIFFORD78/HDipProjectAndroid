@@ -61,10 +61,16 @@ class SensorPresenter(private val view: SensorView) {
 
     suspend fun doUpdateHive(values: ArrayList<JsonObject>){
         //Gson().fromJson(value, JsonObject::class.java)
+
         var test = hive.recordedData
         for (i in 0 until values.size) {
+            test += if (i==0 && test.isBlank()){
+                values[i].toString()
+            }else{
+                ","+ values[i].toString()
+            }
 
-            test = test+values.get(i).toString()
+
         }
         hive.recordedData = test
         print(hive)

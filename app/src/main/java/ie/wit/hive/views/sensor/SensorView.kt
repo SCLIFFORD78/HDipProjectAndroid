@@ -242,7 +242,8 @@ class SensorView : AppCompatActivity() {
                             sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(12,16),loggerTimeReference))
                             loggerTimeReference+=intervilTime
                         }
-                    }else if(flashUsageReference>=loggerFlashUsage){
+                    }
+                    if(flashUsageReference>=loggerFlashUsage){
                         flashUsageReference = 0
                         loggerTimeReference = 0
                         intervilTime - 0
