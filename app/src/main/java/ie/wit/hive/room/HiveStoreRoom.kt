@@ -52,6 +52,11 @@ class HiveStoreRoom(val context: Context) : HiveStore {
     override suspend fun delete(hive: HiveModel) {
         dao.deleteHive(hive)
     }
+
+    override suspend fun deleteRecordData(hive: HiveModel) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun clear() {
     }
 

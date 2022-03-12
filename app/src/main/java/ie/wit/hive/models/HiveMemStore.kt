@@ -62,6 +62,10 @@ class HiveMemStore : HiveStore {
         logAll()
     }
 
+    override suspend fun deleteRecordData(hive: HiveModel) {
+        TODO("Not yet implemented")
+    }
+
     private fun logAll() {
         hives.forEach { i("$it") }
     }

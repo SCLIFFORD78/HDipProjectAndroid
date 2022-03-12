@@ -89,6 +89,10 @@ class HiveFireStore(val context: Context) : HiveStore {
 
     }
 
+    override suspend fun deleteRecordData(hive: HiveModel) {
+        db.child("hives").child(hive.fbId+"/recordedData").removeValue()
+    }
+
     override suspend fun clear() {
         hives.clear()
     }

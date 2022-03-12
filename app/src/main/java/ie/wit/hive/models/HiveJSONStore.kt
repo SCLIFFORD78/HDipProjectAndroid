@@ -80,6 +80,11 @@ class HiveJSONStore(private val context: Context) : HiveStore {
         hives.remove(foundHive)
         serialize()
     }
+
+    override suspend fun deleteRecordData(hive: HiveModel) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun findById(id:Long) : HiveModel? {
         val foundHive: HiveModel? = hives.find { it.id == id }
         return foundHive

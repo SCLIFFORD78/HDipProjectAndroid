@@ -12,6 +12,7 @@ interface HiveStore {
     suspend fun findByTag(tag: Long) :HiveModel
     suspend fun findBySensor(sensorNumber: String) :HiveModel?
     suspend fun delete(hive: HiveModel)
+    suspend fun deleteRecordData(hive: HiveModel)
     suspend fun clear()
     suspend fun getTag():Long
 }

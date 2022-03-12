@@ -64,17 +64,16 @@ class SensorPresenter(private val view: SensorView) {
 
         var test = hive.recordedData
         for (i in 0 until values.size) {
-            test += if (i==0 && test.isBlank()){
-                values[i].toString()
+            if(i==0 && test.isBlank()){
+                hive.recordedData= values[i].toString()
             }else{
-                ","+ values[i].toString()
+                hive.recordedData += ","+ values[i].toString()
             }
 
-
         }
-        hive.recordedData = test
         print(hive)
-        app.hives.update(hive)
+        runBlocking { app.hives.deleteRecordData(hive) }
+        runBlocking { app.hives.update(hive) }
     }
 
 

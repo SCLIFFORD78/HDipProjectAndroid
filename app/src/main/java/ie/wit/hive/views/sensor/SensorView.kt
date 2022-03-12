@@ -84,7 +84,7 @@ class SensorView : AppCompatActivity() {
     private var notifyingCharacteristics = mutableListOf<UUID>()
     private var intervilTime: Int = 0
     private var loggerTimeReference: Int = 0
-    private var loggerFlashUsage: Int = 0
+    private var loggerFlashUsage: Int = 16
     private var flashUsageReference: Int = 0
     private var sensorLogData = arrayListOf<JsonObject>()
     private var loggerActive: Int = 0
@@ -193,7 +193,7 @@ class SensorView : AppCompatActivity() {
                     binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
                 }else if(characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashUsageTemp = toInt32(characteristic.value)
-                    loggerFlashUsage = flashUsageTemp
+                    loggerFlashUsage = flashUsageTemp+16
                     binding.flashUsage.text = "Flash usage: ${flashUsageTemp.toString()}"
                 }else if(characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
                     loggerActive =  characteristic.value[0].toInt()
@@ -224,31 +224,63 @@ class SensorView : AppCompatActivity() {
 
                     if (flashUsageReference<=loggerFlashUsage && (flashUsageReference !=0)){
                         if (loggerData.size > 0 ){
-                            sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(0,4),loggerTimeReference))
-                            loggerTimeReference+=intervilTime
+                            if(loggerData[0].toInt()!=-1 &&loggerData[1].toInt()!=-1&&loggerData[2].toInt()!=-1&&loggerData[3].toInt()!=-1) {
+                                sensorLogData.add(
+                                    convertTempAndHumidity(
+                                        loggerData.copyOfRange(
+                                            0,
+                                            4
+                                        ), loggerTimeReference
+                                    )
+                                )
+                                loggerTimeReference += intervilTime
+                            }
                         }
                         if (loggerData.size > 4){
-                            sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(4,8),loggerTimeReference))
-                            loggerTimeReference+=intervilTime
-                            Timber.i("sensorDataLog Array${sensorLogData}")
-                            print("testy")
+                            if(loggerData[4].toInt()!=-1 &&loggerData[5].toInt()!=-1&&loggerData[6].toInt()!=-1&&loggerData[7].toInt()!=-1){
+                                sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(4,8),loggerTimeReference))
+                                loggerTimeReference+=intervilTime
+                            }
 
                         }
                         if (loggerData.size > 8){
-                            sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(8,12),loggerTimeReference))
-                            loggerTimeReference+=intervilTime
+                            if(loggerData[8].toInt()!=-1 &&loggerData[9].toInt()!=-1&&loggerData[10].toInt()!=-1&&loggerData[11].toInt()!=-1) {
+                                sensorLogData.add(
+                                    convertTempAndHumidity(
+                                        loggerData.copyOfRange(
+                                            8,
+                                            12
+                                        ), loggerTimeReference
+                                    )
+                                )
+                                loggerTimeReference += intervilTime
+                            }
                         }
                         if (loggerData.size > 12){
-                            sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(12,16),loggerTimeReference))
-                            loggerTimeReference+=intervilTime
+                            if(loggerData[12].toInt()!=-1 &&loggerData[13].toInt()!=-1&&loggerData[14].toInt()!=-1&&loggerData[15].toInt()!=-1) {
+                                sensorLogData.add(
+                                    convertTempAndHumidity(
+                                        loggerData.copyOfRange(
+                                            12,
+                                            16
+                                        ), loggerTimeReference
+                                    )
+                                )
+                                loggerTimeReference += intervilTime
+                            }
                         }
+                        flashUsageReference += loggerData.size
+                    }
+                    if (flashUsageReference == 0){
+                        flashUsageReference += loggerData.size
                     }
                     if(flashUsageReference>=loggerFlashUsage){
                         flashUsageReference = 0
                         loggerTimeReference = 0
                         intervilTime - 0
-                        loggerFlashUsage = 0
+                        loggerFlashUsage = 16
                         runBlocking { presenter.doUpdateHive(sensorLogData) }
+                        sensorLogData.clear()
                         resetLogger()
                         readLoggerActive()
                         if ( loggerActive == 0){
@@ -258,11 +290,8 @@ class SensorView : AppCompatActivity() {
                             writeLoggerTimeReference()
                         }
                         readParams()
-
-
-
                     }
-                    flashUsageReference += loggerData.size
+
                 }
 
                 log("Value changed on ${characteristic.uuid}: ${characteristic.value.toHexString()}")
