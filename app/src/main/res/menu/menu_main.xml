@@ -6,7 +6,8 @@
         android:id="@+id/bluetooth"
         android:icon="@android:drawable/stat_sys_data_bluetooth"
         android:title="scan"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:iconTint="@color/black"/>
 
     <item
         android:id="@+id/update"

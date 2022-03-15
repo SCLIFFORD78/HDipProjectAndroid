@@ -98,6 +98,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }
 
 task ktlint(type: JavaExec, group: "verification") {

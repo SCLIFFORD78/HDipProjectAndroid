@@ -28,9 +28,9 @@
                 android:id="@+id/toolbarAdd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/Theme.Hive"
                 android:background="@color/colorPrimary"
-                app:titleTextColor="@color/black" />
+                app:titleTextColor="@color/black"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
         </com.google.android.material.appbar.AppBarLayout>
 
 

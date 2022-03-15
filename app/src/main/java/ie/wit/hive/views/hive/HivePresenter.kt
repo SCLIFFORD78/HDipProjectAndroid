@@ -19,6 +19,8 @@ import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
+import ie.wit.hive.views.charts.ChartView
+import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.location.EditLocationView
 import timber.log.Timber
 import timber.log.Timber.i
@@ -34,6 +36,7 @@ class HivePresenter(private val view: HiveView) {
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
     var edit = false;
     private val location = Location(52.0634310, -9.6853542, 15f)
 
@@ -42,6 +45,7 @@ class HivePresenter(private val view: HiveView) {
         doPermissionLauncher()
         registerImagePickerCallback()
         registerMapCallback()
+        registerEditCallback()
 
         if (view.intent.hasExtra("hive_edit")) {
             edit = true
@@ -86,6 +90,12 @@ class HivePresenter(private val view: HiveView) {
 
     fun doSelectImage() {
         showImagePicker(imageIntentLauncher)
+    }
+
+    fun chartNAv(){
+        val launcherIntent = Intent(view, ChartView::class.java)
+        launcherIntent.putExtra("hive", hive)
+        editIntentLauncher.launch(launcherIntent)
     }
 
     fun doSetLocation() {
@@ -197,5 +207,12 @@ class HivePresenter(private val view: HiveView) {
                     locationUpdate(location.lat, location.lng)
                 }
             }
+    }
+
+    private fun registerEditCallback() {
+        editIntentLauncher =
+            view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            {  }
+
     }
 }

@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/item_chart"
+        android:title="chart"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/item_save"
         android:title="@string/menu_saveHive"
         app:showAsAction="always"/>

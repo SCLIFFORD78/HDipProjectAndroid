@@ -91,6 +91,9 @@ class HiveView : AppCompatActivity() {
             R.id.item_cancel -> {
                 presenter.doCancel()
             }
+            R.id.item_chart -> {
+                presenter.chartNAv()
+            }
 
         }
         return super.onOptionsItemSelected(item)
