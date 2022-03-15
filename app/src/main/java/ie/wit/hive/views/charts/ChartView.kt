@@ -11,6 +11,9 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -61,7 +64,11 @@ class ChartView : AppCompatActivity() {
     }
 
     fun setLineChartData() {
-
+        val tempData = ArrayList<Entry>()
+        var values = Gson().fromJson("["+presenter.hive.recordedData+"]", JsonArray::class.java)
+        for (value in values){
+            tempData.add(Entry(value.asJsonObject.get("timeStamp").asFloat,value.asJsonObject.get("Temperature").asFloat))
+        }
         val linevalues = ArrayList<Entry>()
         linevalues.add(Entry(20f, 0.0F))
         linevalues.add(Entry(30f, 3.0F))
@@ -77,11 +84,11 @@ class ChartView : AppCompatActivity() {
         linevalues.add(Entry(130f, 40.0F))
         linevalues.add(Entry(140f, 50.0F))
 
-        val linedataset = LineDataSet(linevalues, "First")
+        val linedataset = LineDataSet(tempData, "First")
         //We add features to our chart
         linedataset.color = resources.getColor(R.color.purple_200)
 
-        linedataset.circleRadius = 10f
+        linedataset.circleRadius = 1f
         linedataset.setDrawFilled(true)
         linedataset.valueTextSize = 20F
         linedataset.fillColor = resources.getColor(R.color.black)

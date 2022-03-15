@@ -37,10 +37,14 @@ class ChartPresenter(private val view: ChartView) {
     var app: MainApp = view.application as MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
+    var hive = HiveModel()
 
     init {
         registerEditCallback()
         registerRefreshCallback()
+        if (view.intent.hasExtra("hive")) {
+            hive = view.intent.extras?.getParcelable("hive")!!
+        }
     }
 
     suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }

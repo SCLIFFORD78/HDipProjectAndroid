@@ -94,6 +94,7 @@ class HivePresenter(private val view: HiveView) {
 
     fun chartNAv(){
         val launcherIntent = Intent(view, ChartView::class.java)
+        launcherIntent.putExtra("hive", hive)
         editIntentLauncher.launch(launcherIntent)
     }
 
