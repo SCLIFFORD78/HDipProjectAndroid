@@ -65,40 +65,41 @@ class ChartView : AppCompatActivity() {
 
     fun setLineChartData() {
         val tempData = ArrayList<Entry>()
+        val humData = ArrayList<Entry>()
         var values = Gson().fromJson("["+presenter.hive.recordedData+"]", JsonArray::class.java)
         for (value in values){
             tempData.add(Entry(value.asJsonObject.get("timeStamp").asFloat,value.asJsonObject.get("Temperature").asFloat))
+            humData.add(Entry(value.asJsonObject.get("timeStamp").asFloat,value.asJsonObject.get("Humidity").asFloat))
         }
-        val linevalues = ArrayList<Entry>()
-        linevalues.add(Entry(20f, 0.0F))
-        linevalues.add(Entry(30f, 3.0F))
-        linevalues.add(Entry(40f, 2.0F))
-        linevalues.add(Entry(50f, 1.0F))
-        linevalues.add(Entry(60f, 8.0F))
-        linevalues.add(Entry(70f, 10.0F))
-        linevalues.add(Entry(80f, 1.0F))
-        linevalues.add(Entry(90f, 2.0F))
-        linevalues.add(Entry(100f, 5.0F))
-        linevalues.add(Entry(110f, 1.0F))
-        linevalues.add(Entry(120f, 20.0F))
-        linevalues.add(Entry(130f, 40.0F))
-        linevalues.add(Entry(140f, 50.0F))
 
-        val linedataset = LineDataSet(tempData, "First")
+
+        val linedataset = LineDataSet(tempData, "Temp")
+        val linedataset2 = LineDataSet(humData, "Hum")
         //We add features to our chart
         linedataset.color = resources.getColor(R.color.purple_200)
-
         linedataset.circleRadius = 1f
         linedataset.setDrawFilled(true)
         linedataset.valueTextSize = 20F
         linedataset.fillColor = resources.getColor(R.color.black)
         linedataset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
+        linedataset2.color = resources.getColor(R.color.purple_200)
+        linedataset2.circleRadius = 1f
+        linedataset2.setDrawFilled(true)
+        linedataset2.valueTextSize = 20F
+        linedataset2.fillColor = resources.getColor(R.color.black)
+        linedataset2.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
         //We connect our data to the UI Screen
         val data = LineData(linedataset)
-        binding.getTheGraph.data = data
-        binding.getTheGraph.setBackgroundColor(resources.getColor(R.color.white))
-        binding.getTheGraph.animateXY(2000, 2000, Easing.EaseInCubic)
+        binding.tempGraph.data = data
+        binding.tempGraph.setBackgroundColor(resources.getColor(R.color.white))
+        binding.tempGraph.animateXY(2000, 2000, Easing.EaseInCubic)
+
+        val data2 = LineData(linedataset2)
+        binding.humGraph.data = data2
+        binding.humGraph.setBackgroundColor(resources.getColor(R.color.white))
+        binding.humGraph.animateXY(2000, 2000, Easing.EaseInCubic)
 
     }
 

@@ -17,23 +17,30 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/appBarLayout"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="-6dp"
             android:layout_marginBottom="6dp">
 
 
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/humGraph"
+                android:layout_width="match_parent"
+                android:layout_height="326dp"
+                app:layout_constraintStart_toStartOf="@id/tempGraph"
+                tools:layout_constraintTop_toBottomOf="@id/tempGraph"
+                tools:layout_editor_absoluteY="378dp"
+                app:layout_constraintTop_toBottomOf="@+id/tempGraph"/>
 
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/tempGraph"
+                android:layout_width="match_parent"
+                android:layout_height="326dp"
+                android:layout_marginTop="52dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/getTheGraph"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="52dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
 
     </RelativeLayout>
