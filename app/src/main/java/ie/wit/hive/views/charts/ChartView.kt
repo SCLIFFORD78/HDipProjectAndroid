@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -24,6 +27,8 @@ import ie.wit.hive.databinding.ActivityHiveBinding
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import timber.log.Timber.i
+import java.lang.reflect.Array
+import java.time.*
 
 
 class ChartView : AppCompatActivity() {
@@ -63,13 +68,20 @@ class ChartView : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+
+
     fun setLineChartData() {
         val tempData = ArrayList<Entry>()
         val humData = ArrayList<Entry>()
+        val formattedTime = arrayListOf<String>()
         var values = Gson().fromJson("["+presenter.hive.recordedData+"]", JsonArray::class.java)
         for (value in values){
             tempData.add(Entry(value.asJsonObject.get("timeStamp").asFloat,value.asJsonObject.get("Temperature").asFloat))
             humData.add(Entry(value.asJsonObject.get("timeStamp").asFloat,value.asJsonObject.get("Humidity").asFloat))
+            formattedTime.add(Instant.ofEpochSecond(value.asJsonObject.get("timeStamp").asLong)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime().toString())
+
         }
 
 
@@ -90,14 +102,27 @@ class ChartView : AppCompatActivity() {
         linedataset2.fillColor = resources.getColor(R.color.black)
         linedataset2.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
+        class MyXAxisFormatter() : ValueFormatter() {
+            //private val days = arrayOf("Mo", "Tu", "Wed", "Th", "Fr", "Sa", "Su")
+            override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                return Instant.ofEpochSecond(value.toLong())
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime().toString()
+            }
+        }
+
         //We connect our data to the UI Screen
         val data = LineData(linedataset)
+        val xAxis = binding.tempGraph.xAxis
         binding.tempGraph.data = data
+        xAxis.valueFormatter = MyXAxisFormatter()
+        xAxis.labelRotationAngle = 90f
         binding.tempGraph.setBackgroundColor(resources.getColor(R.color.white))
         binding.tempGraph.animateXY(2000, 2000, Easing.EaseInCubic)
 
         val data2 = LineData(linedataset2)
         binding.humGraph.data = data2
+        binding.humGraph.xAxis.valueFormatter = MyXAxisFormatter()
         binding.humGraph.setBackgroundColor(resources.getColor(R.color.white))
         binding.humGraph.animateXY(2000, 2000, Easing.EaseInCubic)
 
