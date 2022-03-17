@@ -16,4 +16,6 @@ data class UserModel(@PrimaryKey(autoGenerate = true)
                      var secondName: String = "",
                      var image: String = "",
                      var userName : String = "",
+                     var admin : Boolean = false,
+                     var email : String = "",
                      var dateJoined: String = Date().toString()): Parcelable
