@@ -446,7 +446,7 @@ class SensorView : AppCompatActivity() {
     }
     private fun writeLoggerTimeReference(){
         val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
-        var timeNow = numberToByteArray( (System.currentTimeMillis()/1000).toInt() , 4)
+        var timeNow = numberToByteArray( (((System.currentTimeMillis()/1000).toInt())-(((System.currentTimeMillis()/1000).toInt())%3600))+86400 , 4)
         characteristics.forEachByIndex { t -> if(t.uuid == loggerTimeReference){
             ConnectionManager.writeCharacteristic(device, t, timeNow)
         } }
