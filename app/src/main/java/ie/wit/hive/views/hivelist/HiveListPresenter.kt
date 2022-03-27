@@ -62,7 +62,7 @@ class HiveListPresenter(private val view: HiveListView) {
 
     fun doEditHive(hive: HiveModel) {
         val launcherIntent = Intent(view, HiveView::class.java)
-        launcherIntent.putExtra("hive_edit", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }
 

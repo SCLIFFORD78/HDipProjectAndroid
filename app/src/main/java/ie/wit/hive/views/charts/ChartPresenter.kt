@@ -30,6 +30,7 @@ import ie.wit.hive.views.map.HiveMapView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import timber.log.Timber.i
 
@@ -43,7 +44,8 @@ class ChartPresenter(private val view: ChartView) {
         registerEditCallback()
         registerRefreshCallback()
         if (view.intent.hasExtra("hive")) {
-            hive = view.intent.extras?.getParcelable("hive")!!
+            var tagNo = view.intent.extras!!["hive"]
+            hive = runBlocking { app.hives.findByTag(tagNo as Long) }
         }
     }
 
