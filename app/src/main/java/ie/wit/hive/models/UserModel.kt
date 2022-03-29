@@ -11,7 +11,7 @@ import java.util.*
 @Parcelize
 @Entity
 data class UserModel(@PrimaryKey(autoGenerate = true)
-                     var fbId: String = "",
+                     var fbid: String = "",
                      var firstName: String = "",
                      var secondName: String = "",
                      var image: String = "",

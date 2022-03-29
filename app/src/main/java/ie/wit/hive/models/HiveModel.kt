@@ -12,7 +12,7 @@ import java.util.*
 @Parcelize
 @Entity
 data class HiveModel(@PrimaryKey(autoGenerate = true) var id: Long = 0,
-                     var fbId: String = "",
+                     var fbid: String = "",
                      var user: String = "",
                      var tag: Long = 0,
                      var description: String = "",
