@@ -56,7 +56,7 @@ class HiveFireStore(val context: Context) : HiveStore {
     override suspend fun create(hive: HiveModel) {
         val key = db.child("hives").push().key
         key?.let {
-            hive.fbId = key
+            hive.fbid = key
             hive.tag = getTag()
             hive.user = userId
             hives.add(hive)
@@ -66,7 +66,7 @@ class HiveFireStore(val context: Context) : HiveStore {
     }
 
     override suspend fun update(hive: HiveModel) {
-        var foundHive: HiveModel = hives.find { p -> p.fbId == hive.fbId }!!
+        var foundHive: HiveModel = hives.find { p -> p.fbid == hive.fbid }!!
         if (foundHive != null) {
             foundHive.tag = hive.tag
             foundHive.description = hive.description
@@ -76,7 +76,7 @@ class HiveFireStore(val context: Context) : HiveStore {
             foundHive.recordedData = hive.recordedData
         }
 
-        db.child("hives").child(hive.fbId).setValue(hive)
+        db.child("hives").child(hive.fbid).setValue(hive)
         if(hive.image.length > 0){
             updateImage(hive)
         }
@@ -84,13 +84,13 @@ class HiveFireStore(val context: Context) : HiveStore {
 
     override suspend fun delete(hive: HiveModel) {
         deleteImage(hive)
-        db.child("hives").child(hive.fbId).removeValue()
+        db.child("hives").child(hive.fbid).removeValue()
         hives.remove(hive)
 
     }
 
     override suspend fun deleteRecordData(hive: HiveModel) {
-        db.child("hives").child(hive.fbId+"/recordedData").removeValue()
+        db.child("hives").child(hive.fbid+"/recordedData").removeValue()
     }
 
     override suspend fun clear() {
@@ -155,7 +155,7 @@ class HiveFireStore(val context: Context) : HiveStore {
                 uploadTask.addOnSuccessListener { taskSnapshot ->
                     taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
                         hive.image = it.toString()
-                        db.child("hives").child(hive.fbId).setValue(hive)
+                        db.child("hives").child(hive.fbid).setValue(hive)
                     }
                 }.addOnFailureListener{
                     var errorMessage = it.message

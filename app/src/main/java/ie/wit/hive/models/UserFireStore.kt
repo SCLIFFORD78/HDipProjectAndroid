@@ -29,7 +29,7 @@ class UserFireStore(val context: Context) : UserStore {
     override suspend fun create(user: UserModel) {
         val key = db.child("users").child(userId).push().key
         key?.let {
-            user.fbId = userId
+            user.fbid = userId
             users.add(user)
             db.child("users").child(userId).setValue(user)
             updateImage(user)

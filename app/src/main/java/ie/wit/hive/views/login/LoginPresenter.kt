@@ -45,7 +45,7 @@ class LoginPresenter (val view: LoginView)  {
             fireStore!!.fetchHives {
                 userFireStore!!.fetchUsers {
                     var users = userFireStore!!.users
-                    val checkedUser = users.find { p -> p.fbId == userFireStore!!.userId }
+                    val checkedUser = users.find { p -> p.fbid == userFireStore!!.userId }
                     if (checkedUser != null){
                         view?.hideProgress()
                         val launcherIntent = Intent(view, HiveListView::class.java)

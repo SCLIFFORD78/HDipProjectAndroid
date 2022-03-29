@@ -26,7 +26,7 @@ class GoogleRegisterView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGoogleRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbarAdd)
+        //setSupportActionBar(binding.toolbarAdd)
 
         binding.progressBar.visibility = View.GONE
         binding.signUp.setOnClickListener {
