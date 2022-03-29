@@ -14,6 +14,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -197,15 +198,18 @@ class BleScanView : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isLocationPermissionGranted) {
             requestLocationPermission()
         } else {
+
             scanResults.clear()
             scanResultAdapter.notifyDataSetChanged()
             bleScanner.startScan(null, scanSettings, scanCallback)
             isScanning = true
+            showProgress()
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun stopBleScan() {
+        hideProgress()
         bleScanner.stopScan(scanCallback)
         isScanning = false
     }
@@ -255,10 +259,10 @@ class BleScanView : AppCompatActivity() {
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             val indexQuery = scanResults.indexOfFirst { it.device.address == result.device.address }
-            if (indexQuery != -1 &&  result.device.address == "84:71:27:69:43:45") { // A scan result already exists with the same address
+            if (indexQuery != -1 ) { // A scan result already exists with the same address
                 scanResults[indexQuery] = result
                 scanResultAdapter.notifyItemChanged(indexQuery)
-            } else if ( result.device.address == "84:71:27:69:43:45") {
+            } else if ( true) {
                 with(result.device) {
                     Timber.i("Found BLE device! Name: ${name ?: "Unnamed"}, address: $address")
                 }
@@ -304,6 +308,14 @@ class BleScanView : AppCompatActivity() {
 
     private fun Activity.requestPermission(permission: String, requestCode: Int) {
         ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+    }
+
+    fun showProgress() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
     }
 
 

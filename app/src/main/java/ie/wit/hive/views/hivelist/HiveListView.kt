@@ -64,7 +64,7 @@ class HiveListView : AppCompatActivity(), HiveListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.bluetooth ->{  presenter.doShowBleScanner() }
+
             R.id.item_add -> { presenter.doAddHive() }
             R.id.item_map -> { presenter.doShowHivesMap() }
             R.id.aboutus -> { presenter.doShowAboutUs() }

@@ -54,11 +54,16 @@ class HiveView : AppCompatActivity() {
             it.setOnMapClickListener { presenter.doSetLocation() }
         }
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_hive, menu)
         val deleteMenu: MenuItem = menu.findItem(R.id.item_delete)
+        if (presenter.hive.sensorNumber != ""){
+            val bluetoothMenu: MenuItem = menu.findItem(R.id.bluetooth)
+            bluetoothMenu.isVisible = true
+        }
         if (presenter.edit){
             deleteMenu.setVisible(true)
         }
@@ -94,6 +99,7 @@ class HiveView : AppCompatActivity() {
             R.id.item_chart -> {
                 presenter.chartNAv()
             }
+            R.id.bluetooth ->{  presenter.doShowBleScanner() }
 
         }
         return super.onOptionsItemSelected(item)

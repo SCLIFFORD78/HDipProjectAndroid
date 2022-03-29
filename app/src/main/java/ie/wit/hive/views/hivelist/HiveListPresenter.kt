@@ -76,10 +76,7 @@ class HiveListPresenter(private val view: HiveListView) {
         editIntentLauncher.launch(launcherIntent)
     }
 
-    fun doShowBleScanner() {
-        val launcherIntent = Intent(view, BleScanView::class.java)
-        editIntentLauncher.launch(launcherIntent)
-    }
+
 
     suspend fun doLogout(){
         FirebaseAuth.getInstance().signOut()

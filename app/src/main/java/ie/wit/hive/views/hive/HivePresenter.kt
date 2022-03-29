@@ -19,6 +19,7 @@ import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
+import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.charts.ChartView
 import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.location.EditLocationView
@@ -159,6 +160,11 @@ class HivePresenter(private val view: HiveView) {
     fun cacheHive (tag: Long, description: String) {
         hive.tag = tag;
         hive.description = description
+    }
+
+    fun doShowBleScanner() {
+        val launcherIntent = Intent(view, BleScanView::class.java)
+        editIntentLauncher.launch(launcherIntent)
     }
 
     private fun registerImagePickerCallback() {

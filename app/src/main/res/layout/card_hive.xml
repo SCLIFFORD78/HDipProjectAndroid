@@ -15,6 +15,20 @@
         android:padding="16dp">
 
         <ImageView
+            android:id="@+id/blueToothIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/change_hive_image"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/imageIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.833"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageIcon"
+            app:srcCompat="@drawable/ic_baseline_bluetooth_24" />
+
+        <ImageView
             android:id="@+id/imageIcon"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -50,6 +64,7 @@
             app:layout_constraintStart_toEndOf="@+id/imageIcon"
             app:layout_constraintTop_toBottomOf="@id/hiveTitle"
             tools:text="A Type" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

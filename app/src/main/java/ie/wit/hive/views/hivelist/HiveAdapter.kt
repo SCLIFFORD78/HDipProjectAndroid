@@ -1,6 +1,7 @@
 package ie.wit.hive.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -35,6 +36,9 @@ class HiveAdapter constructor(private var hives: List<HiveModel>,
         fun bind(hive: HiveModel, listener: HiveListener) {
             binding.hiveTitle.text = hive.tag.toString()
             binding.type.text = hive.type
+            if (hive.sensorNumber != ""){
+                binding.blueToothIcon.visibility = View.VISIBLE
+            }
             if (hive.image != ""){
                 Picasso.get()
                     .load(hive.image)

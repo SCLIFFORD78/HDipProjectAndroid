@@ -20,7 +20,7 @@ data class HiveModel(@PrimaryKey(autoGenerate = true) var id: Long = 0,
                      var image: String = "",
                      var type: String = "",
                      var dateRegistered: String = Date().toString(),
-                     var sensorNumber: String = "84:71:27:69:43:45",
+                     var sensorNumber: String = "",
                      @Embedded var location : Location = Location()): Parcelable
 
 
