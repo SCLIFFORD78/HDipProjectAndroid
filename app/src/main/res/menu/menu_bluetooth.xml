@@ -6,7 +6,6 @@
         android:id="@+id/bluetoothConnected"
         android:icon="@drawable/ic_baseline_bluetooth_connected_24"
         android:title="Search"
-        app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
 
 

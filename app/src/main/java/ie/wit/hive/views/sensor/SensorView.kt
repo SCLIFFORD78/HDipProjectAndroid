@@ -134,18 +134,33 @@ class SensorView : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_bluetooth, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.back -> {
+                presenter.doShowBleScanner()
+            }
+            R.id.aboutus -> { presenter.doShowAboutUs() }
+            R.id.item_logout -> {
+                GlobalScope.launch(Dispatchers.IO) {
+                    presenter.doLogout()
+                }
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 
     fun addDevice(result: BluetoothDevice){
         device = result
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_hive, menu)
-        val deleteMenu: MenuItem = menu.findItem(R.id.item_delete)
-
-        return super.onCreateOptionsMenu(menu)
-    }
 
 
 

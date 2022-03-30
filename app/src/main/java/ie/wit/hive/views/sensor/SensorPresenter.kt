@@ -23,7 +23,10 @@ import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
+import ie.wit.hive.views.aboutus.AboutUsView
+import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.location.EditLocationView
+import ie.wit.hive.views.login.LoginView
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import timber.log.Timber
@@ -37,12 +40,11 @@ class SensorPresenter(private val view: SensorView) {
     var hive = HiveModel()
     //location service
     var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(view)
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     init {
-
+        registerEditCallback()
 
 
     }
@@ -76,6 +78,11 @@ class SensorPresenter(private val view: SensorView) {
         runBlocking { app.hives.update(hive) }
     }
 
+    fun doShowBleScanner() {
+        val launcherIntent = Intent(view, BleScanView::class.java)
+        editIntentLauncher.launch(launcherIntent)
+    }
+
 
 
     suspend fun doAddOrSave(type: String, description: String) {
@@ -90,13 +97,28 @@ class SensorPresenter(private val view: SensorView) {
         view.finish()
     }
 
-    fun doSelectImage() {
-        showImagePicker(imageIntentLauncher)
+
+    private fun registerEditCallback() {
+        editIntentLauncher =
+            view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            {  }
+
+    }
+
+    fun doShowAboutUs() {
+        val launcherIntent = Intent(view, AboutUsView::class.java)
+        editIntentLauncher.launch(launcherIntent)
     }
 
 
 
-
+    suspend fun doLogout(){
+        FirebaseAuth.getInstance().signOut()
+        app.hives.clear()
+        app.users.clear()
+        val launcherIntent = Intent(view, LoginView::class.java)
+        editIntentLauncher.launch(launcherIntent)
+    }
 
 
 

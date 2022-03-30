@@ -25,6 +25,7 @@ class BleScanPresenter(private val view: BleScanView) {
 
     init {
         registerRefreshCallback()
+        registerEditCallback()
     }
 
     fun doAddHive() {
