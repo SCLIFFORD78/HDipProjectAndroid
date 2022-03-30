@@ -1,11 +1,14 @@
 package ie.wit.hive.views.map
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.squareup.picasso.Picasso
+import ie.wit.hive.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -57,6 +60,23 @@ class HiveMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
             contentBinding.imageView2.setImageBitmap(readImageFromPath(this,"app/src/main/res/drawable/basic.png"))
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_cancel, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.back -> {
+                presenter.backNAv()
+            }
+
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

@@ -20,7 +20,7 @@ class AboutUsView : AppCompatActivity() {
         presenter = AboutUsPresenter(this)
         super.onCreate(savedInstanceState)
         binding = ActivityAboutusBinding.inflate(layoutInflater)
-        setSupportActionBar(binding.toolbarAdd)
+        //setSupportActionBar(binding.toolbarAdd)
         setContentView(binding.root)
 
 
