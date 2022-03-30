@@ -13,6 +13,7 @@ import ie.wit.hive.models.HiveModel
 import ie.wit.hive.views.aboutus.AboutUsView
 import ie.wit.hive.views.login.LoginView
 import ie.wit.hive.views.hive.HiveView
+import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.map.HiveMapView
 import ie.wit.hive.views.sensor.SensorView
 
@@ -23,7 +24,7 @@ class BleScanPresenter(private val view: BleScanView) {
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
 
     init {
-        registerEditCallback()
+        registerRefreshCallback()
     }
 
     fun doAddHive() {
@@ -37,16 +38,11 @@ class BleScanPresenter(private val view: BleScanView) {
         editIntentLauncher.launch(launcherIntent)
     }
 
-    fun doEditHive(hive: HiveModel) {
-        val launcherIntent = Intent(view, HiveView::class.java)
-        launcherIntent.putExtra("hive_edit", hive)
-        editIntentLauncher.launch(launcherIntent)
+    fun backNAv(){
+        val launcherIntent = Intent(view, HiveListView::class.java)
+        refreshIntentLauncher.launch(launcherIntent)
     }
 
-    fun doShowHivesMap() {
-        val launcherIntent = Intent(view, HiveMapView::class.java)
-        editIntentLauncher.launch(launcherIntent)
-    }
 
     fun doShowAboutUs() {
         val launcherIntent = Intent(view, AboutUsView::class.java)
@@ -66,6 +62,16 @@ class BleScanPresenter(private val view: BleScanView) {
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             {  }
 
+    }
+
+    private fun registerRefreshCallback() {
+        refreshIntentLauncher =
+            view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            {
+                GlobalScope.launch(Dispatchers.Main){
+                    //getHives()
+                }
+            }
     }
 
 }

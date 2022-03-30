@@ -122,6 +122,7 @@ class HivePresenter(private val view: HiveView) {
 
         locationService.lastLocation.addOnSuccessListener {
             locationUpdate(it.latitude, it.longitude)
+            locationUpdate(location.lat, location.lng)
         }
     }
 

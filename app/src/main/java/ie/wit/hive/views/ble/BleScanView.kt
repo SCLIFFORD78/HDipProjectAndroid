@@ -11,8 +11,10 @@ import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
 import ie.wit.hive.R
 import ie.wit.hive.adapters.ScanResultAdapter
 import ie.wit.hive.bleandroid.ble.ConnectionEventListener
@@ -109,6 +112,22 @@ class BleScanView : AppCompatActivity() {
 
 
 
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_list, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.list -> {
+                presenter.backNAv()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
@@ -153,20 +172,7 @@ class BleScanView : AppCompatActivity() {
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when (item.itemId) {
-            R.id.item_add -> { presenter.doAddHive() }
-            R.id.item_map -> { presenter.doShowHivesMap() }
-            R.id.aboutus -> { presenter.doShowAboutUs() }
-            R.id.item_logout -> {
-                GlobalScope.launch(Dispatchers.IO) {
-                    presenter.doLogout()
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     /*******************************************
      * Private functions
