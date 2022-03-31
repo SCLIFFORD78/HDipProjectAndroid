@@ -36,6 +36,7 @@ import android.widget.EditText
 import com.google.gson.JsonObject
 import ie.wit.hive.bleandroid.ble.*
 import ie.wit.hive.databinding.ActivitySensorControlBinding
+import ie.wit.hive.weather.getWeather
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.collections.forEachByIndex
@@ -150,6 +151,7 @@ class SensorView : AppCompatActivity() {
                     presenter.doLogout()
                 }
             }
+            R.id.weather -> { runBlocking { getWeather() }  }
 
         }
         return super.onOptionsItemSelected(item)
