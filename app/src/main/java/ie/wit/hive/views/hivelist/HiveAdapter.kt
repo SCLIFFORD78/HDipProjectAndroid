@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ie.wit.hive.databinding.CardHiveBinding
 import ie.wit.hive.models.HiveModel
+import ie.wit.hive.weather.getWeather
+import kotlinx.coroutines.runBlocking
 
 interface HiveListener {
     fun onHiveClick(hive: HiveModel)
@@ -26,6 +28,7 @@ class HiveAdapter constructor(private var hives: List<HiveModel>,
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val hive = hives[holder.adapterPosition]
         holder.bind(hive, listener)
+
     }
 
     override fun getItemCount(): Int = hives.size
@@ -34,8 +37,11 @@ class HiveAdapter constructor(private var hives: List<HiveModel>,
             RecyclerView.ViewHolder(binding.root) {
 
         fun bind(hive: HiveModel, listener: HiveListener) {
+            var weather = runBlocking { getWeather(hive.location.lat, hive.location.lng) }
             binding.hiveTitle.text = hive.tag.toString()
             binding.type.text = hive.type
+            binding.temp.text = "%.2f".format(weather["temp"])+"\u00B0"+"C"
+            binding.hum.text = "%.2f".format(weather["humidity"])+"%"
             if (hive.sensorNumber != ""){
                 binding.blueToothIcon.visibility = View.VISIBLE
             }

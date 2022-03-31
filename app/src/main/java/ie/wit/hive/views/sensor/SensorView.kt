@@ -90,6 +90,8 @@ class SensorView : AppCompatActivity() {
     private var sensorLogData = arrayListOf<JsonObject>()
     private var loggerActive: Int = 0
 
+    lateinit var hive:HiveModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ConnectionManager.registerListener(connectionEventListener)
@@ -104,7 +106,7 @@ class SensorView : AppCompatActivity() {
 
         presenter = SensorPresenter(this)
         device = presenter.getBLEdevice()
-        var hive:HiveModel =  runBlocking { presenter.getHive() }
+        hive =  runBlocking { presenter.getHive() }
 
 
         //setContentView(R.layout.activity_sensor_control)
@@ -151,7 +153,7 @@ class SensorView : AppCompatActivity() {
                     presenter.doLogout()
                 }
             }
-            R.id.weather -> { runBlocking { getWeather() }  }
+            R.id.weather -> { runBlocking { getWeather(hive.location.lat, hive.location.lng) }  }
 
         }
         return super.onOptionsItemSelected(item)
