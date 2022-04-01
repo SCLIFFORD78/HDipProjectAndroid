@@ -112,18 +112,16 @@ class BleScanView : AppCompatActivity() {
 
 
 
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_list, menu)
+        menuInflater.inflate(R.menu.menu_cancel, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.list -> {
+            R.id.back -> {
                 presenter.backNAv()
             }
         }

@@ -38,7 +38,7 @@ class ChartPresenter(private val view: ChartView) {
     var app: MainApp = view.application as MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
-    var hive = HiveModel()
+    lateinit var hive : HiveModel
 
     init {
         registerEditCallback()

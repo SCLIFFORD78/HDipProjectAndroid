@@ -37,7 +37,7 @@ class SensorPresenter(private val view: SensorView) {
     private val locationRequest = createDefaultLocationRequest()
     private lateinit var device : BluetoothDevice
     var app: MainApp = view.application as MainApp
-    var hive = HiveModel()
+    lateinit var hive :HiveModel
     //location service
     var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(view)
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
@@ -45,6 +45,9 @@ class SensorPresenter(private val view: SensorView) {
 
     init {
         registerEditCallback()
+        if (view.intent.hasExtra("hive")) {
+            hive = view.intent.extras!!["hive"] as HiveModel
+        }
 
 
     }
@@ -80,6 +83,7 @@ class SensorPresenter(private val view: SensorView) {
 
     fun doShowBleScanner() {
         val launcherIntent = Intent(view, BleScanView::class.java)
+        launcherIntent.putExtra("hive", hive)
         editIntentLauncher.launch(launcherIntent)
     }
 

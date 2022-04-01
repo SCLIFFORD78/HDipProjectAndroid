@@ -3,6 +3,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
@@ -28,7 +29,7 @@ class HiveListView : AppCompatActivity(), HiveListener {
         super.onCreate(savedInstanceState)
         binding = ActivityHiveListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        hideProgress()
         //update Toolbar title
         binding.toolbar.title = title
         val user = FirebaseAuth.getInstance().currentUser
@@ -79,6 +80,7 @@ class HiveListView : AppCompatActivity(), HiveListener {
     }
 
     override fun onHiveClick(hive: HiveModel) {
+        showProgress()
         presenter.doEditHive(hive)
 
     }
@@ -183,6 +185,13 @@ class HiveListView : AppCompatActivity(), HiveListener {
             binding.recyclerView.adapter =
                 HiveAdapter(presenter.findByType(type), this@HiveListView)
         }
+    }
+    fun showProgress() {
+        binding.progressBar2.visibility = View.VISIBLE
+    }
+
+    fun hideProgress() {
+        binding.progressBar2.visibility = View.GONE
     }
 
 }

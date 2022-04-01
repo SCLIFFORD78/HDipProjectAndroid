@@ -106,7 +106,7 @@ class SensorView : AppCompatActivity() {
 
         presenter = SensorPresenter(this)
         device = presenter.getBLEdevice()
-        hive =  runBlocking { presenter.getHive() }
+        hive =  presenter.hive
 
 
         //setContentView(R.layout.activity_sensor_control)

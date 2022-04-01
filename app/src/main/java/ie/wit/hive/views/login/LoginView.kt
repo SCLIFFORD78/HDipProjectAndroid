@@ -46,6 +46,7 @@ class LoginView : AppCompatActivity(){
                 showSnackBar("please provide email and password")
             }
             else {
+                showProgress()
                 presenter.doLogin(email,password)
             }
         }
@@ -105,6 +106,7 @@ class LoginView : AppCompatActivity(){
         firebaseAuthWithGoogle(acct)
     }
     private fun googleSignIn() {
+        showProgress()
         val signInIntent = googleSignInClient.value!!.signInIntent
 
 

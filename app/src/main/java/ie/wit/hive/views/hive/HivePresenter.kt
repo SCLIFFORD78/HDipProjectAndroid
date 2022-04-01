@@ -31,15 +31,17 @@ import timber.log.Timber.i
 class HivePresenter(private val view: HiveView) {
     private val locationRequest = createDefaultLocationRequest()
     var map: GoogleMap? = null
-    var hive = HiveModel()
+    lateinit var hive: HiveModel
     var app: MainApp = view.application as MainApp
     var locationManualyChanged = false;
+
     //location service
-    var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(view)
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+    var locationService: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(view)
+    private lateinit var imageIntentLauncher: ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher: ActivityResultLauncher<Intent>
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var editIntentLauncher: ActivityResultLauncher<Intent>
     var edit = false;
     private val location = Location(52.0634310, -9.6853542, 15f)
 
@@ -56,14 +58,15 @@ class HivePresenter(private val view: HiveView) {
             hive = runBlocking { app.hives.findByTag(tagNo as Long) }
             //hive = view.intent.extras?.getParcelable("hive_edit")!!
             view.showHive(hive)
-        }
-        else {
+        } else if (view.intent.hasExtra("hive")) {
+            hive = view.intent.extras!!["hive"] as HiveModel
+        } else {
 
             if (checkLocationPermissions(view)) {
                 doSetCurrentLocation()
             }
-            hive.location.lat = location.lat
-            hive.location.lng = location.lng
+            //hive.location.lat = location.lat
+            //hive.location.lng = location.lng
         }
 
     }
@@ -83,7 +86,8 @@ class HivePresenter(private val view: HiveView) {
     }
 
     fun doCancel() {
-        view.finish()
+        val launcherIntent = Intent(view, HiveListView::class.java)
+        editIntentLauncher.launch(launcherIntent)
 
     }
 
@@ -97,9 +101,9 @@ class HivePresenter(private val view: HiveView) {
         showImagePicker(imageIntentLauncher)
     }
 
-    fun chartNAv(){
+    fun chartNAv() {
         val launcherIntent = Intent(view, LineChartView::class.java)
-        launcherIntent.putExtra("hive", hive.tag)
+        launcherIntent.putExtra("hive", hive)
         editIntentLauncher.launch(launcherIntent)
     }
 
@@ -108,7 +112,7 @@ class HivePresenter(private val view: HiveView) {
 
         if (hive.location.zoom != 0f) {
 
-            location.lat =  hive.location.lat
+            location.lat = hive.location.lat
             location.lng = hive.location.lng
             location.zoom = hive.location.zoom
             locationUpdate(hive.location.lat, hive.location.lng)
@@ -133,7 +137,7 @@ class HivePresenter(private val view: HiveView) {
             override fun onLocationResult(locationResult: LocationResult?) {
                 if (locationResult != null && locationResult.locations != null) {
                     val l = locationResult.locations.last()
-                    if(!locationManualyChanged){
+                    if (!locationManualyChanged) {
                         locationUpdate(l.latitude, l.longitude)
                     }
                 }
@@ -143,6 +147,7 @@ class HivePresenter(private val view: HiveView) {
             locationService.requestLocationUpdates(locationRequest, locationCallback, null)
         }
     }
+
     fun doConfigureMap(m: GoogleMap) {
         map = m
         locationUpdate(hive.location.lat, hive.location.lng)
@@ -153,19 +158,28 @@ class HivePresenter(private val view: HiveView) {
         hive.location.lng = lng
         map?.clear()
         map?.uiSettings?.setZoomControlsEnabled(true)
-        val options = MarkerOptions().title(hive.tag.toString()).position(LatLng(hive.location.lat, hive.location.lng))
+        val options = MarkerOptions().title(hive.tag.toString())
+            .position(LatLng(hive.location.lat, hive.location.lng))
         map?.addMarker(options)
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(hive.location.lat, hive.location.lng), hive.location.zoom))
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    hive.location.lat,
+                    hive.location.lng
+                ), hive.location.zoom
+            )
+        )
         view.showHive(hive)
     }
 
-    fun cacheHive (tag: Long, description: String) {
+    fun cacheHive(tag: Long, description: String) {
         hive.tag = tag;
         hive.description = description
     }
 
     fun doShowBleScanner() {
         val launcherIntent = Intent(view, BleScanView::class.java)
+        launcherIntent.putExtra("hive", hive)
         editIntentLauncher.launch(launcherIntent)
     }
 
@@ -174,7 +188,7 @@ class HivePresenter(private val view: HiveView) {
         imageIntentLauncher =
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { result ->
-                when(result.resultCode){
+                when (result.resultCode) {
                     AppCompatActivity.RESULT_OK -> {
                         if (result.data != null) {
                             Timber.i("Got Result ${result.data!!.data}")
@@ -182,7 +196,8 @@ class HivePresenter(private val view: HiveView) {
                             view.updateImage(hive.image)
                         }
                     }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
+                    AppCompatActivity.RESULT_CANCELED -> {}
+                    else -> {}
                 }
 
             }
@@ -196,12 +211,14 @@ class HivePresenter(private val view: HiveView) {
                     AppCompatActivity.RESULT_OK -> {
                         if (result.data != null) {
                             Timber.i("Got Location ${result.data.toString()}")
-                            val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                            val location =
+                                result.data!!.extras?.getParcelable<Location>("location")!!
                             Timber.i("Location == $location")
                             hive.location = location
                         } // end of if
                     }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
+                    AppCompatActivity.RESULT_CANCELED -> {}
+                    else -> {}
                 }
 
             }
@@ -223,7 +240,7 @@ class HivePresenter(private val view: HiveView) {
     private fun registerEditCallback() {
         editIntentLauncher =
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            {  }
+            { }
 
     }
 }

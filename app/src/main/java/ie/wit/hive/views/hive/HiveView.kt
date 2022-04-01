@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.gms.maps.GoogleMap
@@ -17,6 +18,7 @@ import ie.wit.hive.R
 import ie.wit.hive.databinding.ActivityHiveBinding
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber.i
 
 class HiveView : AppCompatActivity() {
@@ -24,7 +26,7 @@ class HiveView : AppCompatActivity() {
     private lateinit var binding: ActivityHiveBinding
     private lateinit var presenter: HivePresenter
     lateinit var map: GoogleMap
-    var hive = HiveModel()
+    lateinit var hive : HiveModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,12 +40,18 @@ class HiveView : AppCompatActivity() {
         presenter = HivePresenter(this)
 
         binding.chooseImage.setOnClickListener {
-            presenter.cacheHive(binding.hiveTitle.text.toString().toLong(), binding.description.text.toString())
+            presenter.cacheHive(
+                binding.hiveTitle.text.toString().toLong(),
+                binding.description.text.toString()
+            )
             presenter.doSelectImage()
         }
 
         binding.mapView2.setOnClickListener {
-            presenter.cacheHive(binding.hiveTitle.text.toString().toLong(), binding.description.text.toString())
+            presenter.cacheHive(
+                binding.hiveTitle.text.toString().toLong(),
+                binding.description.text.toString()
+            )
             presenter.doSetLocation()
         }
 
@@ -60,14 +68,13 @@ class HiveView : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_hive, menu)
         val deleteMenu: MenuItem = menu.findItem(R.id.item_delete)
-        if (presenter.hive.sensorNumber != ""){
+        if (presenter.hive.sensorNumber != "") {
             val bluetoothMenu: MenuItem = menu.findItem(R.id.bluetooth)
             bluetoothMenu.isVisible = true
         }
-        if (presenter.edit){
+        if (presenter.edit) {
             deleteMenu.setVisible(true)
-        }
-        else{
+        } else {
             deleteMenu.setVisible(false)
         }
         return super.onCreateOptionsMenu(menu)
@@ -89,9 +96,7 @@ class HiveView : AppCompatActivity() {
                 }
             }
             R.id.item_delete -> {
-                GlobalScope.launch(Dispatchers.IO){
-                    presenter.doDelete()
-                }
+                runBlocking {  presenter.doDelete() }
             }
             R.id.item_cancel -> {
                 presenter.doCancel()
@@ -99,7 +104,9 @@ class HiveView : AppCompatActivity() {
             R.id.item_chart -> {
                 presenter.chartNAv()
             }
-            R.id.bluetooth ->{  presenter.doShowBleScanner() }
+            R.id.bluetooth -> {
+                presenter.doShowBleScanner()
+            }
 
         }
         return super.onOptionsItemSelected(item)
@@ -107,23 +114,24 @@ class HiveView : AppCompatActivity() {
 
     fun showHive(hive: HiveModel) {
         if (binding.hiveTitle.text.isEmpty()) binding.hiveTitle.setText(hive.tag.toString())
-        if (binding.description.text.isEmpty())  binding.description.setText(hive.description)
+        if (binding.description.text.isEmpty()) binding.description.setText(hive.description)
 
         if (hive.image != "") {
-        Picasso.get()
-            .load(hive.image)
-            .into(binding.hiveImage)
+            Picasso.get()
+                .load(hive.image)
+                .into(binding.hiveImage)
 
-          binding.chooseImage.setText(R.string.change_hive_image)
-       }
+            binding.chooseImage.setText(R.string.change_hive_image)
+        }
         this.showLocation(hive.location)
     }
-     private fun showLocation (loc: Location){
+
+    private fun showLocation(loc: Location) {
         binding.lat.setText("%.6f".format(loc.lat))
         binding.lng.setText("%.6f".format(loc.lng))
     }
 
-    fun updateImage(image: String){
+    fun updateImage(image: String) {
         i("Image updated")
         Picasso.get()
             .load(image)
@@ -156,5 +164,6 @@ class HiveView : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         binding.mapView2.onSaveInstanceState(outState)
     }
+
 
 }
