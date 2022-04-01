@@ -76,6 +76,10 @@
         <activity
             android:name=".views.charts.ChartView"
             android:exported="true" />
+
+        <activity
+            android:name=".views.charts.LineChartView"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -21,6 +21,7 @@ import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
 import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.charts.ChartView
+import ie.wit.hive.views.charts.LineChartView
 import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.location.EditLocationView
 import kotlinx.coroutines.runBlocking
@@ -97,7 +98,7 @@ class HivePresenter(private val view: HiveView) {
     }
 
     fun chartNAv(){
-        val launcherIntent = Intent(view, ChartView::class.java)
+        val launcherIntent = Intent(view, LineChartView::class.java)
         launcherIntent.putExtra("hive", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }

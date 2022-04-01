@@ -8,6 +8,7 @@ import com.squareup.picasso.Picasso
 import ie.wit.hive.databinding.CardHiveBinding
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.weather.getWeather
+import ie.wit.hive.weather.readWeatherHistory
 import kotlinx.coroutines.runBlocking
 
 interface HiveListener {
@@ -37,6 +38,8 @@ class HiveAdapter constructor(private var hives: List<HiveModel>,
             RecyclerView.ViewHolder(binding.root) {
 
         fun bind(hive: HiveModel, listener: HiveListener) {
+
+            var weatherHistory = runBlocking { readWeatherHistory(hive.location.lat, hive.location.lng, hive.dateRegistered) }
             var weather = runBlocking { getWeather(hive.location.lat, hive.location.lng) }
             binding.hiveTitle.text = hive.tag.toString()
             binding.type.text = hive.type
