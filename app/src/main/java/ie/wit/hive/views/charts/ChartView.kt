@@ -90,14 +90,14 @@ class ChartView : AppCompatActivity() {
         val linedataset2 = LineDataSet(humData, "Hum")
         //We add features to our chart
         linedataset.color = resources.getColor(R.color.purple_200)
-        linedataset.circleRadius = 1f
+        linedataset.circleRadius = 0f
         linedataset.setDrawFilled(true)
         linedataset.valueTextSize = 20F
         linedataset.fillColor = resources.getColor(R.color.black)
         linedataset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         linedataset2.color = resources.getColor(R.color.purple_200)
-        linedataset2.circleRadius = 1f
+        linedataset2.circleRadius = 0f
         linedataset2.setDrawFilled(true)
         linedataset2.valueTextSize = 20F
         linedataset2.fillColor = resources.getColor(R.color.black)

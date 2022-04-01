@@ -11,6 +11,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -72,6 +75,10 @@
 
         <activity
             android:name=".views.charts.ChartView"
+            android:exported="true" />
+
+        <activity
+            android:name=".views.charts.LineChartView"
             android:exported="true" />
     </application>
 

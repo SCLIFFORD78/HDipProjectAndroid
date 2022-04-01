@@ -16,16 +16,21 @@ import ie.wit.hive.views.hive.HiveView
 import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.map.HiveMapView
 import ie.wit.hive.views.sensor.SensorView
+import kotlinx.coroutines.runBlocking
 
 class BleScanPresenter(private val view: BleScanView) {
 
     var app: MainApp = view.application as MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
+    lateinit var hive : HiveModel
 
     init {
         registerRefreshCallback()
         registerEditCallback()
+        if (view.intent.hasExtra("hive")) {
+            hive = view.intent.extras!!["hive"] as HiveModel
+        }
     }
 
     fun doAddHive() {
@@ -36,11 +41,14 @@ class BleScanPresenter(private val view: BleScanView) {
     fun doSensorView(device: BluetoothDevice) {
         val launcherIntent = Intent(view, SensorView::class.java)
         launcherIntent.putExtra(BluetoothDevice.EXTRA_DEVICE, device)
+        launcherIntent.putExtra("hive", hive)
         editIntentLauncher.launch(launcherIntent)
     }
 
     fun backNAv(){
-        val launcherIntent = Intent(view, HiveListView::class.java)
+        view.showProgress()
+        val launcherIntent = Intent(view, HiveView::class.java)
+        launcherIntent.putExtra("hive", hive)
         refreshIntentLauncher.launch(launcherIntent)
     }
 

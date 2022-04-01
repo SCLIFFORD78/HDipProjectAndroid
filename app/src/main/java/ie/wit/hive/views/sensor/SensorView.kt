@@ -36,6 +36,7 @@ import android.widget.EditText
 import com.google.gson.JsonObject
 import ie.wit.hive.bleandroid.ble.*
 import ie.wit.hive.databinding.ActivitySensorControlBinding
+import ie.wit.hive.weather.getWeather
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.collections.forEachByIndex
@@ -89,6 +90,8 @@ class SensorView : AppCompatActivity() {
     private var sensorLogData = arrayListOf<JsonObject>()
     private var loggerActive: Int = 0
 
+    lateinit var hive:HiveModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ConnectionManager.registerListener(connectionEventListener)
@@ -103,7 +106,7 @@ class SensorView : AppCompatActivity() {
 
         presenter = SensorPresenter(this)
         device = presenter.getBLEdevice()
-        var hive:HiveModel =  runBlocking { presenter.getHive() }
+        hive =  presenter.hive
 
 
         //setContentView(R.layout.activity_sensor_control)
@@ -150,6 +153,7 @@ class SensorView : AppCompatActivity() {
                     presenter.doLogout()
                 }
             }
+            R.id.weather -> { runBlocking { getWeather(hive.location.lat, hive.location.lng) }  }
 
         }
         return super.onOptionsItemSelected(item)

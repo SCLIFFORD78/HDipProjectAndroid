@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-parcelize'
     //id 'androidx.navigation.safeargs.kotlin'
     //id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "${kotlin_version}"
 }
 
 android {
@@ -99,6 +100,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    implementation "io.ktor:ktor-client-core:1.6.8"
+    implementation "io.ktor:ktor-client-cio:1.6.8"
+    implementation("io.ktor:ktor-client-serialization:1.6.8")
+    implementation "io.ktor:ktor-client-logging:1.6.8"
+
 
 }
 

@@ -34,18 +34,17 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import timber.log.Timber.i
 
-class ChartPresenter(private val view: ChartView) {
+class LineChartPresenter(private val view: LineChartView) {
     var app: MainApp = view.application as MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
-    lateinit var hive : HiveModel
+    lateinit var hive: HiveModel
 
     init {
         registerEditCallback()
         registerRefreshCallback()
         if (view.intent.hasExtra("hive")) {
-            var tagNo = view.intent.extras!!["hive"]
-            hive = runBlocking { app.hives.findByTag(tagNo as Long) }
+            hive= view.intent.extras!!["hive"] as HiveModel
         }
     }
 
@@ -79,7 +78,9 @@ class ChartPresenter(private val view: ChartView) {
 
 
     fun backNAv(){
-        val launcherIntent = Intent(view, HiveListView::class.java)
+        val launcherIntent = Intent(view, HiveView::class.java)
+        launcherIntent.putExtra("hive", hive)
+
         refreshIntentLauncher.launch(launcherIntent)
     }
 

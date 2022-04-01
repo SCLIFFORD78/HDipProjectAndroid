@@ -15,17 +15,27 @@
         android:padding="16dp">
 
         <ImageView
+            android:id="@+id/temperatureIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/change_hive_image"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/blueToothIcon"
+            app:layout_constraintStart_toStartOf="@+id/temp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_baseline_device_thermostat_24" />
+
+        <ImageView
             android:id="@+id/blueToothIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
             android:contentDescription="@string/change_hive_image"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/imageIcon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.833"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageIcon"
+            app:layout_constraintBottom_toBottomOf="@+id/hiveTitle"
+            app:layout_constraintStart_toEndOf="@+id/hiveTitle"
+            app:layout_constraintTop_toTopOf="@+id/hiveTitle"
             app:srcCompat="@drawable/ic_baseline_bluetooth_24" />
 
         <ImageView
@@ -64,6 +74,39 @@
             app:layout_constraintStart_toEndOf="@+id/imageIcon"
             app:layout_constraintTop_toBottomOf="@id/hiveTitle"
             tools:text="A Type" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.676"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureIcon"
+            tools:text="A Type" />
+
+        <TextView
+            android:id="@+id/hum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            app:layout_constraintStart_toStartOf="@+id/humidityIcon"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureIcon"
+            tools:text="A Type" />
+
+        <ImageView
+            android:id="@+id/humidityIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="20dp"
+            android:contentDescription="@string/change_hive_image"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/temperatureIcon"
+            app:layout_constraintStart_toEndOf="@+id/temperatureIcon"
+            app:layout_constraintTop_toTopOf="@+id/temperatureIcon"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_baseline_water_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
