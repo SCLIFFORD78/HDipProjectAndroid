@@ -37,9 +37,11 @@ class HiveListPresenter(private val view: HiveListView) {
                 resp.add(0,hive)
             }
         }
+        view.hideProgress()
         return if (resp.isNotEmpty()){
             resp
         } else emptyList()
+
     }
 
     suspend fun getHiveByTag(tag:Long):List<HiveModel>{
@@ -49,7 +51,7 @@ class HiveListPresenter(private val view: HiveListView) {
         if (foundhive != null) {
             list.add(0,foundhive)
         }
-
+        view.hideProgress()
         return list
     }
 

@@ -45,8 +45,9 @@ class SensorPresenter(private val view: SensorView) {
 
     init {
         registerEditCallback()
-        if (view.intent.hasExtra("hive")) {
-            hive = view.intent.extras!!["hive"] as HiveModel
+        if (view.intent.hasExtra("hive_edit")) {
+            var tagNum = view.intent.extras!!["hive_edit"] as Long
+            hive = runBlocking { getHive(tagNum) }
         }
 
 
@@ -59,8 +60,8 @@ class SensorPresenter(private val view: SensorView) {
 
     suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
 
-    suspend fun getHive():HiveModel{
-        hive = app.hives.findByTag(1)
+    private suspend fun getHive(tagNum:Long):HiveModel{
+        hive = app.hives.findByTag(tagNum)
         return  hive
     }
 
@@ -83,7 +84,7 @@ class SensorPresenter(private val view: SensorView) {
 
     fun doShowBleScanner() {
         val launcherIntent = Intent(view, BleScanView::class.java)
-        launcherIntent.putExtra("hive", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }
 

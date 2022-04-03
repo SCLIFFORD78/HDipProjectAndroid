@@ -28,9 +28,15 @@ class BleScanPresenter(private val view: BleScanView) {
     init {
         registerRefreshCallback()
         registerEditCallback()
-        if (view.intent.hasExtra("hive")) {
-            hive = view.intent.extras!!["hive"] as HiveModel
+        if (view.intent.hasExtra("hive_edit")) {
+            var tagNum = view.intent.extras!!["hive_edit"] as Long
+            hive = runBlocking { getHive(tagNum) }
         }
+    }
+
+    private suspend fun getHive(tagNum:Long):HiveModel{
+        hive = app.hives.findByTag(tagNum)
+        return  hive
     }
 
     fun doAddHive() {
@@ -41,14 +47,14 @@ class BleScanPresenter(private val view: BleScanView) {
     fun doSensorView(device: BluetoothDevice) {
         val launcherIntent = Intent(view, SensorView::class.java)
         launcherIntent.putExtra(BluetoothDevice.EXTRA_DEVICE, device)
-        launcherIntent.putExtra("hive", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }
 
     fun backNAv(){
         view.showProgress()
         val launcherIntent = Intent(view, HiveView::class.java)
-        launcherIntent.putExtra("hive", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
         refreshIntentLauncher.launch(launcherIntent)
     }
 

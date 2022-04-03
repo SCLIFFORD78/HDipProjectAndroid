@@ -43,13 +43,19 @@ class LineChartPresenter(private val view: LineChartView) {
     init {
         registerEditCallback()
         registerRefreshCallback()
-        if (view.intent.hasExtra("hive")) {
-            hive= view.intent.extras!!["hive"] as HiveModel
+        if (view.intent.hasExtra("hive_edit")) {
+            var tagNum = view.intent.extras!!["hive_edit"] as Long
+            hive = runBlocking { getHive(tagNum) }
         }
     }
 
-    suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
-    suspend fun getUsers() = app.users.findAll()
+    private suspend fun getHive(tagNum:Long):HiveModel{
+        hive = app.hives.findByTag(tagNum)
+        return  hive
+    }
+
+    private suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
+    private suspend fun getUsers() = app.users.findAll()
     //suspend fun findByType(type: String)= app.hives.findByType(type)
     suspend fun findByType(type: String): List<HiveModel> {
         val resp: MutableList<HiveModel> = mutableListOf()
@@ -79,7 +85,7 @@ class LineChartPresenter(private val view: LineChartView) {
 
     fun backNAv(){
         val launcherIntent = Intent(view, HiveView::class.java)
-        launcherIntent.putExtra("hive", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
 
         refreshIntentLauncher.launch(launcherIntent)
     }

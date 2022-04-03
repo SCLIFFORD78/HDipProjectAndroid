@@ -90,8 +90,6 @@ class SensorView : AppCompatActivity() {
     private var sensorLogData = arrayListOf<JsonObject>()
     private var loggerActive: Int = 0
 
-    lateinit var hive:HiveModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ConnectionManager.registerListener(connectionEventListener)
@@ -103,16 +101,15 @@ class SensorView : AppCompatActivity() {
         //setSupportActionBar(binding.toolbarAdd)
 
 
-
         presenter = SensorPresenter(this)
         device = presenter.getBLEdevice()
-        hive =  presenter.hive
+        showProgress()
 
 
         //setContentView(R.layout.activity_sensor_control)
         //supportActionBar?.apply {
         //    setDisplayHomeAsUpEnabled(true)
-         //   setDisplayShowTitleEnabled(true)
+        //   setDisplayShowTitleEnabled(true)
         //    //title = getString(R.string.ble_playground)
         //}
         flashUsageReference = 0
@@ -125,7 +122,7 @@ class SensorView : AppCompatActivity() {
             readParams()
         }
 
-        binding.data.setOnClickListener{
+        binding.data.setOnClickListener {
             readData()
         }
 
@@ -133,7 +130,7 @@ class SensorView : AppCompatActivity() {
             readLoggerData()
         }
 
-        readParams()
+        //readParams()
 
     }
 
@@ -147,33 +144,34 @@ class SensorView : AppCompatActivity() {
             R.id.back -> {
                 presenter.doShowBleScanner()
             }
-            R.id.aboutus -> { presenter.doShowAboutUs() }
+            R.id.aboutus -> {
+                presenter.doShowAboutUs()
+            }
             R.id.item_logout -> {
                 GlobalScope.launch(Dispatchers.IO) {
                     presenter.doLogout()
                 }
             }
-            R.id.weather -> { runBlocking { getWeather(hive.location.lat, hive.location.lng) }  }
 
         }
         return super.onOptionsItemSelected(item)
     }
 
 
-
-    fun addDevice(result: BluetoothDevice){
+    fun addDevice(result: BluetoothDevice) {
         device = result
     }
-
-
 
 
     @SuppressLint("SetTextI18n")
     private fun log(message: String) {
         val formattedMessage = String.format("%s: %s", dateFormatter.format(Date()), message)
         runOnUiThread {
-            val currentLogText = if (binding.logTextView.text.isEmpty()) {
-                "Beginning of log."
+            var currentLogText = binding.logTextView.text
+            if (binding.logTextView.text.isEmpty()) {
+                currentLogText = "Beginning of log."
+                hideProgress()
+                readParams()
             } else {
                 binding.logTextView.text
             }
@@ -196,26 +194,28 @@ class SensorView : AppCompatActivity() {
             }
 
             onCharacteristicRead = { _, characteristic ->
-                if (characteristic.uuid == UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")){
-                    binding.batteryLevel.text = "Batt. ${Integer.decode(characteristic.value.toHexString())}%"
-                }else if(characteristic.uuid == UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")){
+                if (characteristic.uuid == UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")) {
+                    binding.batteryLevel.text =
+                        "Batt. ${Integer.decode(characteristic.value.toHexString())}%"
+                } else if (characteristic.uuid == UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")) {
                     val timestamp = toInt32(characteristic.value)
                     loggerTimeReference = timestamp
-                    val date = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date(timestamp.toLong()*1000))
+                    val date =
+                        SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date(timestamp.toLong() * 1000))
                     binding.loggerRefTime.text = "Log start: ${date.toString()}"
-                }else if(characteristic.uuid == UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")){
+                } else if (characteristic.uuid == UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")) {
                     val interValSeconds = toInt16(characteristic.value)
                     binding.intervalText.text = "Interval time ${interValSeconds.toString()} sec."
                     intervilTime = interValSeconds
-                }else if(characteristic.uuid == UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")) {
+                } else if (characteristic.uuid == UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashSizeTemp = toInt32(characteristic.value)
                     binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
-                }else if(characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
+                } else if (characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashUsageTemp = toInt32(characteristic.value)
-                    loggerFlashUsage = flashUsageTemp+16
+                    loggerFlashUsage = flashUsageTemp + 16
                     binding.flashUsage.text = "Flash usage: ${flashUsageTemp.toString()}"
-                }else if(characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
-                    loggerActive =  characteristic.value[0].toInt()
+                } else if (characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
+                    loggerActive = characteristic.value[0].toInt()
                     var test = loggerActive
                     print(test)
                     //binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
@@ -229,21 +229,22 @@ class SensorView : AppCompatActivity() {
 
             onMtuChanged = { _, mtu ->
                 log("MTU updated to $mtu")
+
             }
 
             onCharacteristicChanged = { _, characteristic ->
-                if (characteristic.uuid == UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")){
+                if (characteristic.uuid == UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")) {
                     val result = characteristic.value
-                    val converted = convertTempAndHumidity(result,0)
+                    val converted = convertTempAndHumidity(result, 0)
                     binding.temperature.text = "Temp: ${converted.get("Temperature")} C"
                     binding.humidity.text = "Hum.: ${converted.get("Humidity")}%"
                     stopReadData()
-                }else if(characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")){
+                } else if (characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")) {
                     val loggerData = characteristic.value
 
-                    if (flashUsageReference<=loggerFlashUsage && (flashUsageReference !=0)){
-                        if (loggerData.size > 0 ){
-                            if(loggerData[0].toInt()!=-1 &&loggerData[1].toInt()!=-1&&loggerData[2].toInt()!=-1&&loggerData[3].toInt()!=-1) {
+                    if (flashUsageReference <= loggerFlashUsage && (flashUsageReference != 0)) {
+                        if (loggerData.size > 0) {
+                            if (loggerData[0].toInt() != -1 && loggerData[1].toInt() != -1 && loggerData[2].toInt() != -1 && loggerData[3].toInt() != -1) {
                                 sensorLogData.add(
                                     convertTempAndHumidity(
                                         loggerData.copyOfRange(
@@ -255,15 +256,22 @@ class SensorView : AppCompatActivity() {
                                 loggerTimeReference += intervilTime
                             }
                         }
-                        if (loggerData.size > 4){
-                            if(loggerData[4].toInt()!=-1 &&loggerData[5].toInt()!=-1&&loggerData[6].toInt()!=-1&&loggerData[7].toInt()!=-1){
-                                sensorLogData.add(convertTempAndHumidity(loggerData.copyOfRange(4,8),loggerTimeReference))
-                                loggerTimeReference+=intervilTime
+                        if (loggerData.size > 4) {
+                            if (loggerData[4].toInt() != -1 && loggerData[5].toInt() != -1 && loggerData[6].toInt() != -1 && loggerData[7].toInt() != -1) {
+                                sensorLogData.add(
+                                    convertTempAndHumidity(
+                                        loggerData.copyOfRange(
+                                            4,
+                                            8
+                                        ), loggerTimeReference
+                                    )
+                                )
+                                loggerTimeReference += intervilTime
                             }
 
                         }
-                        if (loggerData.size > 8){
-                            if(loggerData[8].toInt()!=-1 &&loggerData[9].toInt()!=-1&&loggerData[10].toInt()!=-1&&loggerData[11].toInt()!=-1) {
+                        if (loggerData.size > 8) {
+                            if (loggerData[8].toInt() != -1 && loggerData[9].toInt() != -1 && loggerData[10].toInt() != -1 && loggerData[11].toInt() != -1) {
                                 sensorLogData.add(
                                     convertTempAndHumidity(
                                         loggerData.copyOfRange(
@@ -275,8 +283,8 @@ class SensorView : AppCompatActivity() {
                                 loggerTimeReference += intervilTime
                             }
                         }
-                        if (loggerData.size > 12){
-                            if(loggerData[12].toInt()!=-1 &&loggerData[13].toInt()!=-1&&loggerData[14].toInt()!=-1&&loggerData[15].toInt()!=-1) {
+                        if (loggerData.size > 12) {
+                            if (loggerData[12].toInt() != -1 && loggerData[13].toInt() != -1 && loggerData[14].toInt() != -1 && loggerData[15].toInt() != -1) {
                                 sensorLogData.add(
                                     convertTempAndHumidity(
                                         loggerData.copyOfRange(
@@ -290,10 +298,10 @@ class SensorView : AppCompatActivity() {
                         }
                         flashUsageReference += loggerData.size
                     }
-                    if (flashUsageReference == 0){
+                    if (flashUsageReference == 0) {
                         flashUsageReference += loggerData.size
                     }
-                    if(flashUsageReference>=loggerFlashUsage){
+                    if (flashUsageReference >= loggerFlashUsage) {
                         flashUsageReference = 0
                         loggerTimeReference = 0
                         intervilTime - 0
@@ -302,10 +310,10 @@ class SensorView : AppCompatActivity() {
                         sensorLogData.clear()
                         resetLogger()
                         readLoggerActive()
-                        if ( loggerActive == 0){
+                        if (loggerActive == 0) {
                             writeLoggerTimeReference()
                             writeLoggerActive()
-                        }else{
+                        } else {
                             writeLoggerTimeReference()
                         }
                         readParams()
@@ -350,12 +358,14 @@ class SensorView : AppCompatActivity() {
     }
 
     private fun Context.hideKeyboard(view: View) {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun EditText.showKeyboard() {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         requestFocus()
         inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
     }
@@ -363,7 +373,7 @@ class SensorView : AppCompatActivity() {
     private fun String.hexToBytes() =
         this.chunked(2).map { it.toUpperCase(Locale.US).toInt(16).toByte() }.toByteArray()
 
-    fun toInt32(bytes:ByteArray):Int {
+    fun toInt32(bytes: ByteArray): Int {
         if (bytes.size != 4) {
             throw Exception("wrong len")
         }
@@ -372,18 +382,19 @@ class SensorView : AppCompatActivity() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun toInt16(bytes:ByteArray):Int {
+    fun toInt16(bytes: ByteArray): Int {
         if (bytes.size != 2) {
             throw Exception("wrong len")
         }
-        val result =  (bytes[0].toInt().and(0xff)).or((bytes.get(1).toInt().rotateLeft(8)).and(0xff00) )
+        val result =
+            (bytes[0].toInt().and(0xff)).or((bytes.get(1).toInt().rotateLeft(8)).and(0xff00))
         return result
     }
 
-    fun numberToByteArray (data: Number, size: Int = 4) : ByteArray =
-        ByteArray (size) {i -> (data.toLong() shr (i*8)).toByte()}
+    fun numberToByteArray(data: Number, size: Int = 4): ByteArray =
+        ByteArray(size) { i -> (data.toLong() shr (i * 8)).toByte() }
 
-    private fun readParams(){
+    private fun readParams() {
         checkBattery()
         readLoggerTimeReference()
         readLoggerIntervalTime()
@@ -393,97 +404,126 @@ class SensorView : AppCompatActivity() {
         readLoggerActive()
     }
 
-    private fun checkBattery(){
+    private fun checkBattery() {
         val batteryLevelCharUuid = UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")
         ConnectionManager.readSensorCharacteristic(device, batteryLevelCharUuid)
     }
 
-    private fun readData(){
-        val bluSensorData  = UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")
-        ConnectionManager.enableSensorNotifications(device, bluSensorData )
+    private fun readData() {
+        val bluSensorData = UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")
+        ConnectionManager.enableSensorNotifications(device, bluSensorData)
     }
 
-    private fun stopReadData(){
-        val bluSensorData  = UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")
-        characteristics.forEachByIndex { t -> if(t.uuid == bluSensorData){
-            ConnectionManager.disableNotifications(device, t )
-        } }
+    private fun stopReadData() {
+        val bluSensorData = UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")
+        characteristics.forEachByIndex { t ->
+            if (t.uuid == bluSensorData) {
+                ConnectionManager.disableNotifications(device, t)
+            }
+        }
     }
 
-    private fun readLoggerTimeReference(){
+    private fun readLoggerTimeReference() {
         val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
         ConnectionManager.readSensorCharacteristic(device, loggerTimeReference)
     }
 
-    private  fun readLoggerIntervalTime(){
+    private fun readLoggerIntervalTime() {
         val loggerIntervalTime = UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")
         ConnectionManager.readSensorCharacteristic(device, loggerIntervalTime)
     }
 
-    private  fun readLoggerFlashSize(){
+    private fun readLoggerFlashSize() {
         val loggerFlashSize = UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")
         ConnectionManager.readSensorCharacteristic(device, loggerFlashSize)
     }
 
-    private  fun readLoggerFlashUsage(){
+    private fun readLoggerFlashUsage() {
         val loggerFlashUsage = UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")
         ConnectionManager.readSensorCharacteristic(device, loggerFlashUsage)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun readLoggerData(){
-        val loggerControl  = UUID.fromString("a8a82635-10a4-11e3-ab8c-f23c91aec05e")
-        val loggerData  = UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")
+    private fun readLoggerData() {
+        val loggerControl = UUID.fromString("a8a82635-10a4-11e3-ab8c-f23c91aec05e")
+        val loggerData = UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")
         readLoggerFlashUsage()
         readLoggerTimeReference()
         readLoggerIntervalTime()
-        characteristics.forEachByIndex { t -> if(t.uuid == loggerData){
-            ConnectionManager.enableNotifications(device, t )
-        } }
+        characteristics.forEachByIndex { t ->
+            if (t.uuid == loggerData) {
+                ConnectionManager.enableNotifications(device, t)
+            }
+        }
 
-        characteristics.forEachByIndex { t -> if(t.uuid == loggerControl){
-            ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x1))
-        } }
-    }
-    private fun resetLogger(){
-        val loggerControl  = UUID.fromString("a8a82635-10a4-11e3-ab8c-f23c91aec05e")
-        characteristics.forEachByIndex { t -> if(t.uuid == loggerControl){
-            ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x2))
-        } }
+        characteristics.forEachByIndex { t ->
+            if (t.uuid == loggerControl) {
+                ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x1))
+            }
+        }
     }
 
-    private fun readLoggerActive(){
-        val loggerOnOff  = UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")
+    private fun resetLogger() {
+        val loggerControl = UUID.fromString("a8a82635-10a4-11e3-ab8c-f23c91aec05e")
+        characteristics.forEachByIndex { t ->
+            if (t.uuid == loggerControl) {
+                ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x2))
+            }
+        }
+    }
+
+    private fun readLoggerActive() {
+        val loggerOnOff = UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")
         ConnectionManager.readSensorCharacteristic(device, loggerOnOff)
     }
 
-    private fun writeLoggerActive(){
-        val loggerOnOff  = UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")
-        characteristics.forEachByIndex { t -> if(t.uuid == loggerOnOff){
-            ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x1))
-        } }
+    private fun writeLoggerActive() {
+        val loggerOnOff = UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")
+        characteristics.forEachByIndex { t ->
+            if (t.uuid == loggerOnOff) {
+                ConnectionManager.writeCharacteristic(device, t, byteArrayOf(0x1))
+            }
+        }
     }
-    private fun writeLoggerTimeReference(){
+
+    private fun writeLoggerTimeReference() {
         val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
-        var timeNow = numberToByteArray( (((System.currentTimeMillis()/1000).toInt())-(((System.currentTimeMillis()/1000).toInt())%3600))+86400 , 4)
-        characteristics.forEachByIndex { t -> if(t.uuid == loggerTimeReference){
-            ConnectionManager.writeCharacteristic(device, t, timeNow)
-        } }
+        var timeNow = numberToByteArray(
+            (((System.currentTimeMillis() / 1000).toInt()) - (((System.currentTimeMillis() / 1000).toInt()) % 3600)) + 86400,
+            4
+        )
+        characteristics.forEachByIndex { t ->
+            if (t.uuid == loggerTimeReference) {
+                ConnectionManager.writeCharacteristic(device, t, timeNow)
+            }
+        }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun convertTempAndHumidity (sensorData : ByteArray, timeStamp: Int): JsonObject {
+    private fun convertTempAndHumidity(sensorData: ByteArray, timeStamp: Int): JsonObject {
         val result = JsonObject()
-        val temp =  (sensorData[0].toInt().and(0xff)).or((sensorData.get(1).toInt().rotateLeft(8)).and(0xff00) )
+        val temp = (sensorData[0].toInt().and(0xff)).or(
+            (sensorData.get(1).toInt().rotateLeft(8)).and(0xff00)
+        )
         val tempC = -46.85f + 175.72f * temp.toFloat() / 65536.toFloat()
-        result.addProperty("Temperature",tempC)
-        val hum =  (sensorData[2].toInt().and(0xff)).or((sensorData.get(3).toInt().rotateLeft(8)).and(0xff00) )//.and(0xff.toByte())
+        result.addProperty("Temperature", tempC)
+        val hum = (sensorData[2].toInt().and(0xff)).or(
+            (sensorData.get(3).toInt().rotateLeft(8)).and(0xff00)
+        )//.and(0xff.toByte())
         val relHum = -6.0f + 125.0f * hum.toFloat() / 65536.toFloat()
-        result.addProperty("Humidity",relHum)
+        result.addProperty("Humidity", relHum)
         if (timeStamp > 0)
             result.addProperty("timeStamp", timeStamp)
         return result
 
+    }
+
+    fun showProgress() {
+        binding.progressBar3.visibility = View.VISIBLE
+    }
+
+    fun hideProgress() {
+        binding.progressBar3.visibility = View.GONE
     }
 
 

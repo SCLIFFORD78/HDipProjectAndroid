@@ -1,9 +1,11 @@
 package ie.wit.hive.views.hivelist
+
 import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
@@ -37,8 +39,26 @@ class HiveListView : AppCompatActivity(), HiveListener {
         //    binding.toolbar.title = "${title}: ${user.email}"
         //}
         //setSupportActionBar(binding.toolbar)
-        binding.floatingAddButton.setOnClickListener{
+        binding.floatingAddButton.setOnClickListener {
             presenter.doAddHive()
+        }
+
+        // spinner on item selected listener
+        binding.hiveTypeSpinnerSearch.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                showProgress()
+                setUpdateSearchHiveType()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // another interface callback
+            }
         }
 
         presenter = HiveListPresenter(this)
@@ -66,15 +86,23 @@ class HiveListView : AppCompatActivity(), HiveListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
 
-            R.id.item_add -> { presenter.doAddHive() }
-            R.id.item_map -> { presenter.doShowHivesMap() }
-            R.id.aboutus -> { presenter.doShowAboutUs() }
+            R.id.item_add -> {
+                presenter.doAddHive()
+            }
+            R.id.item_map -> {
+                presenter.doShowHivesMap()
+            }
+            R.id.aboutus -> {
+                presenter.doShowAboutUs()
+            }
             R.id.item_logout -> {
                 GlobalScope.launch(Dispatchers.IO) {
                     presenter.doLogout()
                 }
             }
-            R.id.update -> { setUpdateSearchHiveType() }
+            R.id.update -> {
+                setUpdateSearchHiveType()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -87,9 +115,10 @@ class HiveListView : AppCompatActivity(), HiveListener {
 
     private fun setUpdateSearchHiveType() {
         val type = binding.hiveTypeSpinnerSearch.selectedItem.toString()
-        if(type == "All Hive Types"){
-            updateRecyclerView(0) }
-        else{
+        if (type == "All Hive Types") {
+            showProgress()
+            updateRecyclerView(0)
+        } else {
             updateRecyclerViewHiveType(type)
         }
 
@@ -104,18 +133,18 @@ class HiveListView : AppCompatActivity(), HiveListener {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 var value = ""
-                var num:Long = 0
-                if (query == ""){
+                var num: Long = 0
+                if (query == "") {
                     value = num.toString()
-                }else{
+                } else {
                     if (query != null) {
                         value = query
                     }
                 }
-                if(value.toString().toLong() > 0 && value !=null){
+                if (value.toString().toLong() > 0 && value != null) {
                     updateRecyclerView(query.toString().toLong())
                     searchView.clearFocus()
-                }else if(value.toString().toInt() == 0 ){
+                } else if (value.toString().toInt() == 0) {
                     updateRecyclerView(0)
                     searchView.clearFocus()
                 }
@@ -124,18 +153,18 @@ class HiveListView : AppCompatActivity(), HiveListener {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 var value = ""
-                var num:Long = 0
-                if (newText == ""){
+                var num: Long = 0
+                if (newText == "") {
                     value = num.toString()
-                }else{
+                } else {
                     if (newText != null) {
                         value = newText
                     }
                 }
-                if(value.toLong() > 0 && value !=null){
+                if (value.toLong() > 0 && value != null) {
                     updateRecyclerView(newText.toString().toLong())
                     searchView.clearFocus()
-                }else if(value.toInt() == 0 ){
+                } else if (value.toInt() == 0) {
                     updateRecyclerView(0)
                     searchView.clearFocus()
                 }
@@ -164,28 +193,36 @@ class HiveListView : AppCompatActivity(), HiveListener {
     }
 
 
-    private fun updateRecyclerView(tag:Long){
+    private fun updateRecyclerView(tag: Long) {
         var test = tag
-        if (tag > 0 && tag != null){
+        if (tag > 0 && tag != null) {
             GlobalScope.launch(Dispatchers.Main) {
                 binding.recyclerView.adapter =
                     HiveAdapter(presenter.getHiveByTag(tag), this@HiveListView)
             }
+            hideProgress()
             checkSwipeRefresh()
-        }else{
-            GlobalScope.launch(Dispatchers.Main){
-            binding.recyclerView.adapter =
-                presenter.getHives()?.let { HiveAdapter(it, this@HiveListView) }
-        }
-            checkSwipeRefresh()
-        } }
+        } else {
+            GlobalScope.launch(Dispatchers.Main) {
+                binding.recyclerView.adapter =
+                    presenter.getHives()?.let { HiveAdapter(it, this@HiveListView) }
 
-    private fun updateRecyclerViewHiveType(type: String){
-        GlobalScope.launch(Dispatchers.Main){
+            }
+            hideProgress()
+            checkSwipeRefresh()
+
+        }
+
+    }
+
+    private fun updateRecyclerViewHiveType(type: String) {
+        GlobalScope.launch(Dispatchers.Main) {
             binding.recyclerView.adapter =
                 HiveAdapter(presenter.findByType(type), this@HiveListView)
         }
+
     }
+
     fun showProgress() {
         binding.progressBar2.visibility = View.VISIBLE
     }

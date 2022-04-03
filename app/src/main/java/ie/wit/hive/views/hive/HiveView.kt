@@ -19,6 +19,7 @@ import ie.wit.hive.databinding.ActivityHiveBinding
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.anko.alert
 import timber.log.Timber.i
 
 class HiveView : AppCompatActivity() {
@@ -96,7 +97,13 @@ class HiveView : AppCompatActivity() {
                 }
             }
             R.id.item_delete -> {
-                runBlocking {  presenter.doDelete() }
+                runOnUiThread {
+                    alert {
+                        title = "Delete Hive"
+                        message = "Confirm Delete"
+                        positiveButton("OK") { runBlocking {  presenter.doDelete() } }
+                    }.show()
+                }
             }
             R.id.item_cancel -> {
                 presenter.doCancel()

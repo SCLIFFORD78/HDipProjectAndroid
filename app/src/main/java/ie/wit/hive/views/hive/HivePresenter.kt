@@ -20,7 +20,6 @@ import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
 import ie.wit.hive.views.ble.BleScanView
-import ie.wit.hive.views.charts.ChartView
 import ie.wit.hive.views.charts.LineChartView
 import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.location.EditLocationView
@@ -54,14 +53,12 @@ class HivePresenter(private val view: HiveView) {
 
         if (view.intent.hasExtra("hive_edit")) {
             edit = true
-            var tagNo = view.intent.extras!!["hive_edit"]
-            hive = runBlocking { app.hives.findByTag(tagNo as Long) }
+            var tagNo = view.intent.extras!!["hive_edit"] as Long
+            hive =  runBlocking { getHive(tagNo) }
             //hive = view.intent.extras?.getParcelable("hive_edit")!!
             view.showHive(hive)
-        } else if (view.intent.hasExtra("hive")) {
-            hive = view.intent.extras!!["hive"] as HiveModel
-        } else {
-
+        }  else {
+            hive = HiveModel()
             if (checkLocationPermissions(view)) {
                 doSetCurrentLocation()
             }
@@ -69,6 +66,11 @@ class HivePresenter(private val view: HiveView) {
             //hive.location.lng = location.lng
         }
 
+    }
+
+    private suspend fun getHive(tagNum:Long):HiveModel{
+        hive = app.hives.findByTag(tagNum)
+        return  hive
     }
 
 
@@ -84,6 +86,7 @@ class HivePresenter(private val view: HiveView) {
         view.finish()
 
     }
+
 
     fun doCancel() {
         val launcherIntent = Intent(view, HiveListView::class.java)
@@ -103,7 +106,7 @@ class HivePresenter(private val view: HiveView) {
 
     fun chartNAv() {
         val launcherIntent = Intent(view, LineChartView::class.java)
-        launcherIntent.putExtra("hive", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }
 
@@ -179,7 +182,7 @@ class HivePresenter(private val view: HiveView) {
 
     fun doShowBleScanner() {
         val launcherIntent = Intent(view, BleScanView::class.java)
-        launcherIntent.putExtra("hive", hive)
+        launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }
 
