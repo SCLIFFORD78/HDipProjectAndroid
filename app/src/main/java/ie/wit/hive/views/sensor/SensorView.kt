@@ -134,6 +134,9 @@ class SensorView : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_bluetooth, menu)
         return super.onCreateOptionsMenu(menu)

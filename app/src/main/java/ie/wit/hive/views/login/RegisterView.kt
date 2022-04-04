@@ -44,6 +44,9 @@ class RegisterView : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_cancel, menu)
 

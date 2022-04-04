@@ -32,7 +32,7 @@ import java.time.*
 import kotlin.coroutines.coroutineContext
 
 
-class LineChartView : AppCompatActivity() {
+class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var binding: ActivityLinechartBinding
     private lateinit var presenter: LineChartPresenter
@@ -322,6 +322,18 @@ class LineChartView : AppCompatActivity() {
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        TODO("Not yet implemented")
     }
 
 

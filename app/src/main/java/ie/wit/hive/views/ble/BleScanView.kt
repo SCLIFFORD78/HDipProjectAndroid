@@ -168,6 +168,8 @@ class BleScanView : AppCompatActivity() {
             }
         }
     }
+    override fun onBackPressed() {
+    }
 
 
 

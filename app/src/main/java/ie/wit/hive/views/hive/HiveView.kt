@@ -119,6 +119,9 @@ class HiveView : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+    }
+
     fun showHive(hive: HiveModel) {
         if (binding.hiveTitle.text.isEmpty()) binding.hiveTitle.setText(hive.tag.toString())
         if (binding.description.text.isEmpty()) binding.description.setText(hive.description)

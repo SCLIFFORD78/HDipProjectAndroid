@@ -124,6 +124,9 @@ class HiveListView : AppCompatActivity(), HiveListener {
 
     }
 
+    override fun onBackPressed() {
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val search = menu.findItem(R.id.appSearchBar)

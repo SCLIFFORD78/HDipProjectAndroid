@@ -59,6 +59,9 @@ class LoginView : AppCompatActivity(){
             googleSignIn()
         }
     }
+
+    override fun onBackPressed() {
+    }
     fun showSnackBar(message: CharSequence){
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
