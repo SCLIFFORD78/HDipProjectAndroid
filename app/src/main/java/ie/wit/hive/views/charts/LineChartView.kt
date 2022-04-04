@@ -6,18 +6,20 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.Legend.LegendForm
+import com.github.mikephil.charting.components.LimitLine
+import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
 import com.github.mikephil.charting.components.YAxis.AxisDependency
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.google.android.material.slider.Slider
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import ie.wit.hive.R
@@ -26,13 +28,11 @@ import ie.wit.hive.models.HiveModel
 import ie.wit.hive.weather.WeatherHistoryReport
 import ie.wit.hive.weather.readWeatherHistory
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.anko.sdk27.coroutines.onSeekBarChangeListener
 import java.text.SimpleDateFormat
-import java.time.*
-import kotlin.coroutines.coroutineContext
 
 
-class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
+class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
+    OnChartValueSelectedListener {
 
     private lateinit var binding: ActivityLinechartBinding
     private lateinit var presenter: LineChartPresenter
@@ -40,6 +40,8 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     private lateinit var weatherHistory : ArrayList<WeatherHistoryReport>
     private lateinit var chart: LineChart
     val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
+    lateinit var ll1 : LimitLine
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,9 +75,10 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
         var seekBarX = binding.seekBar1
 
-        //seekBarX.onSeekBarChangeListener(coroutineContext)
+        seekBarX.setOnSeekBarChangeListener(this)
 
         var seekBarY = binding.seekBar2
+        seekBarX.max = 50
         //seekBarY.setOnSeekBarChangeListener(this)
 
 
@@ -119,8 +122,9 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         // add data
 
         // add data
-        seekBarX.progress = 20
+        seekBarX.progress = presenter.hive.tempAlarm.toInt()
         seekBarY.progress = 30
+
 
         chart.animateX(1500)
 
@@ -154,7 +158,8 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         xAxis.labelRotationAngle = 90f
         xAxis.mLabelWidth = 5
 
-        val leftAxis = chart.getAxisLeft()
+
+        val leftAxis = chart.axisLeft
         //leftAxis.typeface = tfLight
         leftAxis.textColor = ColorTemplate.getHoloBlue()
         leftAxis.axisMaximum = 100f
@@ -162,7 +167,8 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         leftAxis.setDrawGridLines(true)
         leftAxis.isGranularityEnabled = true
 
-        val rightAxis = chart.getAxisRight()
+
+        val rightAxis = chart.axisRight
         //rightAxis.typeface = tfLight
         rightAxis.textColor = Color.RED
         rightAxis.axisMaximum = 100f
@@ -170,6 +176,8 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         rightAxis.setDrawGridLines(false)
         rightAxis.setDrawZeroLine(false)
         rightAxis.isGranularityEnabled = false
+
+
 
 
     }
@@ -186,8 +194,12 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
         val ambientHumData = java.util.ArrayList<Entry>()
 
+        val tempLimit = java.util.ArrayList<Entry>()
 
         val formattedTime = arrayListOf<String>()
+
+        tempLimit.add(Entry(weatherHistory[0].timeStamp.toFloat(),binding.tvXMax.text.toString().toFloat()))
+        tempLimit.add(Entry(weatherHistory[weatherHistory.size-1].timeStamp.toFloat(),binding.tvXMax.text.toString().toFloat()))
 
         for (value in weatherHistory) {
             ambientTempData.add(
@@ -226,6 +238,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         val set2: LineDataSet
         val set3: LineDataSet
         val set4: LineDataSet
+        val set5: LineDataSet
 
 
         if (chart.data != null &&
@@ -235,10 +248,12 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
             set2 = chart.data.getDataSetByIndex(1) as LineDataSet
             set3 = chart.data.getDataSetByIndex(2) as LineDataSet
             set4 = chart.data.getDataSetByIndex(3) as LineDataSet
+            set5 = chart.data.getDataSetByIndex(4) as LineDataSet
             set1.values = tempData
             set2.values = ambientTempData
             set3.values = humData
             set4.values = ambientHumData
+            set5.values = tempLimit
             chart.data.notifyDataChanged()
             chart.notifyDataSetChanged()
         } else {
@@ -296,8 +311,17 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
             set4.setDrawCircleHole(false)
             set4.highLightColor = Color.rgb(244, 117, 117)
 
+            set5 = LineDataSet(tempLimit, "Limit")
+            set5.axisDependency = AxisDependency.RIGHT
+            set5.color = Color.RED
+            set5.setDrawCircles(false)
+            set5.lineWidth = 4f
+            set5.fillAlpha = 65
+            set5.enableDashedLine(10f, 10f, 0f)
+            set5.highLightColor = Color.rgb(244, 117, 117)
+
             // create a data object with the data sets
-            val data = LineData(set1, set2, set3, set4)
+            val data = LineData(set1, set2, set3, set4, set5)
             data.setValueTextColor(Color.BLACK)
             data.setValueTextSize(9f)
 
@@ -317,7 +341,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         when (item.itemId) {
 
             R.id.back -> {
-                presenter.backNAv()
+                runBlocking { presenter.backNAv(binding.tvXMax.text.toString().toFloat()) }
             }
 
         }
@@ -325,15 +349,23 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        TODO("Not yet implemented")
+        binding.tvXMax.text = progress.toString()
+        chart = binding.chart1
+        chart.invalidate()
+        setData(1,1f)
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
-        TODO("Not yet implemented")
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        TODO("Not yet implemented")
+
+    }
+
+    override fun onValueSelected(e: Entry?, h: Highlight?) {
+    }
+
+    override fun onNothingSelected() {
     }
 
 

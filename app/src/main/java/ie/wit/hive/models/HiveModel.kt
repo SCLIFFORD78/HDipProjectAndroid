@@ -22,6 +22,7 @@ data class HiveModel(@PrimaryKey(autoGenerate = true) var id: Long = 0,
                      var type: String = "",
                      var dateRegistered: String = floor((System.currentTimeMillis()/1000).toDouble()).toLong().toString(),
                      var sensorNumber: String = "",
+                     var tempAlarm: Float = 18f,
                      @Embedded var location : Location = Location()): Parcelable
 
 

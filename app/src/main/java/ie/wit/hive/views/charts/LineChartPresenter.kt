@@ -36,8 +36,8 @@ import timber.log.Timber.i
 
 class LineChartPresenter(private val view: LineChartView) {
     var app: MainApp = view.application as MainApp
-    private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
-    private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var refreshIntentLauncher: ActivityResultLauncher<Intent>
+    private lateinit var editIntentLauncher: ActivityResultLauncher<Intent>
     lateinit var hive: HiveModel
 
     init {
@@ -49,48 +49,21 @@ class LineChartPresenter(private val view: LineChartView) {
         }
     }
 
-    private suspend fun getHive(tagNum:Long):HiveModel{
+    private suspend fun getHive(tagNum: Long): HiveModel {
         hive = app.hives.findByTag(tagNum)
-        return  hive
-    }
-
-    private suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
-    private suspend fun getUsers() = app.users.findAll()
-    //suspend fun findByType(type: String)= app.hives.findByType(type)
-    suspend fun findByType(type: String): List<HiveModel> {
-        val resp: MutableList<HiveModel> = mutableListOf()
-        val hives = getHives()
-        if (hives != null) {
-            for (hive in hives) if(hive.type == type) {
-                resp.add(0,hive)
-            }
-        }
-        return if (resp.isNotEmpty()){
-            resp
-        } else emptyList()
-    }
-
-    suspend fun getHiveByTag(tag:Long):List<HiveModel>{
-        var list : ArrayList<HiveModel> = arrayListOf()
-        var hives = getHives()
-        val foundhive = hives?.find { p -> p.tag == tag }
-        if (foundhive != null) {
-            list.add(0,foundhive)
-        }
-
-        return list
+        return hive
     }
 
 
-
-    fun backNAv(){
+    suspend fun backNAv(tempAlarm: Float) {
         val launcherIntent = Intent(view, HiveView::class.java)
         launcherIntent.putExtra("hive_edit", hive.tag)
-
+        if (tempAlarm != hive.tempAlarm) hive.tempAlarm = tempAlarm
+        app.hives.update(hive)
         refreshIntentLauncher.launch(launcherIntent)
     }
 
-    suspend fun doLogout(){
+    suspend fun doLogout() {
         FirebaseAuth.getInstance().signOut()
         app.hives.clear()
         app.users.clear()
@@ -102,18 +75,19 @@ class LineChartPresenter(private val view: LineChartView) {
         refreshIntentLauncher =
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             {
-                GlobalScope.launch(Dispatchers.Main){
+                GlobalScope.launch(Dispatchers.Main) {
                     //getHives()
                 }
-                GlobalScope.launch(Dispatchers.Main){
-                    getUsers()
+                GlobalScope.launch(Dispatchers.Main) {
+                    //getUsers()
                 }
             }
     }
+
     private fun registerEditCallback() {
         editIntentLauncher =
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            {  }
+            { }
 
     }
 }
