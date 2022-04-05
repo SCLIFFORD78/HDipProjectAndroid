@@ -232,7 +232,10 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         for (value in values) {
             if (value.asJsonObject.get("Temperature").asFloat < presenter.hive.tempAlarm && !setAlarm) {
                 alm.hiveid = presenter.hive.fbid
-                alm.alarmEvent = value.asString
+                alm.alarmEvent = value.toString()
+                alm.dateActive = value.asJsonObject.get("Temperature").toString()
+                alm.recordedValue = value.asJsonObject.get("Temperature").toString().toFloat()
+                alm.tempAlarm = presenter.hive.tempAlarm
                 alarmEvents.add(alm.copy())
                 setAlarm = true
 

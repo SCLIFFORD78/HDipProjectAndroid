@@ -28,6 +28,7 @@ class HiveListPresenter(private val view: HiveListView) {
 
     suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
     suspend fun getUsers() = app.users.findAll()
+    suspend fun getAlarms() = app.hives.findAllAlarms()
     //suspend fun findByType(type: String)= app.hives.findByType(type)
     suspend fun findByType(type: String): List<HiveModel> {
         val resp: MutableList<HiveModel> = mutableListOf()

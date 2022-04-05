@@ -16,7 +16,11 @@ data class AlarmEvents(
     var alarmEvent: String = "",
     var act: Boolean = false,
     var fbid: String = "",
-    var hiveid: String = ""
+    var hiveid: String = "",
+    var tempAlarm: Float = 0f,
+    var dateActive: String = "",
+    var recordedValue: Float = 0f,
+    var dateLogged: String = floor((System.currentTimeMillis() / 1000).toDouble()).toLong().toString()
 ) : Parcelable
 
 

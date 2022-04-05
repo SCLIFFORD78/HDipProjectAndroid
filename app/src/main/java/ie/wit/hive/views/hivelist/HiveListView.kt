@@ -201,14 +201,14 @@ class HiveListView : AppCompatActivity(), HiveListener {
         if (tag > 0 && tag != null) {
             GlobalScope.launch(Dispatchers.Main) {
                 binding.recyclerView.adapter =
-                    HiveAdapter(presenter.getHiveByTag(tag), this@HiveListView)
+                    HiveAdapter(presenter.getHiveByTag(tag),presenter.getAlarms(), this@HiveListView)
             }
             hideProgress()
             checkSwipeRefresh()
         } else {
             GlobalScope.launch(Dispatchers.Main) {
                 binding.recyclerView.adapter =
-                    presenter.getHives()?.let { HiveAdapter(it, this@HiveListView) }
+                    presenter.getHives()?.let { HiveAdapter(it,presenter.getAlarms(), this@HiveListView) }
 
             }
             hideProgress()
@@ -221,7 +221,7 @@ class HiveListView : AppCompatActivity(), HiveListener {
     private fun updateRecyclerViewHiveType(type: String) {
         GlobalScope.launch(Dispatchers.Main) {
             binding.recyclerView.adapter =
-                HiveAdapter(presenter.findByType(type), this@HiveListView)
+                HiveAdapter(presenter.findByType(type),presenter.getAlarms(), this@HiveListView)
         }
 
     }

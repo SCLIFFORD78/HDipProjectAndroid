@@ -109,6 +109,10 @@ class HiveFireStore(val context: Context) : HiveStore {
         return num
     }
 
+    override suspend fun findAllAlarms(): List<AlarmEvents> {
+        return alarms
+    }
+
     override suspend fun createAlarm(alarm: AlarmEvents) {
         val key = db.child("alarms").push().key
         key?.let {
@@ -116,6 +120,16 @@ class HiveFireStore(val context: Context) : HiveStore {
             alarms.add(alarm)
             db.child("alarms").child(key).setValue(alarm)
         }
+    }
+
+    override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
+        val resp: MutableList<AlarmEvents> = mutableListOf()
+        for (alarm in alarms) if(alarm.hiveid == fbid) {
+            resp.add(0,alarm)
+        }
+        return if (resp.isNotEmpty()){
+            resp
+        } else emptyList()
     }
 
     fun fetchHives(hivesReady: () -> Unit) {

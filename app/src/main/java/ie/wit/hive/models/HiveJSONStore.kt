@@ -124,7 +124,15 @@ class HiveJSONStore(private val context: Context) : HiveStore {
         return num
     }
 
+    override suspend fun findAllAlarms(): List<AlarmEvents> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun createAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
         TODO("Not yet implemented")
     }
 

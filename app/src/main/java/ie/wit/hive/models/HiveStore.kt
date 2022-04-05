@@ -15,5 +15,7 @@ interface HiveStore {
     suspend fun deleteRecordData(hive: HiveModel)
     suspend fun clear()
     suspend fun getTag():Long
+    suspend fun findAllAlarms():List<AlarmEvents>
     suspend fun createAlarm(alarm:AlarmEvents)
+    suspend fun getHiveAlarms(fbid:String):List<AlarmEvents>
 }
