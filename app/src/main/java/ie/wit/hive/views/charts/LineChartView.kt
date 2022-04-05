@@ -22,8 +22,11 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import ie.wit.hive.R
 import ie.wit.hive.databinding.ActivityLinechartBinding
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.weather.WeatherHistoryReport
 import ie.wit.hive.weather.readWeatherHistory
@@ -37,11 +40,10 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
     private lateinit var binding: ActivityLinechartBinding
     private lateinit var presenter: LineChartPresenter
     lateinit var hive: HiveModel
-    private lateinit var weatherHistory : ArrayList<WeatherHistoryReport>
+    private lateinit var weatherHistory: ArrayList<WeatherHistoryReport>
     private lateinit var chart: LineChart
     val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
-    lateinit var ll1 : LimitLine
-
+    lateinit var ll1: LimitLine
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,7 +114,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         // if disabled, scaling can be done on x- and y-axis separately
 
         // if disabled, scaling can be done on x- and y-axis separately
-        chart.setPinchZoom(true)
+        chart.setPinchZoom(false)
 
         // set an alternative background color
 
@@ -178,8 +180,6 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         rightAxis.isGranularityEnabled = false
 
 
-
-
     }
 
     private fun setData(count: Int, range: Float) {
@@ -198,8 +198,18 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
         val formattedTime = arrayListOf<String>()
 
-        tempLimit.add(Entry(weatherHistory[0].timeStamp.toFloat(),binding.tvXMax.text.toString().toFloat()))
-        tempLimit.add(Entry(weatherHistory[weatherHistory.size-1].timeStamp.toFloat(),binding.tvXMax.text.toString().toFloat()))
+        tempLimit.add(
+            Entry(
+                weatherHistory[0].timeStamp.toFloat(),
+                binding.tvXMax.text.toString().toFloat()
+            )
+        )
+        tempLimit.add(
+            Entry(
+                weatherHistory[weatherHistory.size - 1].timeStamp.toFloat(),
+                binding.tvXMax.text.toString().toFloat()
+            )
+        )
 
         for (value in weatherHistory) {
             ambientTempData.add(
@@ -216,7 +226,20 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             )
         }
 
+        var setAlarm = false
+        var alarmEvents = arrayListOf<AlarmEvents>()
+        var alm : AlarmEvents = AlarmEvents()
         for (value in values) {
+            if (value.asJsonObject.get("Temperature").asFloat < presenter.hive.tempAlarm && !setAlarm) {
+                alm.hiveid = presenter.hive.fbid
+                alm.alarmEvent = value.asString
+                alarmEvents.add(alm.copy())
+                setAlarm = true
+
+            }
+            if (value.asJsonObject.get("Temperature").asFloat > presenter.hive.tempAlarm && setAlarm) {
+                setAlarm = false
+            }
             tempData.add(
                 Entry(
                     value.asJsonObject.get("timeStamp").asFloat,
@@ -232,6 +255,9 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             val recordTime = sdf.format(value.asJsonObject.get("timeStamp").asFloat * 1000)
             formattedTime.add(recordTime)
 
+        }
+        for(i in 0 until alarmEvents.size){
+            runBlocking { presenter.addAlarm(alarmEvents[i])}
         }
 
         val set1: LineDataSet
@@ -352,7 +378,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         binding.tvXMax.text = progress.toString()
         chart = binding.chart1
         chart.invalidate()
-        setData(1,1f)
+        setData(1, 1f)
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -366,6 +392,9 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
     }
 
     override fun onNothingSelected() {
+    }
+
+    override fun onBackPressed() {
     }
 
 

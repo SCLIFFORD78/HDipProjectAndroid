@@ -94,6 +94,10 @@ class HiveMemStore : HiveStore {
         return num
     }
 
+    override suspend fun createAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
+
 
 
 }

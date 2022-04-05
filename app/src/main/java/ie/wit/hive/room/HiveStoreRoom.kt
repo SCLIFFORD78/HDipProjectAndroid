@@ -3,6 +3,7 @@ package ie.wit.hive.room
 import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.models.HiveStore
 
@@ -69,5 +70,9 @@ class HiveStoreRoom(val context: Context) : HiveStore {
             }
         }
         return num
+    }
+
+    override suspend fun createAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
     }
 }

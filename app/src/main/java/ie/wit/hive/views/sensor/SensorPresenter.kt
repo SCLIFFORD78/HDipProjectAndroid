@@ -20,6 +20,7 @@ import com.google.gson.JsonObject
 import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
@@ -71,7 +72,8 @@ class SensorPresenter(private val view: SensorView) {
 
     suspend fun doUpdateHive(values: ArrayList<JsonObject>) {
         //Gson().fromJson(value, JsonObject::class.java)
-        var alarmEvents = arrayListOf<JsonObject>()
+        var alarmEvents = arrayListOf<AlarmEvents>()
+        var alm:AlarmEvents = AlarmEvents()
         var tempAlarm = hive.tempAlarm
         var alarmDetected = false
         var test = hive.recordedData
@@ -79,13 +81,15 @@ class SensorPresenter(private val view: SensorView) {
             if (i == 0 && test.isBlank()) {
                 hive.recordedData = values[i].toString()
                 if (values[1].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
-                    alarmEvents.add(values[i])
+                    alm.hiveid = hive.fbid
+                    alm.alarmEvent = values[i].toString()
                     alarmDetected = true
                 }
             } else {
                 hive.recordedData += "," + values[i].toString()
                 if (values[1].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
-                    alarmEvents.add(values[i])
+                    alm.hiveid = hive.fbid
+                    alm.alarmEvent = values[i].toString()
                     alarmDetected = true
                 }
                 if (values[1].get("Temperature").asFloat > tempAlarm && alarmDetected) {
@@ -96,11 +100,7 @@ class SensorPresenter(private val view: SensorView) {
 
         }
         for (i in 0 until alarmEvents.size){
-            if (i == 0 && hive.alarmEvents.isBlank()){
-                hive.alarmEvents = alarmEvents[i].toString()
-            }else{
-                hive.alarmEvents += "," + alarmEvents[i].toString()
-            }
+            app.hives.createAlarm(alarmEvents[i])
         }
         print(hive)
         runBlocking { app.hives.deleteRecordData(hive) }
