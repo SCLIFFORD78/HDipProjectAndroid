@@ -78,6 +78,13 @@ class HiveView : AppCompatActivity() {
         } else {
             deleteMenu.setVisible(false)
         }
+        var alarmCount:Int = 0
+        for(alarm in presenter.alarms){
+            if(alarm.hiveid == presenter.hive.fbid){
+                alarmCount +=1
+            }
+        }
+        menu.findItem(R.id.item_alarms).isVisible = alarmCount > 0
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -113,6 +120,9 @@ class HiveView : AppCompatActivity() {
             }
             R.id.bluetooth -> {
                 presenter.doShowBleScanner()
+            }
+            R.id.item_alarms -> {
+                presenter.doShowAlarms()
             }
 
         }

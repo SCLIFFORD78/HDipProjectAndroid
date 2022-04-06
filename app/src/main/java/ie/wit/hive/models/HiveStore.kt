@@ -18,4 +18,5 @@ interface HiveStore {
     suspend fun findAllAlarms():List<AlarmEvents>
     suspend fun createAlarm(alarm:AlarmEvents)
     suspend fun getHiveAlarms(fbid:String):List<AlarmEvents>
+    suspend fun ackAlarm(alarm: AlarmEvents)
 }

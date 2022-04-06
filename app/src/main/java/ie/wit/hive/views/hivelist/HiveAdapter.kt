@@ -30,7 +30,7 @@ class HiveAdapter constructor(private var hives: List<HiveModel>,private var ala
         val hive = hives[holder.adapterPosition]
         var alarmCount:Int = 0
         for(alarm in alarms){
-            if(alarm.hiveid == hive.fbid){
+            if(alarm.hiveid == hive.fbid && !alarm.act){
                 alarmCount +=1
             }
         }

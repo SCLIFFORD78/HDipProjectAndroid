@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:elevation="24dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/alarmDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.084"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.518" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/alarmDate"
+            app:layout_constraintEnd_toEndOf="@+id/alarmDate"
+            app:layout_constraintStart_toStartOf="@+id/alarmDate"
+            app:srcCompat="@drawable/ic_baseline_active_alarm_time_24" />
+
+        <TextView
+            android:id="@+id/alarmRecordedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/alarmDate"
+            app:layout_constraintStart_toEndOf="@+id/alarmDate"
+            app:layout_constraintTop_toTopOf="@+id/alarmDate" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/alarmRecordedTime"
+            app:layout_constraintEnd_toEndOf="@+id/alarmRecordedTime"
+            app:layout_constraintHorizontal_bias="0.588"
+            app:layout_constraintStart_toStartOf="@+id/alarmRecordedTime"
+            app:srcCompat="@drawable/ic_logged_alarm_time_24" />
+
+        <ImageView
+            android:id="@+id/notAck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/alarmToggleAck"
+            app:layout_constraintStart_toEndOf="@+id/alarmToggleAck"
+            app:layout_constraintTop_toTopOf="@+id/alarmToggleAck"
+            app:srcCompat="@drawable/ic_alarm_not_ack_24" />
+
+        <ImageView
+            android:id="@+id/alarmAck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/alarmToggleAck"
+            app:layout_constraintStart_toEndOf="@+id/alarmToggleAck"
+            app:layout_constraintTop_toTopOf="@+id/alarmToggleAck"
+            app:srcCompat="@drawable/ic_alarm_ack_24" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/recordedTemp"
+            app:layout_constraintEnd_toEndOf="@+id/recordedTemp"
+            app:layout_constraintHorizontal_bias="0.411"
+            app:layout_constraintStart_toStartOf="@+id/recordedTemp"
+            app:srcCompat="@drawable/ic_baseline_device_thermostat_24" />
+
+        <TextView
+            android:id="@+id/recordedTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/alarmRecordedTime"
+            app:layout_constraintStart_toEndOf="@+id/alarmRecordedTime"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+        <TextView
+            android:id="@+id/tempSetPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/recordedTemp"
+            app:layout_constraintStart_toEndOf="@+id/recordedTemp"
+            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/tempSetPoint"
+            app:layout_constraintEnd_toEndOf="@+id/tempSetPoint"
+            app:layout_constraintStart_toStartOf="@+id/tempSetPoint"
+            app:srcCompat="@drawable/ic_setpoint_24" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="alarmDate,imageView" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="imageView3,alarmRecordedTime" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="imageView7,recordedTemp" />
+
+        <Button
+            android:id="@+id/alarmToggleAck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/alarmDate" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

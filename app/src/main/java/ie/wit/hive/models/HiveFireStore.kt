@@ -110,7 +110,7 @@ class HiveFireStore(val context: Context) : HiveStore {
     }
 
     override suspend fun findAllAlarms(): List<AlarmEvents> {
-        return alarms
+        return alarms.reversed()
     }
 
     override suspend fun createAlarm(alarm: AlarmEvents) {
@@ -124,12 +124,23 @@ class HiveFireStore(val context: Context) : HiveStore {
 
     override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
         val resp: MutableList<AlarmEvents> = mutableListOf()
-        for (alarm in alarms) if(alarm.hiveid == fbid) {
+        for (alarm in alarms) if(alarm.hiveid == fbid && !alarm.act) {
             resp.add(0,alarm)
         }
         return if (resp.isNotEmpty()){
-            resp
+            resp.reversed()
         } else emptyList()
+    }
+
+    override suspend fun ackAlarm(alarm: AlarmEvents) {
+        var foundAlarm: AlarmEvents = alarms.find { p -> p.fbid == alarm.fbid }!!
+        if (foundAlarm != null) {
+            if (!foundAlarm.act){
+                foundAlarm.act = true
+            }
+        }
+
+        db.child("alarms").child(alarm.fbid+"/act").setValue(true)
     }
 
     fun fetchHives(hivesReady: () -> Unit) {

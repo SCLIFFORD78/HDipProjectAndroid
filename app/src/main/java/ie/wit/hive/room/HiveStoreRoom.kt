@@ -83,4 +83,8 @@ class HiveStoreRoom(val context: Context) : HiveStore {
     override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun ackAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
 }

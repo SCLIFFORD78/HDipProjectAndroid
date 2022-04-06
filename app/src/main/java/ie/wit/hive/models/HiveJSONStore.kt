@@ -136,6 +136,10 @@ class HiveJSONStore(private val context: Context) : HiveStore {
         TODO("Not yet implemented")
     }
 
+    override suspend fun ackAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
+
 
 }
 
