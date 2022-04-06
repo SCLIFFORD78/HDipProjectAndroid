@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
@@ -40,6 +41,7 @@ class LineChartPresenter(private val view: LineChartView) {
     private lateinit var editIntentLauncher: ActivityResultLauncher<Intent>
     lateinit var hive: HiveModel
 
+
     init {
         registerEditCallback()
         registerRefreshCallback()
@@ -54,12 +56,18 @@ class LineChartPresenter(private val view: LineChartView) {
         return hive
     }
 
+    suspend fun addAlarm(alarm:AlarmEvents){
+        app.hives.createAlarm(alarm)
+    }
+
 
     suspend fun backNAv(tempAlarm: Float) {
         val launcherIntent = Intent(view, HiveView::class.java)
         launcherIntent.putExtra("hive_edit", hive.tag)
-        if (tempAlarm != hive.tempAlarm) hive.tempAlarm = tempAlarm
-        app.hives.update(hive)
+        if (tempAlarm != hive.tempAlarm) {
+            hive.tempAlarm = tempAlarm
+            app.hives.update(hive)
+        }
         refreshIntentLauncher.launch(launcherIntent)
     }
 

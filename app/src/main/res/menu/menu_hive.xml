@@ -3,12 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/item_alarms"
+        android:icon="@drawable/ic_baseline_alarm_24"
+        android:iconTint="@android:color/holo_red_dark"
+        android:title="alarms"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/bluetooth"
         android:icon="@android:drawable/stat_sys_data_bluetooth"
         android:title="scan"
         android:visible="false"
         app:showAsAction="always"
-        android:iconTint="@color/black"/>
+        />
 
     <item
         android:id="@+id/item_chart"

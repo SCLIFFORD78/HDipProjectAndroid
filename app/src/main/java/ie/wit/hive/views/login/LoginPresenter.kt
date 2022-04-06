@@ -42,6 +42,7 @@ class LoginPresenter (val view: LoginView)  {
     fun doGoogleLoginRedirect(){
         view.showProgress()
         if (fireStore != null && userFireStore != null) {
+            fireStore!!.fetchAlarms {  }
             fireStore!!.fetchHives {
                 userFireStore!!.fetchUsers {
                     var users = userFireStore!!.users
@@ -73,6 +74,7 @@ class LoginPresenter (val view: LoginView)  {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(view) { task ->
             if (task.isSuccessful) {
                 if (fireStore != null) {
+                    fireStore!!.fetchAlarms {  }
                     fireStore!!.fetchHives {
                         view?.hideProgress()
                         val launcherIntent = Intent(view, HiveListView::class.java)

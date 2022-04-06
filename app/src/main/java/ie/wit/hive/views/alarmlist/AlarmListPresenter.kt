@@ -1,4 +1,4 @@
-package ie.wit.hive.views.hivelist
+package ie.wit.hive.views.alarmlist
 
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
@@ -8,66 +8,59 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ie.wit.hive.main.MainApp
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.views.aboutus.AboutUsView
-import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.login.LoginView
 import ie.wit.hive.views.hive.HiveView
 import ie.wit.hive.views.map.HiveMapView
+import kotlinx.coroutines.runBlocking
 
-class HiveListPresenter(private val view: HiveListView) {
+class AlarmListPresenter(private val view: AlarmListView) {
 
     var app: MainApp = view.application as MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
+    lateinit var hive : HiveModel
 
     init {
         registerEditCallback()
         registerRefreshCallback()
+        if (view.intent.hasExtra("hive_edit")) {
+            var tagNum = view.intent.extras!!["hive_edit"] as Long
+            hive = runBlocking { getHive(tagNum) }
+        }
     }
 
-    suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
-    suspend fun getUsers() = app.users.findAll()
-    suspend fun getAlarms() = app.hives.findAllAlarms()
+    private suspend fun getHive(tagNum:Long):HiveModel{
+        hive = app.hives.findByTag(tagNum)
+        return  hive
+    }
+
+    suspend fun getAlarms() = app.hives.getHiveAlarms(hive.fbid)
     //suspend fun findByType(type: String)= app.hives.findByType(type)
-    suspend fun findByType(type: String): List<HiveModel> {
-        val resp: MutableList<HiveModel> = mutableListOf()
-        val hives = getHives()
-        if (hives != null) {
-            for (hive in hives) if(hive.type == type) {
-                resp.add(0,hive)
-            }
+
+    suspend fun getActiveAlarms():List<AlarmEvents>{
+        val resp: MutableList<AlarmEvents> = mutableListOf()
+        val alarms = getAlarms()
+        for (alarm in alarms){
+            if (!alarm.act)resp.add(resp.size,alarm)
         }
-        view.hideProgress()
         return if (resp.isNotEmpty()){
             resp
         } else emptyList()
-
     }
 
-    suspend fun getHiveByTag(tag:Long):List<HiveModel>{
-        var list : ArrayList<HiveModel> = arrayListOf()
-        var hives = getHives()
-        val foundhive = hives?.find { p -> p.tag == tag }
-        if (foundhive != null) {
-            list.add(0,foundhive)
-        }
-        view.hideProgress()
-        return list
-    }
+    suspend fun ackAlarm(alarm:AlarmEvents) = app.hives.ackAlarm(alarm)
 
 
-
-    fun doAddHive() {
-        val launcherIntent = Intent(view, HiveView::class.java)
-        editIntentLauncher.launch(launcherIntent)
-    }
-
-    fun doEditHive(hive: HiveModel) {
+    fun backNAv(){
+        view.showProgress()
         val launcherIntent = Intent(view, HiveView::class.java)
         launcherIntent.putExtra("hive_edit", hive.tag)
-        editIntentLauncher.launch(launcherIntent)
+        refreshIntentLauncher.launch(launcherIntent)
     }
+
 
     fun doShowHivesMap() {
         val launcherIntent = Intent(view, HiveMapView::class.java)
@@ -97,7 +90,7 @@ class HiveListPresenter(private val view: HiveListView) {
                     //getHives()
                 }
                 GlobalScope.launch(Dispatchers.Main){
-                    getUsers()
+                    getAlarms()
                 }
             }
     }

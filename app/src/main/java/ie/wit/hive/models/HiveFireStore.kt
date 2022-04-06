@@ -6,6 +6,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
+import com.google.gson.JsonArray
 import ie.wit.hive.readImageFromPath
 import timber.log.Timber.i
 import java.io.ByteArrayOutputStream
@@ -13,9 +15,11 @@ import java.io.File
 
 class HiveFireStore(val context: Context) : HiveStore {
     val hives = ArrayList<HiveModel>()
+    val alarms = ArrayList<AlarmEvents>()
     lateinit var userId: String
     lateinit var db: DatabaseReference
     lateinit var st: StorageReference
+
     override suspend fun findAll(): List<HiveModel> {
         return hives
     }
@@ -105,6 +109,40 @@ class HiveFireStore(val context: Context) : HiveStore {
         return num
     }
 
+    override suspend fun findAllAlarms(): List<AlarmEvents> {
+        return alarms.reversed()
+    }
+
+    override suspend fun createAlarm(alarm: AlarmEvents) {
+        val key = db.child("alarms").push().key
+        key?.let {
+            alarm.fbid = key
+            alarms.add(alarm)
+            db.child("alarms").child(key).setValue(alarm)
+        }
+    }
+
+    override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
+        val resp: MutableList<AlarmEvents> = mutableListOf()
+        for (alarm in alarms) if(alarm.hiveid == fbid) {
+            resp.add(0,alarm)
+        }
+        return if (resp.isNotEmpty()){
+            resp.reversed()
+        } else emptyList()
+    }
+
+    override suspend fun ackAlarm(alarm: AlarmEvents) {
+        var foundAlarm: AlarmEvents = alarms.find { p -> p.fbid == alarm.fbid }!!
+        if (foundAlarm != null) {
+            if (!foundAlarm.act){
+                foundAlarm.act = true
+            }
+        }
+
+        db.child("alarms").child(alarm.fbid+"/act").setValue(true)
+    }
+
     fun fetchHives(hivesReady: () -> Unit) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(dataSnapshot: DatabaseError) {
@@ -124,6 +162,28 @@ class HiveFireStore(val context: Context) : HiveStore {
         db = FirebaseDatabase.getInstance("https://hdip-65317-default-rtdb.firebaseio.com/").reference
         hives.clear()
         db.child("hives")
+            .addListenerForSingleValueEvent(valueEventListener)
+    }
+
+    fun fetchAlarms(alarmsReady: () -> Unit) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot!!.children.mapNotNullTo(alarms) {
+                    it.getValue<AlarmEvents>(
+                        AlarmEvents::class.java
+                    )
+                }
+                alarmsReady()
+            }
+        }
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        st = FirebaseStorage.getInstance().reference
+        db = FirebaseDatabase.getInstance("https://hdip-65317-default-rtdb.firebaseio.com/").reference
+        alarms.clear()
+        db.child("alarms")
             .addListenerForSingleValueEvent(valueEventListener)
     }
     fun deleteImage(hive: HiveModel){

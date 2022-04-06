@@ -16,9 +16,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
+import ie.wit.hive.views.alarmlist.AlarmListView
 import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.charts.LineChartView
 import ie.wit.hive.views.hivelist.HiveListView
@@ -33,6 +35,7 @@ class HivePresenter(private val view: HiveView) {
     lateinit var hive: HiveModel
     var app: MainApp = view.application as MainApp
     var locationManualyChanged = false;
+    lateinit var alarms:List<AlarmEvents>
 
     //location service
     var locationService: FusedLocationProviderClient =
@@ -51,6 +54,7 @@ class HivePresenter(private val view: HiveView) {
         registerMapCallback()
         registerEditCallback()
 
+
         if (view.intent.hasExtra("hive_edit")) {
             edit = true
             var tagNo = view.intent.extras!!["hive_edit"] as Long
@@ -65,6 +69,7 @@ class HivePresenter(private val view: HiveView) {
             //hive.location.lat = location.lat
             //hive.location.lng = location.lng
         }
+        runBlocking { alarms = app.hives.getHiveAlarms(hive.fbid) }
 
     }
 
@@ -182,6 +187,12 @@ class HivePresenter(private val view: HiveView) {
 
     fun doShowBleScanner() {
         val launcherIntent = Intent(view, BleScanView::class.java)
+        launcherIntent.putExtra("hive_edit", hive.tag)
+        editIntentLauncher.launch(launcherIntent)
+    }
+
+    fun doShowAlarms() {
+        val launcherIntent = Intent(view, AlarmListView::class.java)
         launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }

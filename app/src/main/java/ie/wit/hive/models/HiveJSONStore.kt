@@ -8,6 +8,7 @@ import ie.wit.hive.helpers.*
 import timber.log.Timber
 import java.lang.reflect.Type
 import java.util.*
+import kotlin.collections.ArrayList
 
 const val JSON_FILE = "hives.json"
 val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
@@ -122,6 +123,24 @@ class HiveJSONStore(private val context: Context) : HiveStore {
         }
         return num
     }
+
+    override suspend fun findAllAlarms(): List<AlarmEvents> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun ackAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
+
+
 }
 
 class UriParser : JsonDeserializer<Uri>,JsonSerializer<Uri> {

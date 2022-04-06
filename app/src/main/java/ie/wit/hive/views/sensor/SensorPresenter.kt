@@ -20,6 +20,7 @@ import com.google.gson.JsonObject
 import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
+import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
@@ -35,12 +36,14 @@ import java.util.ArrayList
 
 class SensorPresenter(private val view: SensorView) {
     private val locationRequest = createDefaultLocationRequest()
-    private lateinit var device : BluetoothDevice
+    private lateinit var device: BluetoothDevice
     var app: MainApp = view.application as MainApp
-    lateinit var hive :HiveModel
+    lateinit var hive: HiveModel
+
     //location service
-    var locationService: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(view)
-    private lateinit var editIntentLauncher : ActivityResultLauncher<Intent>
+    var locationService: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(view)
+    private lateinit var editIntentLauncher: ActivityResultLauncher<Intent>
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     init {
@@ -53,29 +56,51 @@ class SensorPresenter(private val view: SensorView) {
 
     }
 
-    fun getBLEdevice():BluetoothDevice{
-        device =  view.intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)!!
+    fun getBLEdevice(): BluetoothDevice {
+        device = view.intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)!!
         return device
     }
 
-    suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let { app.hives.findByOwner(it.uid).sortedBy { it.tag } }
-
-    private suspend fun getHive(tagNum:Long):HiveModel{
-        hive = app.hives.findByTag(tagNum)
-        return  hive
+    suspend fun getHives() = FirebaseAuth.getInstance().currentUser?.let {
+        app.hives.findByOwner(it.uid).sortedBy { it.tag }
     }
 
-    suspend fun doUpdateHive(values: ArrayList<JsonObject>){
-        //Gson().fromJson(value, JsonObject::class.java)
+    private suspend fun getHive(tagNum: Long): HiveModel {
+        hive = app.hives.findByTag(tagNum)
+        return hive
+    }
 
+    suspend fun doUpdateHive(values: ArrayList<JsonObject>) {
+        //Gson().fromJson(value, JsonObject::class.java)
+        var alarmEvents = arrayListOf<AlarmEvents>()
+        var alm:AlarmEvents = AlarmEvents()
+        var tempAlarm = hive.tempAlarm
+        var alarmDetected = false
         var test = hive.recordedData
         for (i in 0 until values.size) {
-            if(i==0 && test.isBlank()){
-                hive.recordedData= values[i].toString()
-            }else{
-                hive.recordedData += ","+ values[i].toString()
+            if (i == 0 && test.isBlank()) {
+                hive.recordedData = values[i].toString()
+                if (values[1].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
+                    alm.hiveid = hive.fbid
+                    alm.alarmEvent = values[i].toString()
+                    alarmDetected = true
+                }
+            } else {
+                hive.recordedData += "," + values[i].toString()
+                if (values[1].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
+                    alm.hiveid = hive.fbid
+                    alm.alarmEvent = values[i].toString()
+                    alarmDetected = true
+                }
+                if (values[1].get("Temperature").asFloat > tempAlarm && alarmDetected) {
+                    alarmDetected = false
+                }
+
             }
 
+        }
+        for (i in 0 until alarmEvents.size){
+            app.hives.createAlarm(alarmEvents[i])
         }
         print(hive)
         runBlocking { app.hives.deleteRecordData(hive) }
@@ -89,11 +114,11 @@ class SensorPresenter(private val view: SensorView) {
     }
 
 
-
     suspend fun doAddOrSave(type: String, description: String) {
         view.finish()
 
     }
+
     fun doCancel() {
         view.finish()
     }
@@ -106,7 +131,7 @@ class SensorPresenter(private val view: SensorView) {
     private fun registerEditCallback() {
         editIntentLauncher =
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            {  }
+            { }
 
     }
 
@@ -116,22 +141,13 @@ class SensorPresenter(private val view: SensorView) {
     }
 
 
-
-    suspend fun doLogout(){
+    suspend fun doLogout() {
         FirebaseAuth.getInstance().signOut()
         app.hives.clear()
         app.users.clear()
         val launcherIntent = Intent(view, LoginView::class.java)
         editIntentLauncher.launch(launcherIntent)
     }
-
-
-
-
-
-
-
-
 
 
 }
