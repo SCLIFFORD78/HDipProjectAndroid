@@ -40,6 +40,17 @@ class AlarmListPresenter(private val view: AlarmListView) {
     suspend fun getAlarms() = app.hives.getHiveAlarms(hive.fbid)
     //suspend fun findByType(type: String)= app.hives.findByType(type)
 
+    suspend fun getActiveAlarms():List<AlarmEvents>{
+        val resp: MutableList<AlarmEvents> = mutableListOf()
+        val alarms = getAlarms()
+        for (alarm in alarms){
+            if (!alarm.act)resp.add(resp.size,alarm)
+        }
+        return if (resp.isNotEmpty()){
+            resp
+        } else emptyList()
+    }
+
     suspend fun ackAlarm(alarm:AlarmEvents) = app.hives.ackAlarm(alarm)
 
 

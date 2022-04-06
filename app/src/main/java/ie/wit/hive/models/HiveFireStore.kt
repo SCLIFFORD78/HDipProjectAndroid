@@ -124,7 +124,7 @@ class HiveFireStore(val context: Context) : HiveStore {
 
     override suspend fun getHiveAlarms(fbid: String): List<AlarmEvents> {
         val resp: MutableList<AlarmEvents> = mutableListOf()
-        for (alarm in alarms) if(alarm.hiveid == fbid && !alarm.act) {
+        for (alarm in alarms) if(alarm.hiveid == fbid) {
             resp.add(0,alarm)
         }
         return if (resp.isNotEmpty()){

@@ -1,24 +1,24 @@
 package ie.wit.hive.views.alarmlist
 
 import android.os.Bundle
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
 import android.widget.SearchView
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.*
 import ie.wit.hive.R
-import ie.wit.hive.adapters.HiveAdapter
-import ie.wit.hive.adapters.HiveListener
 import ie.wit.hive.databinding.ActivityAlarmListBinding
-import ie.wit.hive.databinding.ActivityHiveListBinding
+import ie.wit.hive.databinding.SwitchItemBinding
 import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.AlarmEvents
-import ie.wit.hive.models.HiveModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber.i
 
 class AlarmListView : AppCompatActivity(), AlarmListener {
@@ -26,6 +26,8 @@ class AlarmListView : AppCompatActivity(), AlarmListener {
     lateinit var app: MainApp
     lateinit var binding: ActivityAlarmListBinding
     lateinit var presenter: AlarmListPresenter
+    private lateinit var alarmsToggle:SwitchCompat
+    var alarmSwitchState = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -36,16 +38,30 @@ class AlarmListView : AppCompatActivity(), AlarmListener {
         //update Toolbar title
         binding.toolbar.title = title
         val user = FirebaseAuth.getInstance().currentUser
-
-
-
+        binding.alarmsToggle .setOnClickListener {
+            if (alarmSwitchState){
+                updateRecyclerView(false)
+                alarmSwitchState = false
+            }else{
+                updateRecyclerView(true)
+                alarmSwitchState = true}
+        }
 
         presenter = AlarmListPresenter(this)
         val layoutManager = LinearLayoutManager(this)
+
         binding.alarmRecycleView.layoutManager = layoutManager
-        updateRecyclerView()
+        updateRecyclerView(true)
 
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_cancel, menu)
+
+
+
+        return super.onCreateOptionsMenu(menu)
     }
 
 
@@ -53,7 +69,11 @@ class AlarmListView : AppCompatActivity(), AlarmListener {
 
         //update the view
         super.onResume()
-        updateRecyclerView()
+        if (!alarmSwitchState){
+            updateRecyclerView(false)
+        }else{
+            updateRecyclerView(true)
+        }
         binding.alarmRecycleView.adapter?.notifyDataSetChanged()
         i("recyclerView onResume")
 
@@ -74,7 +94,12 @@ class AlarmListView : AppCompatActivity(), AlarmListener {
     override fun onAlarmClick(alarm: AlarmEvents) {
         showProgress()
         runBlocking { presenter.ackAlarm(alarm) }
-        updateRecyclerView()
+        if (!alarmSwitchState){
+            updateRecyclerView(false)
+        }else{
+            updateRecyclerView(true)
+        }
+
 
     }
 
@@ -83,18 +108,19 @@ class AlarmListView : AppCompatActivity(), AlarmListener {
     override fun onBackPressed() {
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_cancel, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
 
 
 
-    private fun updateRecyclerView() {
+
+    private fun updateRecyclerView(activeAlarms:Boolean) {
             GlobalScope.launch(Dispatchers.Main) {
+                if (activeAlarms){
                 binding.alarmRecycleView.adapter =
-                    AlarmAdapter(presenter.getAlarms(),this@AlarmListView)
+                    AlarmAdapter(presenter.getActiveAlarms(),this@AlarmListView)
+                }else{
+                    binding.alarmRecycleView.adapter =
+                        AlarmAdapter(presenter.getAlarms(),this@AlarmListView)
+                }
             }
             hideProgress()
 

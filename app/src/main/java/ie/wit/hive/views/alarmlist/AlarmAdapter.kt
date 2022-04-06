@@ -44,8 +44,8 @@ class AlarmAdapter constructor(private var alarms: List<AlarmEvents>,
 
         fun bind(alarm: AlarmEvents, listener: AlarmListener) {
 
-            binding.alarmDate.text = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(alarm.dateActive.toLong()*1000)
-            binding.alarmRecordedTime.text = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(alarm.dateLogged.toLong()*1000)
+            binding.alarmDate.text = SimpleDateFormat("dd/MM/YY HH:mm:ss").format(alarm.dateActive.toLong()*1000)
+            binding.alarmRecordedTime.text = SimpleDateFormat("dd/MM/YY HH:mm:ss").format(alarm.dateLogged.toLong()*1000)
             binding.recordedTemp.text = "%.2f".format(alarm.recordedValue)+"\u00B0"+"C"
             binding.tempSetPoint.text = "%.2f".format(alarm.tempAlarm)+"\u00B0"+"C"
 
