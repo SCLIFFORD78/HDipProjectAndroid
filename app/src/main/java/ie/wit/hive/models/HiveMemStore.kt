@@ -94,7 +94,7 @@ class HiveMemStore : HiveStore {
         return num
     }
 
-    override suspend fun findAllAlarms(): List<AlarmEvents> {
+    override suspend fun getAllAlarms(): List<AlarmEvents> {
         TODO("Not yet implemented")
     }
 

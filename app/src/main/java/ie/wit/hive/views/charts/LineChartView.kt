@@ -259,8 +259,10 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             formattedTime.add(recordTime)
 
         }
-        for(i in 0 until alarmEvents.size){
-            runBlocking { presenter.addAlarm(alarmEvents[i])}
+        var test = alarmEvents.toSet().toList()
+
+        for(element in test){
+            runBlocking { presenter.addAlarm(element.copy())}
         }
 
         val set1: LineDataSet

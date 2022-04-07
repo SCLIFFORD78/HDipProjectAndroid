@@ -109,7 +109,7 @@ class HiveFireStore(val context: Context) : HiveStore {
         return num
     }
 
-    override suspend fun findAllAlarms(): List<AlarmEvents> {
+    override suspend fun getAllAlarms(): List<AlarmEvents> {
         return alarms.reversed()
     }
 
