@@ -6,6 +6,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
+import timber.log.Timber
+
 
 fun showImagePicker(intentLauncher : ActivityResultLauncher<Intent>) {
 
@@ -30,5 +35,6 @@ fun readImageFromPath(context: Context, path: String) : Bitmap? {
 
         }
     }
+
     return bitmap
 }

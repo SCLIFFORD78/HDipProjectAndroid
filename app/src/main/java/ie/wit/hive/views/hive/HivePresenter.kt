@@ -2,9 +2,14 @@ package ie.wit.hive.views.hive
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -206,7 +211,7 @@ class HivePresenter(private val view: HiveView) {
                     AppCompatActivity.RESULT_OK -> {
                         if (result.data != null) {
                             Timber.i("Got Result ${result.data!!.data}")
-                            hive.image = result.data!!.data!!.toString()
+                            runBlocking {  uploadCloudinary(result.data!!.data.toString().toUri(),hive.fbid) }
                             view.updateImage(hive.image)
                         }
                     }
@@ -256,5 +261,41 @@ class HivePresenter(private val view: HiveView) {
             view.registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { }
 
+    }
+
+    private fun uploadCloudinary(uri: Uri, fbid:String){
+        val requestId: String = MediaManager.get().upload(uri).callback(object : UploadCallback {
+            override fun onStart(requestId: String) {
+                // your code here
+            }
+
+            override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {
+                // example code starts here
+                val progress = bytes.toDouble() / totalBytes
+                // post progress to app UI (e.g. progress bar, notification)
+                // example code ends here
+                Timber.i("cloud $progress")
+            }
+
+            override fun onSuccess(requestId: String, resultData: Map<*, *>?) {
+                // your code here
+                if (resultData != null) {
+                    hive.image = resultData.get("url") .toString()
+                    Timber.i(resultData.get("url") .toString())
+                }
+            }
+
+            override fun onError(requestId: String?, error: ErrorInfo?) {
+                // your code here
+                Timber.i("cloud $error")
+            }
+
+            override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                // your code here
+            }
+        }).unsigned("hive_tracker")
+            .option("cloud_name", "digabwjfx")
+            .option("tags", fbid)
+            .dispatch()
     }
 }

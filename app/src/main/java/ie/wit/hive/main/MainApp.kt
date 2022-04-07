@@ -1,6 +1,7 @@
 package ie.wit.hive.main
 
 import android.app.Application
+import com.cloudinary.android.MediaManager
 import ie.wit.hive.models.*
 import ie.wit.hive.room.HiveStoreRoom
 import timber.log.Timber
@@ -17,5 +18,6 @@ class MainApp : Application() {
         hives = HiveFireStore(applicationContext)
         users = UserFireStore(applicationContext)
         i("Hive started")
+        MediaManager.init(this);
     }
 }
