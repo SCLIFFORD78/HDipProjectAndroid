@@ -226,23 +226,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             )
         }
 
-        var setAlarm = false
-        var alarmEvents = arrayListOf<AlarmEvents>()
-        var alm : AlarmEvents = AlarmEvents()
         for (value in values) {
-            if (value.asJsonObject.get("Temperature").asFloat < presenter.hive.tempAlarm && !setAlarm) {
-                alm.hiveid = presenter.hive.fbid
-                alm.alarmEvent = value.toString()
-                alm.dateActive = value.asJsonObject.get("timeStamp").toString()
-                alm.recordedValue = value.asJsonObject.get("Temperature").toString().toFloat()
-                alm.tempAlarm = presenter.hive.tempAlarm
-                alarmEvents.add(alm.copy())
-                setAlarm = true
-
-            }
-            if (value.asJsonObject.get("Temperature").asFloat > presenter.hive.tempAlarm && setAlarm) {
-                setAlarm = false
-            }
             tempData.add(
                 Entry(
                     value.asJsonObject.get("timeStamp").asFloat,
@@ -259,11 +243,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             formattedTime.add(recordTime)
 
         }
-        var test = alarmEvents.toSet().toList()
 
-        for(element in test){
-            runBlocking { presenter.addAlarm(element.copy())}
-        }
 
         val set1: LineDataSet
         val set2: LineDataSet

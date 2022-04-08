@@ -212,7 +212,7 @@ class HivePresenter(private val view: HiveView) {
                         if (result.data != null) {
                             Timber.i("Got Result ${result.data!!.data}")
                             runBlocking {  uploadCloudinary(result.data!!.data.toString().toUri(),hive.fbid) }
-                            view.updateImage(hive.image)
+                            //view.updateImage(hive.image)
                         }
                     }
                     AppCompatActivity.RESULT_CANCELED -> {}
@@ -262,12 +262,12 @@ class HivePresenter(private val view: HiveView) {
             { }
 
     }
-
     private fun uploadCloudinary(uri: Uri, fbid:String){
         val requestId: String = MediaManager.get().upload(uri).callback(object : UploadCallback {
             override fun onStart(requestId: String) {
                 // your code here
             }
+
 
             override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {
                 // example code starts here
@@ -281,6 +281,7 @@ class HivePresenter(private val view: HiveView) {
                 // your code here
                 if (resultData != null) {
                     hive.image = resultData.get("url") .toString()
+                    view.updateImage(hive.image)
                     Timber.i(resultData.get("url") .toString())
                 }
             }

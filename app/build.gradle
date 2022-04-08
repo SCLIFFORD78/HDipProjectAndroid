@@ -108,7 +108,7 @@ dependencies {
 
     // All:
     implementation 'com.cloudinary:cloudinary-android:2.1.0'
-
+    implementation 'com.cloudinary:cloudinary-android-download:2.1.0'
 
 
 }
