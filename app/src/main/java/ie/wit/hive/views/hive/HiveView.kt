@@ -1,26 +1,26 @@
 package ie.wit.hive.views.hive
 
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.ui.AppBarConfiguration
+import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
+import com.cloudinary.android.MediaManager
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import ie.wit.hive.R
+import ie.wit.hive.cloudinary.Cloudinary
+import ie.wit.hive.databinding.ActivityHiveBinding
+import ie.wit.hive.models.HiveModel
+import ie.wit.hive.models.Location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ie.wit.hive.R
-import ie.wit.hive.databinding.ActivityHiveBinding
-import ie.wit.hive.models.Location
-import ie.wit.hive.models.HiveModel
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.alert
 import timber.log.Timber.i
+
 
 class HiveView : AppCompatActivity() {
 
@@ -28,6 +28,7 @@ class HiveView : AppCompatActivity() {
     private lateinit var presenter: HivePresenter
     lateinit var map: GoogleMap
     lateinit var hive : HiveModel
+    lateinit var cloudinary:Cloudinary
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +63,8 @@ class HiveView : AppCompatActivity() {
             presenter.doConfigureMap(map)
             it.setOnMapClickListener { presenter.doSetLocation() }
         }
+
+
 
 
     }
@@ -135,6 +138,7 @@ class HiveView : AppCompatActivity() {
     fun showHive(hive: HiveModel) {
         if (binding.hiveTitle.text.isEmpty()) binding.hiveTitle.setText(hive.tag.toString())
         if (binding.description.text.isEmpty()) binding.description.setText(hive.description)
+
 
         if (hive.image != "") {
             Picasso.get()
