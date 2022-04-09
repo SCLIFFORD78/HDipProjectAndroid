@@ -36,7 +36,6 @@ class HiveView : AppCompatActivity() {
 
         binding = ActivityHiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.toolbarAdd.title = title
         //setSupportActionBar(binding.toolbarAdd)
 
         presenter = HivePresenter(this)
@@ -146,7 +145,6 @@ class HiveView : AppCompatActivity() {
                 .load(hive.image)
                 .into(binding.hiveImage)
 
-            binding.chooseImage.setText(R.string.change_hive_image)
         }
         this.showLocation(hive.location)
     }
@@ -161,7 +159,6 @@ class HiveView : AppCompatActivity() {
         Picasso.get()
             .load(image)
             .into(binding.hiveImage)
-        binding.chooseImage.setText(R.string.change_hive_image)
     }
 
     override fun onDestroy() {

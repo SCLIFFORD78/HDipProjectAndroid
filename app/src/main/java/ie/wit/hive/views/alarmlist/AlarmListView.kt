@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import ie.wit.hive.R
 import ie.wit.hive.databinding.ActivityAlarmListBinding
-import ie.wit.hive.databinding.SwitchItemBinding
 import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.AlarmEvents
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +35,6 @@ class AlarmListView : AppCompatActivity(), AlarmListener {
         setContentView(binding.root)
         hideProgress()
         //update Toolbar title
-        binding.toolbar.title = title
         val user = FirebaseAuth.getInstance().currentUser
         binding.alarmsToggle .setOnClickListener {
             if (alarmSwitchState){

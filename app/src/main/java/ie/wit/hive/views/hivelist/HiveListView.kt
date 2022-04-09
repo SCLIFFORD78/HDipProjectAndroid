@@ -33,7 +33,6 @@ class HiveListView : AppCompatActivity(), HiveListener {
         setContentView(binding.root)
         hideProgress()
         //update Toolbar title
-        binding.toolbar.title = title
         val user = FirebaseAuth.getInstance().currentUser
         //if (user != null) {
         //    binding.toolbar.title = "${title}: ${user.email}"

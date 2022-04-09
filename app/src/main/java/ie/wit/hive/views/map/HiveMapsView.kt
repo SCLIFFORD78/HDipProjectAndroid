@@ -30,7 +30,6 @@ class HiveMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
         app = application as MainApp
         binding = ActivityHiveMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
 
         presenter = HiveMapPresenter(this)
 

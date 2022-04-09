@@ -74,13 +74,11 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
 
         var tvX = binding.tvXMax
-        var tvY = binding.tvYMax
 
         var seekBarX = binding.seekBar1
 
         seekBarX.setOnSeekBarChangeListener(this)
 
-        var seekBarY = binding.seekBar2
         seekBarX.max = 50
         //seekBarY.setOnSeekBarChangeListener(this)
 
@@ -126,7 +124,6 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
         // add data
         seekBarX.progress = presenter.hive.tempAlarm.toInt()
-        seekBarY.progress = 30
 
 
         chart.animateX(1500)

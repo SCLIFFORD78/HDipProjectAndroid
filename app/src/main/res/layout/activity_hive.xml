@@ -15,50 +15,42 @@
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="-16dp">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:fitsSystemWindows="true"
-            app:elevation="0dip"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarAdd"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                app:titleTextColor="@color/black"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
-        </com.google.android.material.appbar.AppBarLayout>
-
+                android:orientation="vertical" />
+        </ScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/appBarLayout"
+            android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="-6dp"
             android:layout_marginBottom="6dp">
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/chooseImage"
-                android:layout_width="379dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="19dp"
-                android:background="@color/colorAccent"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@android:color/transparent"
+                android:fadingEdge="horizontal|vertical"
+                android:foreground="@drawable/ic_baseline_image_24"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="@string/button_addImage"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hiveTypeSpinner" />
+                app:icon="@drawable/ic_baseline_image_24"
+                app:layout_constraintBottom_toTopOf="@+id/hiveImage"
+                app:layout_constraintEnd_toEndOf="@+id/lng"
+                app:layout_constraintStart_toStartOf="@+id/lng"
+                app:layout_constraintTop_toBottomOf="@+id/lng" />
 
             <EditText
                 android:id="@+id/description"
@@ -83,7 +75,7 @@
                 android:layout_width="248dp"
                 android:layout_height="57dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="8dp"
                 android:enabled="false"
                 android:hint="@string/hint_hiveTitle"
                 android:inputType="text"
@@ -101,12 +93,12 @@
             <Spinner
                 android:id="@+id/hiveTypeSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="16dp"
                 android:entries="@array/hiveType"
                 android:hint="@string/hint_hiveType"
+                android:minHeight="48dp"
                 android:spinnerMode="dialog"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -114,24 +106,22 @@
 
             <TextView
                 android:id="@+id/lat"
-                android:layout_width="95dp"
+                android:layout_width="wrap_content"
                 android:layout_height="19dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="28dp"
+                android:layout_marginTop="8dp"
                 android:text="00.000000"
                 android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <TextView
                 android:id="@+id/lng"
-                android:layout_width="92dp"
+                android:layout_width="wrap_content"
                 android:layout_height="19dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="28dp"
+                android:layout_marginTop="8dp"
                 android:text="00.000000"
                 android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/lat"
                 app:layout_constraintTop_toBottomOf="@+id/lat" />
 
             <ImageView
@@ -139,11 +129,10 @@
                 android:layout_width="401dp"
                 android:layout_height="178dp"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chooseImage"
+                app:layout_constraintTop_toBottomOf="@+id/hiveTypeSpinner"
                 app:srcCompat="@mipmap/ic_launcher" />
 
             <com.google.android.gms.maps.MapView
@@ -164,11 +153,10 @@
                 android:layout_width="90dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="84dp"
                 android:text="Location"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 app:layout_constraintStart_toEndOf="@+id/hiveTitle"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/hiveTitle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
