@@ -80,7 +80,7 @@ class SensorPresenter(private val view: SensorView) {
         for (i in 0 until values.size) {
             if (i == 0 && test.isBlank()) {
                 hive.recordedData = values[i].toString()
-                if (values[1].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
+                if (values[i].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
                     alm.hiveid = hive.fbid
                     alm.alarmEvent = values[i].toString()
                     alm.dateActive = values[i].asJsonObject.get("timeStamp").toString()
@@ -91,7 +91,7 @@ class SensorPresenter(private val view: SensorView) {
                 }
             } else {
                 hive.recordedData += "," + values[i].toString()
-                if (values[1].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
+                if (values[i].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
                     alm.hiveid = hive.fbid
                     alm.alarmEvent = values[i].toString()
                     alm.dateActive = values[i].asJsonObject.get("timeStamp").toString()
@@ -100,7 +100,7 @@ class SensorPresenter(private val view: SensorView) {
                     alarmEvents.add(alm.copy())
                     alarmDetected = true
                 }
-                if (values[1].get("Temperature").asFloat > tempAlarm && alarmDetected) {
+                if (values[i].get("Temperature").asFloat > tempAlarm && alarmDetected) {
                     alarmDetected = false
                 }
 

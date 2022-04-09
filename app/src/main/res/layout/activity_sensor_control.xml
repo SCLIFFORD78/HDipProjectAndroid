@@ -38,35 +38,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/readParams" />
 
-    <TextView
-        android:id="@+id/batteryLevel"
-        android:layout_width="254dp"
-        android:layout_height="22dp"
-        android:text="Battery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/temperature"
-        android:layout_width="254dp"
-        android:layout_height="22dp"
-        android:text="Temperature"
-        app:layout_constraintEnd_toEndOf="@+id/batteryLevel"
-        app:layout_constraintTop_toBottomOf="@+id/batteryLevel" />
-
-    <TextView
-        android:id="@+id/humidity"
-        android:layout_width="254dp"
-        android:layout_height="22dp"
-        android:text="Humidity"
-        app:layout_constraintEnd_toEndOf="@+id/temperature"
-        app:layout_constraintTop_toBottomOf="@+id/temperature" />
-
     <ScrollView
         android:id="@+id/log_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="76dp"
         android:layout_weight="1"
         android:padding="4dp"
         app:layout_constraintTop_toBottomOf="@+id/getLog"
@@ -82,20 +58,74 @@
     </ScrollView>
 
     <TextView
+        android:id="@+id/flashUsage"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Flash Usage"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toStartOf="@+id/flashSize"
+        app:layout_constraintTop_toBottomOf="@+id/flashSize" />
+
+    <TextView
+        android:id="@+id/batteryLevel"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Battery"
+        android:textAlignment="viewEnd"
+        app:layout_constraintEnd_toStartOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Temperature"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toStartOf="@+id/batteryLevel"
+        app:layout_constraintTop_toBottomOf="@+id/batteryLevel" />
+
+    <TextView
+        android:id="@+id/humidity"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Humidity"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toStartOf="@+id/temperature"
+        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+
+    <TextView
         android:id="@+id/loggerRefTime"
-        android:layout_width="252dp"
-        android:layout_height="26dp"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="Logger Time"
-        app:layout_constraintEnd_toEndOf="@+id/humidity"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toStartOf="@+id/humidity"
         app:layout_constraintTop_toBottomOf="@+id/humidity" />
 
     <TextView
         android:id="@+id/intervalText"
-        android:layout_width="250dp"
-        android:layout_height="27dp"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="Interval Time"
-        app:layout_constraintEnd_toEndOf="@+id/loggerRefTime"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toStartOf="@+id/loggerRefTime"
         app:layout_constraintTop_toBottomOf="@+id/loggerRefTime" />
+
+    <TextView
+        android:id="@+id/flashSize"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Flash Size"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toStartOf="@+id/intervalText"
+        app:layout_constraintTop_toBottomOf="@+id/intervalText" />
 
     <Button
         android:id="@+id/getLog"
@@ -106,29 +136,75 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/data" />
 
-    <TextView
-        android:id="@+id/flashSize"
-        android:layout_width="255dp"
-        android:layout_height="24dp"
-        android:text="Flash Size"
-        app:layout_constraintEnd_toEndOf="@+id/intervalText"
-        app:layout_constraintTop_toBottomOf="@+id/intervalText" />
-
-    <TextView
-        android:id="@+id/flashUsage"
-        android:layout_width="256dp"
-        android:layout_height="24dp"
-        android:text="Flash Usage"
-        app:layout_constraintEnd_toEndOf="@+id/flashSize"
-        app:layout_constraintTop_toBottomOf="@+id/flashSize" />
-
     <ProgressBar
         android:id="@+id/progressBar3"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/data"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_battery_full_24" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/temperature"
+        app:srcCompat="@drawable/ic_baseline_device_thermostat_24" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/imageView6"
+        app:layout_constraintTop_toTopOf="@+id/humidity"
+        app:srcCompat="@drawable/ic_baseline_humidity_24" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/imageView9"
+        app:layout_constraintTop_toTopOf="@+id/loggerRefTime"
+        app:srcCompat="@drawable/ic_baseline_active_alarm_time_24" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/imageView10"
+        app:layout_constraintTop_toTopOf="@+id/intervalText"
+        app:srcCompat="@drawable/ic_baseline_av_timer_24" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/imageView11"
+        app:layout_constraintTop_toTopOf="@+id/flashSize"
+        app:srcCompat="@drawable/ic_baseline_memory_24" />
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/imageView12"
+        app:layout_constraintTop_toTopOf="@+id/flashUsage"
+        app:srcCompat="@drawable/ic_baseline_pie_chart_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

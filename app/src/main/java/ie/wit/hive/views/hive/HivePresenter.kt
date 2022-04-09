@@ -83,6 +83,21 @@ class HivePresenter(private val view: HiveView) {
         return  hive
     }
 
+    suspend fun getAlarms() = app.hives.getHiveAlarms(hive.fbid)
+    //suspend fun findByType(type: String)= app.hives.findByType(type)
+
+    suspend fun getActiveAlarms():List<AlarmEvents>{
+        val resp: MutableList<AlarmEvents> = mutableListOf()
+        val alarms = runBlocking { getAlarms() }
+        for (alarm in alarms){
+            if (!alarm.act)resp.add(resp.size,alarm)
+        }
+        this.alarms = alarms
+        return if (resp.isNotEmpty()){
+            resp
+        } else emptyList()
+    }
+
 
     suspend fun doAddOrSave(type: String, description: String) {
         hive.type = type
@@ -95,6 +110,9 @@ class HivePresenter(private val view: HiveView) {
 
         view.finish()
 
+    }
+    suspend fun doUpdateHive(hiveModel: HiveModel){
+        app.hives.update(hive)
     }
 
 
@@ -282,6 +300,7 @@ class HivePresenter(private val view: HiveView) {
                 if (resultData != null) {
                     hive.image = resultData.get("url") .toString()
                     view.updateImage(hive.image)
+                    runBlocking { doUpdateHive(hive)  }
                     Timber.i(resultData.get("url") .toString())
                 }
             }

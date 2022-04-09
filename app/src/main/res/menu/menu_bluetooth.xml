@@ -8,12 +8,6 @@
         android:title="Search"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/weather"
-        android:icon="@drawable/ic_baseline_wb_sunny_24"
-        android:title="Search"
-        app:showAsAction="always" />
-
 
     <item
         android:id="@+id/back"

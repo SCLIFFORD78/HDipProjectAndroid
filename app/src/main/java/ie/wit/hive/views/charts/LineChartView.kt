@@ -32,6 +32,7 @@ import ie.wit.hive.weather.WeatherHistoryReport
 import ie.wit.hive.weather.readWeatherHistory
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import kotlin.math.floor
 
 
 class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
@@ -197,19 +198,36 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         val tempLimit = java.util.ArrayList<Entry>()
 
         val formattedTime = arrayListOf<String>()
+        var now:Float = floor((System.currentTimeMillis() / 1000).toDouble()).toLong().toFloat()
+        if (weatherHistory.size > 0){
+            tempLimit.add(
+                Entry(
+                    weatherHistory[0].timeStamp.toFloat(),
+                    binding.tvXMax.text.toString().toFloat()
+                )
+            )
+            tempLimit.add(
+                Entry(
+                    now,
+                    binding.tvXMax.text.toString().toFloat()
+                )
+            )
+        }else{
 
-        tempLimit.add(
-            Entry(
-                weatherHistory[0].timeStamp.toFloat(),
-                binding.tvXMax.text.toString().toFloat()
+            tempLimit.add(
+                Entry(
+                    now - 86400f,
+                    binding.tvXMax.text.toString().toFloat()
+                )
             )
-        )
-        tempLimit.add(
-            Entry(
-                weatherHistory[weatherHistory.size - 1].timeStamp.toFloat(),
-                binding.tvXMax.text.toString().toFloat()
+            tempLimit.add(
+                Entry(
+                    now,
+                    binding.tvXMax.text.toString().toFloat()
+                )
             )
-        )
+        }
+
 
         for (value in weatherHistory) {
             ambientTempData.add(

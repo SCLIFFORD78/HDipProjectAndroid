@@ -81,9 +81,10 @@ class HiveView : AppCompatActivity() {
         } else {
             deleteMenu.setVisible(false)
         }
-        var alarmCount:Int = 0
+        var alarmCount = 0
+        runBlocking { presenter.getActiveAlarms() }
         for(alarm in presenter.alarms){
-            if(alarm.hiveid == presenter.hive.fbid){
+            if(alarm.hiveid == presenter.hive.fbid && !alarm.act){
                 alarmCount +=1
             }
         }

@@ -197,26 +197,27 @@ class SensorView : AppCompatActivity() {
             }
 
             onCharacteristicRead = { _, characteristic ->
+                var flashSizeTemp: Int = 0
                 if (characteristic.uuid == UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")) {
                     binding.batteryLevel.text =
-                        "Batt. ${Integer.decode(characteristic.value.toHexString())}%"
+                        Integer.decode(characteristic.value.toHexString()).toString()+"%"
                 } else if (characteristic.uuid == UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")) {
                     val timestamp = toInt32(characteristic.value)
                     loggerTimeReference = timestamp
                     val date =
                         SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date(timestamp.toLong() * 1000))
-                    binding.loggerRefTime.text = "Log start: ${date.toString()}"
+                    binding.loggerRefTime.text = "Log start: ${date}"
                 } else if (characteristic.uuid == UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")) {
                     val interValSeconds = toInt16(characteristic.value)
-                    binding.intervalText.text = "Interval time ${interValSeconds.toString()} sec."
+                    binding.intervalText.text =  "${interValSeconds/60} mins. ${interValSeconds%60} sec"
                     intervilTime = interValSeconds
                 } else if (characteristic.uuid == UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")) {
-                    val flashSizeTemp = toInt32(characteristic.value)
+                    flashSizeTemp = toInt32(characteristic.value)
                     binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
                 } else if (characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashUsageTemp = toInt32(characteristic.value)
                     loggerFlashUsage = flashUsageTemp + 16
-                    binding.flashUsage.text = "Flash usage: ${flashUsageTemp.toString()}"
+                    binding.flashUsage.text = "%.1f".format((flashUsageTemp / flashSizeTemp) * 100)+"%"
                 } else if (characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
                     loggerActive = characteristic.value[0].toInt()
                     var test = loggerActive
@@ -239,8 +240,8 @@ class SensorView : AppCompatActivity() {
                 if (characteristic.uuid == UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")) {
                     val result = characteristic.value
                     val converted = convertTempAndHumidity(result, 0)
-                    binding.temperature.text = "Temp: ${converted.get("Temperature")} C"
-                    binding.humidity.text = "Hum.: ${converted.get("Humidity")}%"
+                    binding.temperature.text = "${converted.get("Temperature")} C"
+                    binding.humidity.text = "${converted.get("Humidity")}%"
                     stopReadData()
                 } else if (characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")) {
                     val loggerData = characteristic.value
@@ -492,7 +493,7 @@ class SensorView : AppCompatActivity() {
     private fun writeLoggerTimeReference() {
         val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
         var timeNow = numberToByteArray(
-            (((System.currentTimeMillis() / 1000).toInt()) - (((System.currentTimeMillis() / 1000).toInt()) % 3600)) + 86400,
+            (((System.currentTimeMillis() / 1000).toInt()) - (((System.currentTimeMillis() / 1000).toInt()) % 3600)),
             4
         )
         characteristics.forEachByIndex { t ->
