@@ -54,6 +54,7 @@ class LoginPresenter (val view: LoginView)  {
                     }else{
                         view?.hideProgress()
                         val launcherIntent = Intent(view, GoogleRegisterView::class.java)
+                        launcherIntent.putParcelableArrayListExtra("email",checkedUser)
                         loginIntentLauncher.launch(launcherIntent)
                     }
 

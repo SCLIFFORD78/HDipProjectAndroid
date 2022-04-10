@@ -51,6 +51,7 @@ class HivePresenter(private val view: HiveView) {
     private lateinit var editIntentLauncher: ActivityResultLauncher<Intent>
     var edit = false;
     private val location = Location(52.0634310, -9.6853542, 15f)
+    var weather: Map<String, Float>
 
     init {
 
@@ -75,12 +76,22 @@ class HivePresenter(private val view: HiveView) {
             //hive.location.lng = location.lng
         }
         runBlocking { alarms = app.hives.getHiveAlarms(hive.fbid) }
+        weather = runBlocking { getWeather() }
 
     }
 
     private suspend fun getHive(tagNum:Long):HiveModel{
         hive = app.hives.findByTag(tagNum)
         return  hive
+    }
+
+    suspend fun getWeather(): Map<String, Float>{
+        var weather =
+            ie.wit.hive.weather.getWeather(
+                hive.location.lat,
+                hive.location.lng
+            )
+        return weather
     }
 
     suspend fun getAlarms() = app.hives.getHiveAlarms(hive.fbid)

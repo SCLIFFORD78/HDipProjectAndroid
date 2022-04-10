@@ -4,27 +4,22 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT" />
 
     <meta-data
         android:name="CLOUDINARY_URL"
-        android:value="cloudinary://776514472824175:oeINFBLhml_8D4HEIO96bQ5ch9U@digabwjfx"/>
+        android:value="cloudinary://776514472824175:oeINFBLhml_8D4HEIO96bQ5ch9U@digabwjfx" />
     <meta-data
         android:name="API_KEY"
-        android:value="776514472824175"/>
+        android:value="776514472824175" />
     <meta-data
         android:name="CLOUD_NAME"
-        android:value="digabwjfx"/>
-
+        android:value="digabwjfx" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -39,17 +34,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hive"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".views.login.LoginView"
+        <activity
+            android:name=".views.PopUpWindow"
+            android:exported="false" />
+        <activity
+            android:name=".views.login.LoginView"
+            android:exported="true"
             android:label="@string/title_activity_login"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".views.map.HiveMapView"
             android:exported="true"
@@ -66,16 +64,14 @@
             android:label="@string/title_activity_map" />
         <activity
             android:name=".views.hivelist.HiveListView"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity android:name=".views.hive.HiveView" />
-        <activity android:name=".views.login.RegisterView"
-            android:exported="true">
-        </activity>
-        <activity android:name=".views.aboutus.AboutUsView"
-            android:exported="true">
-
-        </activity>
+        <activity
+            android:name=".views.login.RegisterView"
+            android:exported="true"></activity>
+        <activity
+            android:name=".views.aboutus.AboutUsView"
+            android:exported="true"></activity>
         <activity
             android:name=".views.ble.BleScanView"
             android:exported="true" />
@@ -85,9 +81,6 @@
         <activity
             android:name=".views.login.GoogleRegisterView"
             android:exported="true" />
-
-
-
         <activity
             android:name=".views.charts.LineChartView"
             android:exported="true" />

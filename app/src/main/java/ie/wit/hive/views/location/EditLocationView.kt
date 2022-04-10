@@ -2,10 +2,14 @@ package ie.wit.hive.views.location
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
+import ie.wit.hive.R
 import ie.wit.hive.models.Location
 import ie.wit.hive.databinding.ActivityMapBinding
+import kotlinx.coroutines.runBlocking
 
 class EditLocationView : AppCompatActivity(),
     GoogleMap.OnMarkerDragListener,
@@ -29,6 +33,22 @@ class EditLocationView : AppCompatActivity(),
             it.setOnMarkerClickListener(this)
             presenter.initMap(it)
         }
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_cancel, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+
+            R.id.back -> {
+                presenter.doOnBackPressed()
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onMarkerDragStart(marker: Marker) {

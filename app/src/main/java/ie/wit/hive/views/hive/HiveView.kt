@@ -1,9 +1,12 @@
 package ie.wit.hive.views.hive
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudinary.android.MediaManager
 import com.google.android.gms.maps.GoogleMap
@@ -14,6 +17,7 @@ import ie.wit.hive.cloudinary.Cloudinary
 import ie.wit.hive.databinding.ActivityHiveBinding
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.models.Location
+import ie.wit.hive.views.PopUpWindow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -62,6 +66,16 @@ class HiveView : AppCompatActivity() {
             presenter.doConfigureMap(map)
             it.setOnMapClickListener { presenter.doSetLocation() }
         }
+        binding.textTemp.text = "%.2f".format(presenter.weather["temp"])+"\u00B0"+"C"
+        binding.textHumidity.text = "%.2f".format(presenter.weather["humidity"])+"%"
+
+        var popUpButton:Button = findViewById(R.id.popUpButton)
+        popUpButton.setOnClickListener { val intent = Intent(this, PopUpWindow::class.java)
+            intent.putExtra("popuptitle", "Error")
+            intent.putExtra("popuptext", "Sorry, that email address is already used!")
+            intent.putExtra("popupbtn", "OK")
+            intent.putExtra("darkstatusbar", false)
+            startActivity(intent) }
 
 
 
@@ -150,8 +164,8 @@ class HiveView : AppCompatActivity() {
     }
 
     private fun showLocation(loc: Location) {
-        binding.lat.setText("%.6f".format(loc.lat))
-        binding.lng.setText("%.6f".format(loc.lng))
+        binding.lat.setText("%.5f".format(loc.lat))
+        binding.lng.setText("%.5f".format(loc.lng))
     }
 
     fun updateImage(image: String) {

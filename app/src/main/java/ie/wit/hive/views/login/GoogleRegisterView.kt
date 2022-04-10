@@ -28,6 +28,7 @@ class GoogleRegisterView : AppCompatActivity() {
         setContentView(binding.root)
         //setSupportActionBar(binding.toolbarAdd)
 
+
         binding.progressBar.visibility = View.GONE
         binding.signUp.setOnClickListener {
             val userName = binding.registerUsername.text.toString()
