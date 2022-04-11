@@ -22,6 +22,7 @@ import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.AlarmEvents
+import ie.wit.hive.models.Comments
 import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.showImagePicker
@@ -33,11 +34,13 @@ import ie.wit.hive.views.location.EditLocationView
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import timber.log.Timber.i
+import java.text.SimpleDateFormat
 
 class HivePresenter(private val view: HiveView) {
     private val locationRequest = createDefaultLocationRequest()
     var map: GoogleMap? = null
     lateinit var hive: HiveModel
+    lateinit var comments:List<Comments>
     var app: MainApp = view.application as MainApp
     var locationManualyChanged = false;
     lateinit var alarms:List<AlarmEvents>
@@ -65,6 +68,7 @@ class HivePresenter(private val view: HiveView) {
             edit = true
             var tagNo = view.intent.extras!!["hive_edit"] as Long
             hive =  runBlocking { getHive(tagNo) }
+            comments = runBlocking { getHiveComments()  }
             //hive = view.intent.extras?.getParcelable("hive_edit")!!
             view.showHive(hive)
         }  else {
@@ -76,7 +80,9 @@ class HivePresenter(private val view: HiveView) {
             //hive.location.lng = location.lng
         }
         runBlocking { alarms = app.hives.getHiveAlarms(hive.fbid) }
+        runBlocking { comments = app.hives.getHiveComments(hive.fbid) }
         weather = runBlocking { getWeather() }
+
 
     }
 
@@ -94,8 +100,18 @@ class HivePresenter(private val view: HiveView) {
         return weather
     }
 
+    suspend fun getHiveComments() = app.hives.getHiveComments(hive.fbid)
+
     suspend fun getAlarms() = app.hives.getHiveAlarms(hive.fbid)
     //suspend fun findByType(type: String)= app.hives.findByType(type)
+
+    fun formatComments() : ArrayList<String>{
+        var response: ArrayList<String> = arrayListOf()
+        comments.forEach {
+            response .add(  SimpleDateFormat("dd/MM/YY HH:mm:ss").format(it.dateLogged.toLong()*1000)+"\n"+it.comment)
+        }
+        return response
+    }
 
     suspend fun getActiveAlarms():List<AlarmEvents>{
         val resp: MutableList<AlarmEvents> = mutableListOf()
@@ -148,6 +164,13 @@ class HivePresenter(private val view: HiveView) {
         launcherIntent.putExtra("hive_edit", hive.tag)
         editIntentLauncher.launch(launcherIntent)
     }
+
+    fun openComments(){
+        val launcherIntent = Intent(view, PopUpWindowView::class.java)
+        launcherIntent.putExtra("hive_tag", hive.tag)
+        editIntentLauncher.launch(launcherIntent)
+    }
+
 
     fun doSetLocation() {
         locationManualyChanged = true;

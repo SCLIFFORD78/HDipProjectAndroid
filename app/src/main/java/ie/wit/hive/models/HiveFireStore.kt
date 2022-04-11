@@ -16,6 +16,7 @@ import java.io.File
 class HiveFireStore(val context: Context) : HiveStore {
     val hives = ArrayList<HiveModel>()
     val alarms = ArrayList<AlarmEvents>()
+    val comments = ArrayList<Comments>()
     lateinit var userId: String
     lateinit var db: DatabaseReference
     lateinit var st: StorageReference
@@ -99,6 +100,8 @@ class HiveFireStore(val context: Context) : HiveStore {
 
     override suspend fun clear() {
         hives.clear()
+        alarms.clear()
+        comments.clear()
     }
 
     override suspend fun getTag(): Long {
@@ -143,6 +146,36 @@ class HiveFireStore(val context: Context) : HiveStore {
         db.child("alarms").child(alarm.fbid+"/act").setValue(true)
     }
 
+    fun clearAlarms(){
+        alarms.clear()
+    }
+
+    override suspend fun getAllComments(): List<Comments> {
+
+        return comments
+    }
+
+    override suspend fun createComment(comment: Comments) {
+        val key = db.child("comments").push().key
+        key?.let {
+            comment.fbid = key
+            comments.add(comment)
+            db.child("comments").child(key).setValue(comment)
+        }
+    }
+
+    override suspend fun getHiveComments(fbid: String): List<Comments> {
+        val resp: MutableList<Comments> = mutableListOf()
+        for (comment in comments) if(comment.hiveid == fbid) {
+            resp.add(0,comment)
+        }
+
+        return if (resp.isNotEmpty()){
+            resp.reversed()
+        } else emptyList()
+    }
+
+
     fun fetchHives(hivesReady: () -> Unit) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(dataSnapshot: DatabaseError) {
@@ -186,6 +219,29 @@ class HiveFireStore(val context: Context) : HiveStore {
         db.child("alarms")
             .addListenerForSingleValueEvent(valueEventListener)
     }
+
+    fun fetchComments(commentsReady: () -> Unit) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(dataSnapshot: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot!!.children.mapNotNullTo(comments) {
+                    it.getValue<Comments>(
+                        Comments::class.java
+                    )
+                }
+                commentsReady()
+            }
+        }
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        st = FirebaseStorage.getInstance().reference
+        db = FirebaseDatabase.getInstance("https://hdip-65317-default-rtdb.firebaseio.com/").reference
+        comments.clear()
+        db.child("comments")
+            .addListenerForSingleValueEvent(valueEventListener)
+    }
+
     fun deleteImage(hive: HiveModel){
         if(hive.image != "") {
             val fileName = File(hive.image)

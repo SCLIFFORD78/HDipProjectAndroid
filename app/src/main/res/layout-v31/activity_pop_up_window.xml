@@ -51,10 +51,11 @@
                     android:layout_height="0dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:background="@color/browser_actions_title_color"
+                    android:background="@color/common_google_signin_btn_text_light_disabled"
                     android:padding="4dp"
                     app:layout_constraintBottom_toTopOf="@+id/multiAutoCompleteTextView"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/popup_window_title"
                     app:layout_constraintVertical_bias="0.0">
 
@@ -103,7 +104,7 @@
                     android:layout_width="172dp"
                     android:layout_height="52dp"
                     android:background="#851635"
-                    android:text="ADD"
+                    android:text="add"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"

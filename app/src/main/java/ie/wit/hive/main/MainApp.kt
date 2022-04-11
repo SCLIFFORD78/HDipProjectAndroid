@@ -3,10 +3,7 @@ package ie.wit.hive.main
 import android.app.Application
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.download.glide.GlideDownloadRequestBuilderFactory
-import ie.wit.hive.models.HiveFireStore
-import ie.wit.hive.models.HiveStore
-import ie.wit.hive.models.UserFireStore
-import ie.wit.hive.models.UserStore
+import ie.wit.hive.models.*
 import timber.log.Timber
 import timber.log.Timber.i
 

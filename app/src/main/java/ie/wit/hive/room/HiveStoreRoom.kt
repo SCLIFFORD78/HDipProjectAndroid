@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import ie.wit.hive.models.AlarmEvents
+import ie.wit.hive.models.Comments
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.models.HiveStore
 
@@ -85,6 +86,18 @@ class HiveStoreRoom(val context: Context) : HiveStore {
     }
 
     override suspend fun ackAlarm(alarm: AlarmEvents) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllComments(): List<Comments> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createComment(comment: Comments) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getHiveComments(fbid: String): List<Comments> {
         TODO("Not yet implemented")
     }
 }

@@ -55,7 +55,7 @@ class SensorView : AppCompatActivity() {
 
     private lateinit var binding: ActivitySensorControlBinding
     private lateinit var presenter: SensorPresenter
-
+    var flashSizeTemp = 1
     private lateinit var device: BluetoothDevice
     private val dateFormatter = SimpleDateFormat("MMM d, HH:mm:ss", Locale.US)
     private val characteristics by lazy {
@@ -197,19 +197,18 @@ class SensorView : AppCompatActivity() {
             }
 
             onCharacteristicRead = { _, characteristic ->
-                var flashSizeTemp: Int = 0
                 if (characteristic.uuid == UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")) {
                     binding.batteryLevel.text =
-                        Integer.decode(characteristic.value.toHexString()).toString()+"%"
+                        "${Integer.decode(characteristic.value.toHexString())}%"
                 } else if (characteristic.uuid == UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")) {
                     val timestamp = toInt32(characteristic.value)
                     loggerTimeReference = timestamp
                     val date =
                         SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date(timestamp.toLong() * 1000))
-                    binding.loggerRefTime.text = "Log start: ${date}"
+                    binding.loggerRefTime.text = "Log start: ${date.toString()}"
                 } else if (characteristic.uuid == UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")) {
                     val interValSeconds = toInt16(characteristic.value)
-                    binding.intervalText.text =  "${interValSeconds/60} mins. ${interValSeconds%60} sec"
+                    binding.intervalText.text =  "${(interValSeconds.toFloat()/60).toString()} mins. ${(interValSeconds.toFloat()%60).toString()} sec"
                     intervilTime = interValSeconds
                 } else if (characteristic.uuid == UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")) {
                     flashSizeTemp = toInt32(characteristic.value)
@@ -217,7 +216,7 @@ class SensorView : AppCompatActivity() {
                 } else if (characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashUsageTemp = toInt32(characteristic.value)
                     loggerFlashUsage = flashUsageTemp + 16
-                    binding.flashUsage.text = "%.1f".format((flashUsageTemp / flashSizeTemp) * 100)+"%"
+                    binding.flashUsage.text = "%.1f".format((flashUsageTemp.toFloat() / flashSizeTemp.toFloat()) * 100)+"%"
                 } else if (characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
                     loggerActive = characteristic.value[0].toInt()
                     var test = loggerActive

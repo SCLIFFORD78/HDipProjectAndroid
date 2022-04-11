@@ -35,7 +35,7 @@
         android:theme="@style/Theme.Hive"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".views.PopUpWindow"
+            android:name=".views.hive.PopUpWindowView"
             android:exported="false" />
         <activity
             android:name=".views.login.LoginView"
@@ -64,14 +64,14 @@
             android:label="@string/title_activity_map" />
         <activity
             android:name=".views.hivelist.HiveListView"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity android:name=".views.hive.HiveView" />
         <activity
             android:name=".views.login.RegisterView"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".views.aboutus.AboutUsView"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".views.ble.BleScanView"
             android:exported="true" />
@@ -87,6 +87,7 @@
         <activity
             android:name=".views.alarmlist.AlarmListView"
             android:exported="true" />
+
     </application>
 
 </manifest>

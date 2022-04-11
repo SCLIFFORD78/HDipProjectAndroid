@@ -1,64 +1,71 @@
-package ie.wit.hive.views
+package ie.wit.hive.views.hive
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import ie.wit.hive.R
-import ie.wit.hive.databinding.ActivityLoginBinding
 import ie.wit.hive.databinding.ActivityPopUpWindowBinding
+import ie.wit.hive.models.Comments
+import ie.wit.hive.models.HiveModel
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.anko.backgroundColor
+import java.text.SimpleDateFormat
 
-class PopUpWindow : AppCompatActivity() {
+
+class PopUpWindowView : AppCompatActivity() {
+
     private lateinit var binding: ActivityPopUpWindowBinding
+    private lateinit var presenter: PopUpWindowPresenter
+    lateinit var hive : HiveModel
+
     private var popupTitle = ""
     private var popupText = ""
     private var popupButton = ""
     private var darkStatusBar = false
+    lateinit var comments:java.util.ArrayList<String>
+    var newComment: String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(0, 0)
-        setContentView(R.layout.activity_pop_up_window)
 
         binding = ActivityPopUpWindowBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //setSupportActionBar(binding.toolbarAdd)
+
+        presenter = PopUpWindowPresenter(this)
 
         // ...
 
-        // Get the data
-        val bundle = intent.extras
-        popupTitle = bundle?.getString("popuptitle", "Title") ?: ""
-        popupText = bundle?.getString("popuptext", "Text") ?: ""
-        popupButton = bundle?.getString("popupbtn", "Button") ?: ""
-        darkStatusBar = bundle?.getBoolean("darkstatusbar", false) ?: false
+        newComment = binding.multiAutoCompleteTextView.text.toString()
+
+        var addCommentButton: Button = findViewById(R.id.popup_window_button_add)
+        addCommentButton.setOnClickListener {
+            runBlocking { addComment(binding.multiAutoCompleteTextView.text.toString()) }
+        }
+
 
         // Set the data
-        binding.popupWindowTitle.text = popupTitle
+        binding.popupWindowTitle.text = "Hive ${presenter.hive.tag} Comments"
         binding.popupWindowText.text = popupText
-        binding.popupWindowButton.text = popupButton
+        binding.popupWindowButton.text = "BACK"
 
-        // Set the Status bar appearance for different API levels
-        if (Build.VERSION.SDK_INT in 19..20) {
-            setWindowFlag(this, true)
-        }
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        // If you want dark status bar, set darkStatusBar to true
-        if (darkStatusBar) {
-            this.window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        this.window.statusBarColor = Color.TRANSPARENT
-        setWindowFlag(this, false)
+binding.popupWindowBackground.setBackgroundColor(Color.TRANSPARENT)
+
+
 
         // Fade animation for the background of Popup Window
         val alpha = 100 //between 0-255
@@ -80,18 +87,36 @@ class PopUpWindow : AppCompatActivity() {
         binding.popupWindowButton.setOnClickListener {
             onBackPressed()
         }
+
+        binding.multiAutoCompleteTextView .setOnKeyListener { v, keyCode, event ->
+
+            when {
+
+                //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
+                ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) -> {
+
+
+                    //perform an action here e.g. a send message button click
+                    runBlocking { addComment(binding.multiAutoCompleteTextView.text.toString()) }
+                    //onBackPressed()
+
+                    //return true
+                    return@setOnKeyListener true
+                }
+                else -> false
+            }
+
+        }
+
+            populateComments()
+
+
+
+
+
+
     }
 
-    private fun setWindowFlag(activity: Activity, on: Boolean) {
-        val win = activity.window
-        val winParams = win.attributes
-        if (on) {
-            winParams.flags = winParams.flags or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-        } else {
-            winParams.flags = winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
-        }
-        win.attributes = winParams
-    }
 
     override fun onBackPressed() {
         // Fade animation for the background of Popup Window when you press the back button
@@ -119,4 +144,31 @@ class PopUpWindow : AppCompatActivity() {
         })
         colorAnimation.start()
     }
+    private fun populateComments(){
+        presenter.comments.forEach {
+            log(it)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun log(comment:Comments) {
+        val formattedMessage = SimpleDateFormat("dd/MM/YY HH:mm:ss").format(comment.dateLogged .toLong()*1000)+"\n"+comment.comment
+        runOnUiThread {
+            var currentLogText = binding.popupWindowText .text
+            if (binding.popupWindowText.text.isEmpty()) {
+                currentLogText = "Comment History:"
+            } else {
+                binding.popupWindowText.text
+            }
+            binding.popupWindowText.text = "$currentLogText\n\n$formattedMessage"
+            binding.logScrollView.post { binding.logScrollView.fullScroll(View.FOCUS_DOWN) }
+        }
+    }
+
+    private suspend fun addComment(comment: String){
+        presenter.addComment(comment)
+    }
+
+
+
 }

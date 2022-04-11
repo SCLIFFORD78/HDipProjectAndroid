@@ -19,4 +19,7 @@ interface HiveStore {
     suspend fun createAlarm(alarm:AlarmEvents)
     suspend fun getHiveAlarms(fbid:String):List<AlarmEvents>
     suspend fun ackAlarm(alarm: AlarmEvents)
+    suspend fun getAllComments():List<Comments>
+    suspend fun createComment(comment:Comments)
+    suspend fun getHiveComments(fbid:String):List<Comments>
 }

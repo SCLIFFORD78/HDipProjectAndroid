@@ -85,6 +85,7 @@ class HiveListPresenter(private val view: HiveListView) {
         FirebaseAuth.getInstance().signOut()
         app.hives.clear()
         app.users.clear()
+        app.hives
         val launcherIntent = Intent(view, LoginView::class.java)
         editIntentLauncher.launch(launcherIntent)
     }

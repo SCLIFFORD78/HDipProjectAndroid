@@ -54,6 +54,7 @@
         <entry key="..\:/Users/TempAdmin/AndroidStudioProjects/HiveTrackerApp/app/src/main/res/menu/menu_main2.xml" value="0.371875" />
         <entry key="..\:/Users/TempAdmin/AndroidStudioProjects/HiveTrackerApp/app/src/main/res/menu/menu_search.xml" value="0.36615384615384616" />
         <entry key="..\:/Users/TempAdmin/AndroidStudioProjects/HiveTrackerApp/app/src/main/res/menu/nav_drawer_menu.xml" value="0.75" />
+        <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout-v31/activity_pop_up_window.xml" value="0.245018115942029" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_aboutus.xml" value="0.20471014492753623" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_alarm_list.xml" value="0.25" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_ble_scan.xml" value="0.3197463768115942" />
@@ -67,7 +68,7 @@
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_map.xml" value="0.2552083333333333" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_pop_up_window.xml" value="0.291213768115942" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_register.xml" value="0.2552083333333333" />
-        <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_sensor_control.xml" value="0.75" />
+        <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/activity_sensor_control.xml" value="0.6687268232385661" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/card_alarm.xml" value="0.5" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/card_hive.xml" value="0.25" />
         <entry key="..\:/Users/sclifford/Documents/HDipProject/HDipProjectAndroid/app/src/main/res/layout/content_hive_maps.xml" value="0.2552083333333333" />

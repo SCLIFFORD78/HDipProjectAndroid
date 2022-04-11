@@ -48,6 +48,7 @@ class RegisterPresenter(val view: RegisterView) {
                 user.userName = userName
                 fireStore?.fetchHives {  }
                 fireStore?.fetchAlarms {  }
+                fireStore?.fetchComments {  }
                 userFireStore!!.fetchUsers {
                     runBlocking { create(user) }
                     view?.hideProgress()

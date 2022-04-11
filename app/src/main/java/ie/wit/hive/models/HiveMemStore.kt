@@ -110,5 +110,17 @@ class HiveMemStore : HiveStore {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getAllComments(): List<Comments> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createComment(comment: Comments) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getHiveComments(fbid: String): List<Comments> {
+        TODO("Not yet implemented")
+    }
+
 
 }

@@ -28,6 +28,7 @@ import ie.wit.hive.R
 import ie.wit.hive.databinding.ActivityLinechartBinding
 import ie.wit.hive.models.AlarmEvents
 import ie.wit.hive.models.HiveModel
+import ie.wit.hive.weather.WeatherHistory
 import ie.wit.hive.weather.WeatherHistoryReport
 import ie.wit.hive.weather.readWeatherHistory
 import kotlinx.coroutines.runBlocking
@@ -42,6 +43,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
     private lateinit var presenter: LineChartPresenter
     lateinit var hive: HiveModel
     private lateinit var weatherHistory: ArrayList<WeatherHistoryReport>
+    private lateinit var weatherHistorySorted: List<WeatherHistoryReport>
     private lateinit var chart: LineChart
     val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
     lateinit var ll1: LimitLine
@@ -63,6 +65,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
                 presenter.hive.location.lng,
                 presenter.hive.dateRegistered
             )
+            weatherHistorySorted = weatherHistory.sortedBy { it.timeStamp }
         }
 
         class MyXAxisFormatter() : ValueFormatter() {
@@ -196,10 +199,10 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
         val formattedTime = arrayListOf<String>()
         var now:Float = floor((System.currentTimeMillis() / 1000).toDouble()).toLong().toFloat()
-        if (weatherHistory.size > 0){
+        if (weatherHistorySorted.size > 0){
             tempLimit.add(
                 Entry(
-                    weatherHistory[0].timeStamp.toFloat(),
+                    weatherHistorySorted[0].timeStamp.toFloat(),
                     binding.tvXMax.text.toString().toFloat()
                 )
             )
@@ -226,7 +229,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         }
 
 
-        for (value in weatherHistory) {
+        for (value in weatherHistorySorted) {
             ambientTempData.add(
                 Entry(
                     value.timeStamp.toFloat(),

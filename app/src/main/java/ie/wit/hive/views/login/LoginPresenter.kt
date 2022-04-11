@@ -43,6 +43,7 @@ class LoginPresenter (val view: LoginView)  {
         view.showProgress()
         if (fireStore != null && userFireStore != null) {
             fireStore!!.fetchAlarms {  }
+            fireStore!!.fetchComments {  }
             fireStore!!.fetchHives {
                 userFireStore!!.fetchUsers {
                     var users = userFireStore!!.users
@@ -76,6 +77,7 @@ class LoginPresenter (val view: LoginView)  {
             if (task.isSuccessful) {
                 if (fireStore != null) {
                     fireStore!!.fetchAlarms {  }
+                    fireStore!!.fetchComments {  }
                     fireStore!!.fetchHives {
                         view?.hideProgress()
                         val launcherIntent = Intent(view, HiveListView::class.java)
