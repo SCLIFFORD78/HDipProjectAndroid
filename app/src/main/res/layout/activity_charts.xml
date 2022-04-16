@@ -5,48 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        tools:layout_editor_absoluteX="-16dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="-6dp"
-            android:layout_marginBottom="6dp">
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/tempGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:layout_height="326dp" />
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/tempGraph"
-                        android:layout_width="match_parent"
-                        android:layout_height="326dp" />
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/humGraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="326dp"
+                    tools:layout_constraintTop_toBottomOf="@id/tempGraph" />
+            </LinearLayout>
+        </ScrollView>
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/humGraph"
-                        android:layout_width="match_parent"
-                        android:layout_height="326dp"
-                        tools:layout_constraintTop_toBottomOf="@id/tempGraph" />
-                </LinearLayout>
-            </ScrollView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

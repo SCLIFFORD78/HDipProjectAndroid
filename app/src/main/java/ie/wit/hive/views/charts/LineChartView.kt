@@ -45,6 +45,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
     private lateinit var weatherHistory: ArrayList<WeatherHistoryReport>
     private lateinit var weatherHistorySorted: List<WeatherHistoryReport>
     private lateinit var chart: LineChart
+    private lateinit var chart2: LineChart
     val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
     lateinit var ll1: LimitLine
 
@@ -68,7 +69,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             weatherHistorySorted = weatherHistory.sortedBy { it.timeStamp }
         }
 
-        class MyXAxisFormatter() : ValueFormatter() {
+        class MyxAxisFormatter() : ValueFormatter() {
             //private val days = arrayOf("Mo", "Tu", "Wed", "Th", "Fr", "Sa", "Su")
             override fun getAxisLabel(value: Float, axis: AxisBase?): String {
                 return sdf.format(value * 1000)
@@ -87,6 +88,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
 
         chart = binding.chart1
+        chart2 = binding.chart2
         //chart.setOnChartValueSelectedListener(this)
 
         // no description text
@@ -97,13 +99,16 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
 
         chart.description.isEnabled = false
+        chart2.description.isEnabled = false
 
         // enable touch gestures
 
         // enable touch gestures
         chart.setTouchEnabled(true)
+        chart2.setTouchEnabled(true)
 
         chart.dragDecelerationFrictionCoef = 0.9f
+        chart2.dragDecelerationFrictionCoef = 0.9f
 
         // enable scaling and dragging
 
@@ -113,15 +118,22 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         chart.setDrawGridBackground(false)
         chart.isHighlightPerDragEnabled = true
 
+        chart2.isDragEnabled = true
+        chart2.setScaleEnabled(true)
+        chart2.setDrawGridBackground(false)
+        chart2.isHighlightPerDragEnabled = true
+
         // if disabled, scaling can be done on x- and y-axis separately
 
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(false)
+        chart2.setPinchZoom(false)
 
         // set an alternative background color
 
         // set an alternative background color
         chart.setBackgroundColor(Color.TRANSPARENT)
+        chart2.setBackgroundColor(Color.TRANSPARENT)
 
         // add data
 
@@ -130,11 +142,13 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
 
 
         chart.animateX(1500)
+        chart2.animateX(1500)
 
         // get the legend (only possible after setting data)
 
         // get the legend (only possible after setting data)
         val l = chart.legend
+        val l2 = chart2.legend
 
         // modify the legend ...
 
@@ -149,17 +163,38 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         l.setDrawInside(false)
         l.isWordWrapEnabled = true
 //        l.setYOffset(11f);
+        // modify the legend ...
+        l2.form = LegendForm.LINE
+        //l2.typeface = tfLight
+        l2.textSize = 11f
+        l2.textColor = Color.BLACK
+        l2.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l2.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        l2.orientation = Legend.LegendOrientation.HORIZONTAL
+        l2.setDrawInside(false)
+        l2.isWordWrapEnabled = true
+//        l2.setYOffset(11f);
 
-        //        l.setYOffset(11f);
+        //        l2.setYOffset(11f);
         val xAxis = chart.xAxis
         //xAxis.typeface = tfLight
         xAxis.textSize = 11f
         xAxis.textColor = Color.BLACK
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
-        xAxis.valueFormatter = MyXAxisFormatter()
+        xAxis.valueFormatter = MyxAxisFormatter()
         xAxis.labelRotationAngle = 90f
         xAxis.mLabelWidth = 5
+
+        val xAxis2 = chart2.xAxis
+        //xAxis2.typeface = tfLight
+        xAxis2.textSize = 11f
+        xAxis2.textColor = Color.BLACK
+        xAxis2.setDrawGridLines(false)
+        xAxis2.setDrawAxisLine(false)
+        xAxis2.valueFormatter = MyxAxisFormatter()
+        xAxis2.labelRotationAngle = 90f
+        xAxis2.mLabelWidth = 5
 
 
         val leftAxis = chart.axisLeft
@@ -170,6 +205,14 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         leftAxis.setDrawGridLines(true)
         leftAxis.isGranularityEnabled = true
 
+        val leftAxis2 = chart.axisLeft
+        //leftAxis2.typeface = tfLight
+        leftAxis2.textColor = ColorTemplate.getHoloBlue()
+        leftAxis2.axisMaximum = 50f
+        leftAxis2.axisMinimum = -10f
+        leftAxis2.setDrawGridLines(true)
+        leftAxis2.isGranularityEnabled = true
+
 
         val rightAxis = chart.axisRight
         //rightAxis.typeface = tfLight
@@ -179,6 +222,15 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         rightAxis.setDrawGridLines(false)
         rightAxis.setDrawZeroLine(false)
         rightAxis.isGranularityEnabled = false
+
+        val rightAxis2 = chart.axisRight
+        //rightAxis2.typeface = tfLight
+        rightAxis2.textColor = Color.RED
+        rightAxis2.axisMaximum = 50f
+        rightAxis2.axisMinimum = -10f
+        rightAxis2.setDrawGridLines(false)
+        rightAxis2.setDrawZeroLine(false)
+        rightAxis2.isGranularityEnabled = false
 
 
     }
@@ -275,13 +327,9 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         ) {
             set1 = chart.data.getDataSetByIndex(0) as LineDataSet
             set2 = chart.data.getDataSetByIndex(1) as LineDataSet
-            set3 = chart.data.getDataSetByIndex(2) as LineDataSet
-            set4 = chart.data.getDataSetByIndex(3) as LineDataSet
-            set5 = chart.data.getDataSetByIndex(4) as LineDataSet
+            set5 = chart.data.getDataSetByIndex(2) as LineDataSet
             set1.values = tempData
             set2.values = ambientTempData
-            set3.values = humData
-            set4.values = ambientHumData
             set5.values = tempLimit
             chart.data.notifyDataChanged()
             chart.notifyDataSetChanged()
@@ -316,6 +364,38 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             set2.setDrawCircleHole(false)
             set2.highLightColor = Color.rgb(244, 117, 117)
             //set2.setFillFormatter(new MyFillFormatter(900f));
+
+            set5 = LineDataSet(tempLimit, "Limit")
+            set5.axisDependency = AxisDependency.RIGHT
+            set5.color = Color.RED
+            set5.setDrawCircles(false)
+            set5.lineWidth = 4f
+            set5.fillAlpha = 65
+            set5.enableDashedLine(10f, 10f, 0f)
+            set5.highLightColor = Color.rgb(244, 117, 117)
+
+            // create a data object with the data sets
+            val data = LineData(set1, set2, set5)
+            data.setValueTextColor(Color.BLACK)
+            data.setValueTextSize(9f)
+
+            // set data
+            chart.data = data
+        }
+
+        if (chart2.data != null &&
+            chart2.data.dataSetCount > 0
+        ) {
+            set3 = chart2.data.getDataSetByIndex(0) as LineDataSet
+            set4 = chart2.data.getDataSetByIndex(1) as LineDataSet
+            set3.values = humData
+            set4.values = ambientHumData
+            chart2.data.notifyDataChanged()
+            chart2.notifyDataSetChanged()
+        } else {
+            // create a dataset and give it a type
+
+            // create a dataset and give it a type
             set3 = LineDataSet(humData, "Humidity")
             set3.axisDependency = AxisDependency.RIGHT
             set3.color = Color.CYAN
@@ -340,22 +420,14 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
             set4.setDrawCircleHole(false)
             set4.highLightColor = Color.rgb(244, 117, 117)
 
-            set5 = LineDataSet(tempLimit, "Limit")
-            set5.axisDependency = AxisDependency.RIGHT
-            set5.color = Color.RED
-            set5.setDrawCircles(false)
-            set5.lineWidth = 4f
-            set5.fillAlpha = 65
-            set5.enableDashedLine(10f, 10f, 0f)
-            set5.highLightColor = Color.rgb(244, 117, 117)
 
             // create a data object with the data sets
-            val data = LineData(set1, set2, set3, set4, set5)
+            val data = LineData( set3, set4)
             data.setValueTextColor(Color.BLACK)
             data.setValueTextSize(9f)
 
             // set data
-            chart.data = data
+            chart2.data = data
         }
     }
 
@@ -380,6 +452,7 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         binding.tvXMax.text = progress.toString()
         chart = binding.chart1
+        chart2 = binding.chart2
         chart.invalidate()
         setData(1, 1f)
     }
