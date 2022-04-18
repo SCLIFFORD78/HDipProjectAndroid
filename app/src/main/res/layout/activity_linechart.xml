@@ -7,16 +7,15 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart2"
         android:layout_width="408dp"
-        android:layout_height="390dp"
+        android:layout_height="357dp"
         android:layout_above="@+id/chart1"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="3dp" />
+        android:layout_marginEnd="0dp" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart1"
         android:layout_width="match_parent"
-        android:layout_height="248dp"
+        android:layout_height="328dp"
         android:layout_above="@+id/seekBar1" />
 
     <SeekBar

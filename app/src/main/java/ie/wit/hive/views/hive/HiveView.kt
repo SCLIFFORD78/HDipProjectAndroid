@@ -75,14 +75,17 @@ class HiveView : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_hive, menu)
         val deleteMenu: MenuItem = menu.findItem(R.id.item_delete)
+        val chartMenu: MenuItem = menu.findItem(R.id.item_chart)
         if (presenter.hive.sensorNumber != "") {
             val bluetoothMenu: MenuItem = menu.findItem(R.id.bluetooth)
             bluetoothMenu.isVisible = true
         }
         if (presenter.edit) {
-            deleteMenu.setVisible(true)
+            deleteMenu.isVisible = true
+            chartMenu.isVisible = true
         } else {
-            deleteMenu.setVisible(false)
+            deleteMenu.isVisible = false
+            chartMenu.isVisible = false
         }
         var alarmCount = 0
         runBlocking { presenter.getActiveAlarms() }

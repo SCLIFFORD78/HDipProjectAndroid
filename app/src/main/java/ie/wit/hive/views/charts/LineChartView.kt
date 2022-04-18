@@ -183,18 +183,19 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
         xAxis.valueFormatter = MyxAxisFormatter()
-        xAxis.labelRotationAngle = 90f
-        xAxis.mLabelWidth = 5
+        xAxis.labelRotationAngle = 45f
+        xAxis.mLabelWidth = 3
 
         val xAxis2 = chart2.xAxis
         //xAxis2.typeface = tfLight
         xAxis2.textSize = 11f
         xAxis2.textColor = Color.BLACK
-        xAxis2.setDrawGridLines(false)
+        xAxis2.setDrawGridLines(true)
         xAxis2.setDrawAxisLine(false)
         xAxis2.valueFormatter = MyxAxisFormatter()
-        xAxis2.labelRotationAngle = 90f
-        xAxis2.mLabelWidth = 5
+        xAxis2.labelRotationAngle = 45f
+        xAxis2.mLabelWidth = 3
+        xAxis2.mLabelRotatedWidth = 3
 
 
         val leftAxis = chart.axisLeft

@@ -99,9 +99,6 @@ class HiveListView : AppCompatActivity(), HiveListener {
                     presenter.doLogout()
                 }
             }
-            R.id.update -> {
-                setUpdateSearchHiveType()
-            }
         }
         return super.onOptionsItemSelected(item)
     }

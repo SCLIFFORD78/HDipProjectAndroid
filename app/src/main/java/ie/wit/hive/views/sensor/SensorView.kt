@@ -1,55 +1,31 @@
 package ie.wit.hive.views.sensor
 
-import android.bluetooth.BluetoothDevice
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.ui.AppBarConfiguration
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import ie.wit.hive.R
-import ie.wit.hive.databinding.ActivityHiveBinding
-import ie.wit.hive.models.Location
-import ie.wit.hive.models.HiveModel
-import org.json.JSONObject
-import timber.log.Timber.i
-import java.text.SimpleDateFormat
-import java.util.*
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.Intent
-import android.os.SystemClock
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.JsonObject
+import ie.wit.hive.R
 import ie.wit.hive.bleandroid.ble.*
 import ie.wit.hive.databinding.ActivitySensorControlBinding
-import ie.wit.hive.weather.getWeather
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.collections.forEachByIndex
-import org.jetbrains.anko.noButton
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.yesButton
-import org.json.JSONArray
-import timber.log.Timber
 import java.nio.ByteBuffer
-import java.util.Date
-import java.util.Locale
-import java.util.Objects
-import java.util.UUID
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SensorView : AppCompatActivity() {
 
@@ -198,23 +174,23 @@ class SensorView : AppCompatActivity() {
 
             onCharacteristicRead = { _, characteristic ->
                 if (characteristic.uuid == UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")){
-                    binding.batteryLevel.text = "Batt. ${Integer.decode(characteristic.value.toHexString())}%"
+                    binding.batteryLevel.text = Integer.decode(characteristic.value.toHexString()).toString()
                 }else if(characteristic.uuid == UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")){
                     val timestamp = toInt32(characteristic.value)
                     loggerTimeReference = timestamp
                     val date = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date(timestamp.toLong()*1000))
-                    binding.loggerRefTime.text = "Log start: ${date.toString()}"
+                    binding.loggerRefTime.text = date.toString()
                 }else if(characteristic.uuid == UUID.fromString("a8a82634-10a4-11e3-ab8c-f23c91aec05e")){
                     val interValSeconds = toInt16(characteristic.value)
-                    binding.intervalText.text = "Interval time ${interValSeconds.toString()} sec."
+                    binding.intervalText.text = interValSeconds.toString()
                     intervilTime = interValSeconds
                 }else if(characteristic.uuid == UUID.fromString("a8a82950-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashSizeTemp = toInt32(characteristic.value)
-                    binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
+                    binding.flashSize.text = flashSizeTemp.toString()
                 }else if(characteristic.uuid == UUID.fromString("a8a82646-10a4-11e3-ab8c-f23c91aec05e")) {
                     val flashUsageTemp = toInt32(characteristic.value)
                     loggerFlashUsage = flashUsageTemp+16
-                    binding.flashUsage.text = "Flash usage: ${flashUsageTemp.toString()}"
+                    binding.flashUsage.text = flashUsageTemp.toString()
                 }else if(characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
                     loggerActive =  characteristic.value[0].toInt()
                     var test = loggerActive
@@ -237,8 +213,8 @@ class SensorView : AppCompatActivity() {
                 if (characteristic.uuid == UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")) {
                     val result = characteristic.value
                     val converted = convertTempAndHumidity(result, 0)
-                    binding.temperature.text = "Temp: ${converted.get("Temperature")} C"
-                    binding.humidity.text = "Hum.: ${converted.get("Humidity")}%"
+                    binding.temperature.text = converted.get("Temperature").toString()
+                    binding.humidity.text = converted.get("Humidity").toString()
                     stopReadData()
                 } else if (characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")) {
                     val loggerData = characteristic.value
@@ -376,6 +352,7 @@ class SensorView : AppCompatActivity() {
 
     fun toInt32(bytes: ByteArray): Int {
         if (bytes.size != 4) {
+            log("toInt32: Wrong length")
             throw Exception("wrong len")
         }
         bytes.reverse()
@@ -401,7 +378,7 @@ class SensorView : AppCompatActivity() {
         readLoggerIntervalTime()
         readLoggerFlashSize()
         readLoggerFlashUsage()
-        readData()
+        //readData()
         readLoggerActive()
     }
 
