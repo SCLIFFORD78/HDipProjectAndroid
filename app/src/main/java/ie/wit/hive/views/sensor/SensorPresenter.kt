@@ -1,41 +1,23 @@
 package ie.wit.hive.views.sensor
 
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
 import com.google.gson.JsonObject
-import ie.wit.hive.helpers.checkLocationPermissions
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.AlarmEvents
-import ie.wit.hive.models.Location
 import ie.wit.hive.models.HiveModel
-import ie.wit.hive.showImagePicker
 import ie.wit.hive.views.aboutus.AboutUsView
 import ie.wit.hive.views.ble.BleScanView
-import ie.wit.hive.views.location.EditLocationView
 import ie.wit.hive.views.login.LoginView
 import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
-import timber.log.Timber
-import timber.log.Timber.i
-import java.util.ArrayList
 
 class SensorPresenter(private val view: SensorView) {
-    private val locationRequest = createDefaultLocationRequest()
     private lateinit var device: BluetoothDevice
     var app: MainApp = view.application as MainApp
     lateinit var hive: HiveModel

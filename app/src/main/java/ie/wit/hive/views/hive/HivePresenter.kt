@@ -31,6 +31,7 @@ import ie.wit.hive.views.ble.BleScanView
 import ie.wit.hive.views.charts.LineChartView
 import ie.wit.hive.views.hivelist.HiveListView
 import ie.wit.hive.views.location.EditLocationView
+import ie.wit.hive.views.popup.PopUpWindowView
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import timber.log.Timber.i

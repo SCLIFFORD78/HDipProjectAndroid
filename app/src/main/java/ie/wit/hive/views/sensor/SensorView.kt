@@ -1,21 +1,17 @@
 package ie.wit.hive.views.sensor
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
-import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.JsonObject
 import ie.wit.hive.R
-import ie.wit.hive.bleandroid.ble.*
+import ie.wit.hive.bleandroid.ble.ConnectionEventListener
+import ie.wit.hive.bleandroid.ble.ConnectionManager
+import ie.wit.hive.bleandroid.ble.toHexString
 import ie.wit.hive.databinding.ActivitySensorControlBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -27,6 +23,7 @@ import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 
+@SuppressLint("SimpleDateFormat")
 class SensorView : AppCompatActivity() {
 
     private lateinit var binding: ActivitySensorControlBinding
@@ -38,24 +35,6 @@ class SensorView : AppCompatActivity() {
         ConnectionManager.servicesOnDevice(device)?.flatMap { service ->
             service.characteristics ?: listOf()
         } ?: listOf()
-    }
-    private val characteristicProperties by lazy {
-        characteristics.map { characteristic ->
-            characteristic to mutableListOf<CharacteristicProperty>().apply {
-                if (characteristic.isNotifiable()) add(CharacteristicProperty.Notifiable)
-                if (characteristic.isIndicatable()) add(CharacteristicProperty.Indicatable)
-                if (characteristic.isReadable()) add(CharacteristicProperty.Readable)
-                if (characteristic.isWritable()) add(CharacteristicProperty.Writable)
-                if (characteristic.isWritableWithoutResponse()) {
-                    add(CharacteristicProperty.WritableWithoutResponse)
-                }
-            }.toList()
-        }.toMap()
-    }
-
-    private val bluetoothAdapter: BluetoothAdapter by lazy {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter
     }
 
     private var notifyingCharacteristics = mutableListOf<UUID>()
@@ -137,22 +116,15 @@ class SensorView : AppCompatActivity() {
     }
 
 
-    fun addDevice(result: BluetoothDevice) {
-        device = result
-    }
-
-
     @SuppressLint("SetTextI18n")
     private fun log(message: String) {
         val formattedMessage = String.format("%s: %s", dateFormatter.format(Date()), message)
         runOnUiThread {
             var currentLogText = binding.logTextView.text
-            if (binding.logTextView.text.isEmpty()) {
+            binding.logTextView.text.ifEmpty {
                 currentLogText = "Beginning of log."
                 hideProgress()
                 readParams()
-            } else {
-                binding.logTextView.text
             }
             binding.logTextView.text = "$currentLogText\n$formattedMessage"
             binding.logScrollView.post { binding.logScrollView.fullScroll(View.FOCUS_DOWN) }
@@ -193,7 +165,7 @@ class SensorView : AppCompatActivity() {
                     binding.flashUsage.text = flashUsageTemp.toString()
                 }else if(characteristic.uuid == UUID.fromString("a8a82633-10a4-11e3-ab8c-f23c91aec05e")) {
                     loggerActive =  characteristic.value[0].toInt()
-                    var test = loggerActive
+                    val test = loggerActive
                     print(test)
                     //binding.flashSize.text = "Flash size: ${flashSizeTemp.toString()}"
                 }
@@ -220,7 +192,7 @@ class SensorView : AppCompatActivity() {
                     val loggerData = characteristic.value
 
                     if (flashUsageReference <= loggerFlashUsage && (flashUsageReference != 0)) {
-                        if (loggerData.size > 0) {
+                        if (loggerData.isNotEmpty()) {
                             if (loggerData[0].toInt() != -1 && loggerData[1].toInt() != -1 && loggerData[2].toInt() != -1 && loggerData[3].toInt() != -1) {
                                 sensorLogData.add(
                                     convertTempAndHumidity(
@@ -313,44 +285,7 @@ class SensorView : AppCompatActivity() {
         }
     }
 
-    private enum class CharacteristicProperty {
-        Readable,
-        Writable,
-        WritableWithoutResponse,
-        Notifiable,
-        Indicatable;
-
-        val action
-            get() = when (this) {
-                Readable -> "Read"
-                Writable -> "Write"
-                WritableWithoutResponse -> "Write Without Response"
-                Notifiable -> "Toggle Notifications"
-                Indicatable -> "Toggle Indications"
-            }
-    }
-
-    private fun Activity.hideKeyboard() {
-        hideKeyboard(currentFocus ?: View(this))
-    }
-
-    private fun Context.hideKeyboard(view: View) {
-        val inputMethodManager =
-            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-
-    private fun EditText.showKeyboard() {
-        val inputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        requestFocus()
-        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun String.hexToBytes() =
-        this.chunked(2).map { it.toUpperCase(Locale.US).toInt(16).toByte() }.toByteArray()
-
-    fun toInt32(bytes: ByteArray): Int {
+    private fun toInt32(bytes: ByteArray): Int {
         if (bytes.size != 4) {
             log("toInt32: Wrong length")
             throw Exception("wrong len")
@@ -364,12 +299,10 @@ class SensorView : AppCompatActivity() {
         if (bytes.size != 2) {
             throw Exception("wrong len")
         }
-        val result =
-            (bytes[0].toInt().and(0xff)).or((bytes.get(1).toInt().rotateLeft(8)).and(0xff00))
-        return result
+        return (bytes[0].toInt().and(0xff)).or((bytes[1].toInt().rotateLeft(8)).and(0xff00))
     }
 
-    fun numberToByteArray(data: Number, size: Int = 4): ByteArray =
+    private fun numberToByteArray(data: Number, size: Int = 4): ByteArray =
         ByteArray(size) { i -> (data.toLong() shr (i * 8)).toByte() }
 
     private fun readParams() {
@@ -466,7 +399,7 @@ class SensorView : AppCompatActivity() {
 
     private fun writeLoggerTimeReference() {
         val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
-        var timeNow = numberToByteArray(
+        val timeNow = numberToByteArray(
             (((System.currentTimeMillis() / 1000).toInt()) - (((System.currentTimeMillis() / 1000).toInt()) % 3600)),
             4
         )
@@ -481,12 +414,12 @@ class SensorView : AppCompatActivity() {
     private fun convertTempAndHumidity(sensorData: ByteArray, timeStamp: Int): JsonObject {
         val result = JsonObject()
         val temp = (sensorData[0].toInt().and(0xff)).or(
-            (sensorData.get(1).toInt().rotateLeft(8)).and(0xff00)
+            (sensorData[1].toInt().rotateLeft(8)).and(0xff00)
         )
         val tempC = -46.85f + 175.72f * temp.toFloat() / 65536.toFloat()
         result.addProperty("Temperature", tempC)
         val hum = (sensorData[2].toInt().and(0xff)).or(
-            (sensorData.get(3).toInt().rotateLeft(8)).and(0xff00)
+            (sensorData[3].toInt().rotateLeft(8)).and(0xff00)
         )//.and(0xff.toByte())
         val relHum = -6.0f + 125.0f * hum.toFloat() / 65536.toFloat()
         result.addProperty("Humidity", relHum)

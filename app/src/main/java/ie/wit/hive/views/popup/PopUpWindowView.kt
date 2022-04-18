@@ -1,17 +1,14 @@
-package ie.wit.hive.views.hive
+package ie.wit.hive.views.popup
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +18,6 @@ import ie.wit.hive.databinding.ActivityPopUpWindowBinding
 import ie.wit.hive.models.Comments
 import ie.wit.hive.models.HiveModel
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.anko.backgroundColor
 import java.text.SimpleDateFormat
 
 
@@ -31,12 +27,9 @@ class PopUpWindowView : AppCompatActivity() {
     private lateinit var presenter: PopUpWindowPresenter
     lateinit var hive : HiveModel
 
-    private var popupTitle = ""
     private var popupText = ""
-    private var popupButton = ""
-    private var darkStatusBar = false
     lateinit var comments:java.util.ArrayList<String>
-    var newComment: String = ""
+    private var newComment: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +45,7 @@ class PopUpWindowView : AppCompatActivity() {
 
         newComment = binding.multiAutoCompleteTextView.text.toString()
 
-        var addCommentButton: Button = findViewById(R.id.popup_window_button_add)
+        val addCommentButton: Button = findViewById(R.id.popup_window_button_add)
         addCommentButton.setOnClickListener {
             runBlocking { addComment(binding.multiAutoCompleteTextView.text.toString()) }
         }
@@ -88,7 +81,7 @@ binding.popupWindowBackground.setBackgroundColor(Color.TRANSPARENT)
             onBackPressed()
         }
 
-        binding.multiAutoCompleteTextView .setOnKeyListener { v, keyCode, event ->
+        binding.multiAutoCompleteTextView .setOnKeyListener { _, keyCode, event ->
 
             when {
 
@@ -155,10 +148,8 @@ binding.popupWindowBackground.setBackgroundColor(Color.TRANSPARENT)
         val formattedMessage = SimpleDateFormat("dd/MM/YY HH:mm:ss").format(comment.dateLogged .toLong()*1000)+"\n"+comment.comment
         runOnUiThread {
             var currentLogText = binding.popupWindowText .text
-            if (binding.popupWindowText.text.isEmpty()) {
+            binding.popupWindowText.text.ifEmpty {
                 currentLogText = "Comment History:"
-            } else {
-                binding.popupWindowText.text
             }
             binding.popupWindowText.text = "$currentLogText\n\n$formattedMessage"
             binding.logScrollView.post { binding.logScrollView.fullScroll(View.FOCUS_DOWN) }

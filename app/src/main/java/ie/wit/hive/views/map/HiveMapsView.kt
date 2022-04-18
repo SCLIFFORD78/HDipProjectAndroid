@@ -4,19 +4,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.squareup.picasso.Picasso
 import ie.wit.hive.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import ie.wit.hive.databinding.ActivityHiveMapsBinding
 import ie.wit.hive.databinding.ContentHiveMapsBinding
 import ie.wit.hive.main.MainApp
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.readImageFromPath
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class HiveMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
 
@@ -25,6 +25,7 @@ class HiveMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
     lateinit var app: MainApp
     lateinit var presenter: HiveMapPresenter
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app = application as MainApp
@@ -42,6 +43,7 @@ class HiveMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
             }
         }
     }
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onMarkerClick(marker: Marker): Boolean {
         GlobalScope.launch(Dispatchers.Main) {
             presenter.doMarkerSelected(marker)

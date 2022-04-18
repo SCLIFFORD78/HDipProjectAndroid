@@ -16,18 +16,17 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class HiveMapPresenter(val view: HiveMapView) {
-    var app: MainApp
+    var app: MainApp = view.application as MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
     init {
-        app = view.application as MainApp
         registerRefreshCallback()
     }
 
     suspend fun doPopulateMap(map: GoogleMap) {
         map.uiSettings.setZoomControlsEnabled(true)
         map.setOnMarkerClickListener(view)
-        FirebaseAuth.getInstance().currentUser?.let {
+        FirebaseAuth.getInstance().currentUser?.let { it ->
             app.hives.findByOwner(it.uid).forEach {
                 val loc = LatLng(it.location.lat, it.location.lng)
                 val options = MarkerOptions().title(it.tag.toString()).position(loc)
@@ -40,7 +39,7 @@ class HiveMapPresenter(val view: HiveMapView) {
     suspend fun doMarkerSelected(marker: Marker) {
         val tag = marker.tag as Long
         val hive = app.hives.findByTag(tag)
-        if (hive != null) view.showHive(hive)
+        view.showHive(hive)
     }
 
     fun backNAv(){
