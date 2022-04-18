@@ -59,17 +59,17 @@
 
     <TextView
         android:id="@+id/flashUsage"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Flash Usage"
         android:textAlignment="viewEnd"
-        app:layout_constraintStart_toStartOf="@+id/flashSize"
+        app:layout_constraintEnd_toEndOf="@+id/flashSize"
         app:layout_constraintTop_toBottomOf="@+id/flashSize" />
 
     <TextView
         android:id="@+id/batteryLevel"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="Battery"
@@ -79,52 +79,52 @@
 
     <TextView
         android:id="@+id/temperature"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Temperature"
         android:textAlignment="viewEnd"
-        app:layout_constraintStart_toStartOf="@+id/batteryLevel"
+        app:layout_constraintEnd_toEndOf="@+id/batteryLevel"
         app:layout_constraintTop_toBottomOf="@+id/batteryLevel" />
 
     <TextView
         android:id="@+id/humidity"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Humidity"
         android:textAlignment="viewEnd"
-        app:layout_constraintStart_toStartOf="@+id/temperature"
+        app:layout_constraintEnd_toEndOf="@+id/temperature"
         app:layout_constraintTop_toBottomOf="@+id/temperature" />
 
     <TextView
         android:id="@+id/loggerRefTime"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Logger Time"
         android:textAlignment="viewEnd"
-        app:layout_constraintStart_toStartOf="@+id/humidity"
+        app:layout_constraintEnd_toEndOf="@+id/humidity"
         app:layout_constraintTop_toBottomOf="@+id/humidity" />
 
     <TextView
         android:id="@+id/intervalText"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Interval Time"
         android:textAlignment="viewEnd"
-        app:layout_constraintStart_toStartOf="@+id/loggerRefTime"
+        app:layout_constraintEnd_toEndOf="@+id/loggerRefTime"
         app:layout_constraintTop_toBottomOf="@+id/loggerRefTime" />
 
     <TextView
         android:id="@+id/flashSize"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Flash Size"
         android:textAlignment="viewEnd"
-        app:layout_constraintStart_toStartOf="@+id/intervalText"
+        app:layout_constraintEnd_toEndOf="@+id/intervalText"
         app:layout_constraintTop_toBottomOf="@+id/intervalText" />
 
     <Button

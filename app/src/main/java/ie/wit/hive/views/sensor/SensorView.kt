@@ -124,7 +124,7 @@ class SensorView : AppCompatActivity() {
             binding.logTextView.text.ifEmpty {
                 currentLogText = "Beginning of log."
                 hideProgress()
-                readParams()
+                //readParams()
             }
             binding.logTextView.text = "$currentLogText\n$formattedMessage"
             binding.logScrollView.post { binding.logScrollView.fullScroll(View.FOCUS_DOWN) }
@@ -185,8 +185,8 @@ class SensorView : AppCompatActivity() {
                 if (characteristic.uuid == UUID.fromString("a8a82631-10a4-11e3-ab8c-f23c91aec05e")) {
                     val result = characteristic.value
                     val converted = convertTempAndHumidity(result, 0)
-                    binding.temperature.text = converted.get("Temperature").toString()
-                    binding.humidity.text = converted.get("Humidity").toString()
+                    binding.temperature.text = "${converted.get("Temperature")} C"
+                    binding.humidity.text = "${converted.get("Humidity")}%"
                     stopReadData()
                 } else if (characteristic.uuid == UUID.fromString("a8a82637-10a4-11e3-ab8c-f23c91aec05e")) {
                     val loggerData = characteristic.value
@@ -299,10 +299,12 @@ class SensorView : AppCompatActivity() {
         if (bytes.size != 2) {
             throw Exception("wrong len")
         }
-        return (bytes[0].toInt().and(0xff)).or((bytes[1].toInt().rotateLeft(8)).and(0xff00))
+        val result =
+            (bytes[0].toInt().and(0xff)).or((bytes.get(1).toInt().rotateLeft(8)).and(0xff00))
+        return result
     }
 
-    private fun numberToByteArray(data: Number, size: Int = 4): ByteArray =
+    fun numberToByteArray(data: Number, size: Int = 4): ByteArray =
         ByteArray(size) { i -> (data.toLong() shr (i * 8)).toByte() }
 
     private fun readParams() {
@@ -399,7 +401,7 @@ class SensorView : AppCompatActivity() {
 
     private fun writeLoggerTimeReference() {
         val loggerTimeReference = UUID.fromString("a8a82636-10a4-11e3-ab8c-f23c91aec05e")
-        val timeNow = numberToByteArray(
+        var timeNow = numberToByteArray(
             (((System.currentTimeMillis() / 1000).toInt()) - (((System.currentTimeMillis() / 1000).toInt()) % 3600)),
             4
         )
@@ -414,12 +416,12 @@ class SensorView : AppCompatActivity() {
     private fun convertTempAndHumidity(sensorData: ByteArray, timeStamp: Int): JsonObject {
         val result = JsonObject()
         val temp = (sensorData[0].toInt().and(0xff)).or(
-            (sensorData[1].toInt().rotateLeft(8)).and(0xff00)
+            (sensorData.get(1).toInt().rotateLeft(8)).and(0xff00)
         )
         val tempC = -46.85f + 175.72f * temp.toFloat() / 65536.toFloat()
         result.addProperty("Temperature", tempC)
         val hum = (sensorData[2].toInt().and(0xff)).or(
-            (sensorData[3].toInt().rotateLeft(8)).and(0xff00)
+            (sensorData.get(3).toInt().rotateLeft(8)).and(0xff00)
         )//.and(0xff.toByte())
         val relHum = -6.0f + 125.0f * hum.toFloat() / 65536.toFloat()
         result.addProperty("Humidity", relHum)
