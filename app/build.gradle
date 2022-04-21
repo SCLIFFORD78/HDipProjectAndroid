@@ -9,14 +9,19 @@ plugins {
 }
 
 android {
+
+    lintOptions {
+        baseline file("lint-baseline.xml")
+    }
+
     compileSdk 31
 
     defaultConfig {
         applicationId "ie.wit.hive"
         minSdk 29
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

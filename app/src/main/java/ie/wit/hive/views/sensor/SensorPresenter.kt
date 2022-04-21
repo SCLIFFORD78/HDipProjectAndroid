@@ -7,6 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import ie.wit.hive.helpers.createDefaultLocationRequest
 import ie.wit.hive.main.MainApp
@@ -55,7 +57,8 @@ class SensorPresenter(private val view: SensorView) {
     suspend fun doUpdateHive(values: ArrayList<JsonObject>) {
         //Gson().fromJson(value, JsonObject::class.java)
         var alarmEvents = arrayListOf<AlarmEvents>()
-        var alm:AlarmEvents = AlarmEvents()
+        var recValues = Gson().fromJson("[" + hive.recordedData + "]", JsonArray::class.java)
+        var alm: AlarmEvents = AlarmEvents()
         var tempAlarm = hive.tempAlarm
         var alarmDetected = false
         var test = hive.recordedData
@@ -66,18 +69,25 @@ class SensorPresenter(private val view: SensorView) {
                     alm.hiveid = hive.fbid
                     alm.alarmEvent = values[i].toString()
                     alm.dateActive = values[i].asJsonObject.get("timeStamp").toString()
-                    alm.recordedValue = values[i].asJsonObject.get("Temperature").toString().toFloat()
+                    alm.recordedValue =
+                        values[i].asJsonObject.get("Temperature").toString().toFloat()
                     alm.tempAlarm = hive.tempAlarm
                     alarmEvents.add(alm.copy())
                     alarmDetected = true
                 }
             } else {
-                hive.recordedData += "," + values[i].toString()
+                if (values[i].get("timeStamp").asFloat > recValues.get(recValues.size() - 1).asJsonObject.get(
+                        "timeStamp"
+                    ).asFloat
+                ) {
+                    hive.recordedData += "," + values[i].toString()
+                }
                 if (values[i].get("Temperature").asFloat < tempAlarm && !alarmDetected) {
                     alm.hiveid = hive.fbid
                     alm.alarmEvent = values[i].toString()
                     alm.dateActive = values[i].asJsonObject.get("timeStamp").toString()
-                    alm.recordedValue = values[i].asJsonObject.get("Temperature").toString().toFloat()
+                    alm.recordedValue =
+                        values[i].asJsonObject.get("Temperature").toString().toFloat()
                     alm.tempAlarm = hive.tempAlarm
                     alarmEvents.add(alm.copy())
                     alarmDetected = true
@@ -89,7 +99,7 @@ class SensorPresenter(private val view: SensorView) {
             }
 
         }
-        for (i in 0 until alarmEvents.size){
+        for (i in 0 until alarmEvents.size) {
             app.hives.createAlarm(alarmEvents[i])
         }
         print(hive)

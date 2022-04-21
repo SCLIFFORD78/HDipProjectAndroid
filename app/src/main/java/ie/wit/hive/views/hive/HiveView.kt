@@ -9,7 +9,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import ie.wit.hive.R
-import ie.wit.hive.cloudinary.Cloudinary
 import ie.wit.hive.databinding.ActivityHiveBinding
 import ie.wit.hive.models.HiveModel
 import ie.wit.hive.models.Location
@@ -27,7 +26,6 @@ class HiveView : AppCompatActivity() {
     private lateinit var presenter: HivePresenter
     lateinit var map: GoogleMap
     lateinit var hive : HiveModel
-    lateinit var cloudinary:Cloudinary
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

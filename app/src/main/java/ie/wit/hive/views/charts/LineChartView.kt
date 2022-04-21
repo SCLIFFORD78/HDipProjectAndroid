@@ -296,22 +296,28 @@ class LineChartView : AppCompatActivity(), SeekBar.OnSeekBarChangeListener,
                 )
             )
         }
-
+        var oldTime = 0f
         for (value in values) {
-            tempData.add(
-                Entry(
-                    value.asJsonObject.get("timeStamp").asFloat,
-                    value.asJsonObject.get("Temperature").asFloat
+
+            if (value.asJsonObject.get("timeStamp").asFloat > oldTime){
+                tempData.add(
+                    Entry(
+                        value.asJsonObject.get("timeStamp").asFloat,
+                        value.asJsonObject.get("Temperature").asFloat
+                    )
                 )
-            )
-            humData.add(
-                Entry(
-                    value.asJsonObject.get("timeStamp").asFloat,
-                    value.asJsonObject.get("Humidity").asFloat
+                humData.add(
+                    Entry(
+                        value.asJsonObject.get("timeStamp").asFloat,
+                        value.asJsonObject.get("Humidity").asFloat
+                    )
                 )
-            )
-            val recordTime = sdf.format(value.asJsonObject.get("timeStamp").asFloat * 1000)
-            formattedTime.add(recordTime)
+                val recordTime = sdf.format(value.asJsonObject.get("timeStamp").asFloat * 1000)
+                formattedTime.add(recordTime)
+                oldTime = value.asJsonObject.get("timeStamp").asFloat
+            }
+
+
 
         }
 
