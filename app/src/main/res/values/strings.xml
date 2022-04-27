@@ -37,7 +37,7 @@
     <string name="menu_saveHive">Save</string>
     <string name="menu_deleteHive">Delete</string>
     <!-- login strings -->
-    <string name="title_activity_login"> Signup/Login to Hive</string>
+    <string name="title_activity_login"> Tracker</string>
     <string name="menu_showMap">Show Map</string>
     <string name="menu_logout">Logout</string>
 

@@ -81,8 +81,8 @@ class SensorView : AppCompatActivity() {
         //readLoggerFlashUsage()
 
         binding.readParams.setOnClickListener {
-            //readParams()
-            linkValues()
+            readParams()
+            //linkValues()
         }
 
         binding.data.setOnClickListener {
@@ -134,7 +134,7 @@ class SensorView : AppCompatActivity() {
             binding.logTextView.text.ifEmpty {
                 currentLogText = "Beginning of log."
                 hideProgress()
-                //readParams()
+                readParams()
             }
             binding.logTextView.text = "$currentLogText\n$formattedMessage"
             binding.logScrollView.post { binding.logScrollView.fullScroll(View.FOCUS_DOWN) }
